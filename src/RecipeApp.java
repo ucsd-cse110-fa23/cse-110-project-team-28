@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -20,8 +21,8 @@ class Recipe extends HBox {
     private Button deleteButton;
 
     Recipe() {
-        this.setPrefSize(500, 20); 
-        this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); 
+        this.setPrefSize(500, 20);
+        this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
 
         recipeName = new TextField();
         recipeName.setPrefSize(380, 20);
@@ -35,6 +36,13 @@ class Recipe extends HBox {
         deleteButton.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
         this.getChildren().add(deleteButton);
 
+        recipeName.setOnMouseClicked(e -> openDetailWindow());
+
+    }
+
+    private void openDetailWindow() {
+        RecipeDetailWindow recipeDetailWindow = new RecipeDetailWindow(this);
+        recipeDetailWindow.show();
     }
 
     public TextField getRecipeName() {
@@ -52,11 +60,9 @@ class RecipeList extends VBox {
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
     }
-    
-    
 
     public void saveRecipes() {
-        //TODO
+        // TODO
     }
 }
 
@@ -75,14 +81,10 @@ class Footer extends HBox {
         addButton = new Button("Add Recipe");
         addButton.setStyle(defaultButtonStyle);
 
-        /* idk about this, i think we just delete when delete is clicked, unlike lab 1
-        deleteButton = new Button("Delete");
-        deleteButton.setStyle(defaultButtonStyle);*/
-
         saveButton = new Button("Save Recipes");
         saveButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(addButton, saveButton); //delete button maybe
+        this.getChildren().addAll(addButton, saveButton);
         this.setAlignment(Pos.CENTER);
     }
 
@@ -141,16 +143,91 @@ class AppFrame extends BorderPane {
         addListeners();
     }
 
-    public void addListeners() {
-        addButton.setOnAction(e -> {
-            Recipe recipe = new Recipe();
-            recipeList.getChildren().add(0, recipe);
-
-            Button deleteButton = recipe.getDeleteButton();
-            deleteButton.setOnAction(e1 -> {
-                recipeList.getChildren().remove(recipe);
-            });
+    public void addDeleteListener(Recipe recipe) {
+        Button deleteButton = recipe.getDeleteButton();
+        deleteButton.setOnAction(e -> {
+            recipeList.getChildren().remove(recipe);
         });
+    }
+
+    public void addListeners() {
+
+        addButton.setOnAction(e -> {
+            RecipeInputWindow recipeInputWindow = new RecipeInputWindow(recipeList,
+                    this);
+            recipeInputWindow.show();
+
+            for (Node node : recipeList.getChildren()) {
+                if (node instanceof Recipe) {
+                    addDeleteListener((Recipe) node);
+                }
+            }
+        });
+
+    }
+
+}
+
+class RecipeInputWindow extends Stage {
+
+    private TextField recipeNameField;
+    private Button saveButton;
+    private RecipeList recipeList;
+    private AppFrame appFrame;
+
+    RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
+        this.recipeList = recipeList;
+        this.appFrame = appFrame;
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        recipeNameField = new TextField();
+        recipeNameField.setPromptText("Enter Recipe Name");
+
+        saveButton = new Button("Save");
+        saveButton.setOnAction(e -> saveRecipe());
+
+        layout.getChildren().addAll(recipeNameField, saveButton);
+
+        Scene scene = new Scene(layout, 300, 200);
+        this.setScene(scene);
+        this.setTitle("Add New Recipe");
+    }
+
+    private void saveRecipe() {
+        String recipeName = recipeNameField.getText();
+        Recipe recipe = new Recipe();
+        if (!recipeName.isEmpty()) {
+
+            recipe.getRecipeName().setText(recipeName);
+            recipeList.getChildren().add(0, recipe);
+            this.close();
+        }
+        appFrame.addDeleteListener(recipe);
+    }
+}
+
+class RecipeDetailWindow extends Stage {
+
+    private Recipe recipe;
+
+    RecipeDetailWindow(Recipe recipe) {
+        this.recipe = recipe;
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        Label recipeNameLabel = new Label("Recipe: " + recipe.getRecipeName().getText());
+        recipeNameLabel.setStyle("-fx-font-weight: bold;");
+
+        // Other UI components for displaying recipe details
+
+        Scene scene = new Scene(layout, 300, 200);
+        this.setScene(scene);
+        this.setTitle("Recipe Details");
     }
 }
 
@@ -169,5 +246,5 @@ public class RecipeApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

@@ -74,7 +74,7 @@ public class Whisper {
             errorResponse.append(errorLine);
         }
         errorReader.close();
-        String errorResult = errorResponse.toString();
+        String errorResult = errorResponse.toString(); 
         System.out.println("Error Result: " + errorResult);
     }
 
