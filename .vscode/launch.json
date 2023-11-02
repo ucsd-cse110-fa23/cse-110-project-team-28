@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "RecipeApp",
             "projectName": "cse-110-project-team-28_f0610b03",
-            "vmArgs": "--module-path '/Users/keyanazbijari/Desktop/CSE110/javafx-sdk-21/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path '<path/to/javafx/library>' --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
@@ -18,7 +18,6 @@
             "request": "launch",
             "mainClass": "Whisper",
             "projectName": "cse-110-project-team-28_f0610b03",
-            "args": "/Users/keyanazbijari/Desktop/CSE110/Lab4/src/Lab4-Recording.mp3"
         },
         {
             "type": "java",
@@ -32,7 +31,7 @@
             "request": "launch",
             "mainClass": "client.App",
             "projectName": "cse-110-project-team-28_f0610b03",
-            "vmArgs": "--module-path '/Users/keyanazbijari/Desktop/CSE110/javafx-sdk-21/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path '<path/to/javafx/library>' --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
@@ -40,7 +39,7 @@
             "request": "launch",
             "mainClass": "multithreading.AudioRecorder",
             "projectName": "cse-110-project-team-28_f0610b03",
-            "vmArgs": "--module-path '/Users/keyanazbijari/Desktop/CSE110/javafx-sdk-21/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path '<path/to/javafx/library>' --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
