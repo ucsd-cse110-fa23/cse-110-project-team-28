@@ -53,9 +53,7 @@ class RecipeList extends VBox {
         this.setStyle("-fx-background-color: #F0F8FF;");
     }
     
-    public void deleteRecipe() {
-        //TODO
-    }
+    
 
     public void saveRecipes() {
         //TODO
@@ -119,7 +117,6 @@ class AppFrame extends BorderPane {
     private RecipeList recipeList;
 
     private Button addButton;
-    private Button deleteButton;
     private Button saveButton;
 
     AppFrame() {
@@ -136,7 +133,6 @@ class AppFrame extends BorderPane {
         this.setBottom(footer);
 
         addButton = footer.getAddButton();
-        //deleteButton = footer.getDeleteButton();
         saveButton = footer.getSaveButton();
         saveButton.setOnAction(e -> {
             recipeList.saveRecipes();
@@ -148,11 +144,11 @@ class AppFrame extends BorderPane {
     public void addListeners() {
         addButton.setOnAction(e -> {
             Recipe recipe = new Recipe();
-            recipeList.getChildren().add(recipe);
+            recipeList.getChildren().add(0, recipe);
 
             Button deleteButton = recipe.getDeleteButton();
             deleteButton.setOnAction(e1 -> {
-                //recipe.delete();
+                recipeList.getChildren().remove(recipe);
             });
         });
     }
