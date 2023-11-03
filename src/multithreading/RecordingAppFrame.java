@@ -11,7 +11,7 @@ import java.io.*;
 import javax.sound.sampled.*;
 
 
-class AppFrame extends FlowPane {
+public class RecordingAppFrame extends FlowPane {
     private Button startButton;
     private Button stopButton;
     private AudioFormat audioFormat;
@@ -25,7 +25,7 @@ class AppFrame extends FlowPane {
     String defaultButtonStyle = "-fx-border-color: #000000; -fx-font: 13 arial; -fx-pref-width: 175px; -fx-pref-height: 50px;";
     String defaultLabelStyle = "-fx-font: 13 arial; -fx-pref-width: 175px; -fx-pref-height: 50px; -fx-text-fill: red; visibility: hidden";
 
-    AppFrame() {
+    public RecordingAppFrame() {
         // Set properties for the flowpane
         this.setPrefSize(370, 120);
         this.setPadding(new Insets(5, 0, 5, 5));
@@ -127,14 +127,14 @@ class AppFrame extends FlowPane {
         this.stopRecording();
     }
 }
-
+/* 
 public class AudioRecorder extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         // Setting the Layout of the Window (Flow Pane)
-        AppFrame root = new AppFrame();
+        RecordingAppFrame root = new RecordingAppFrame();
 
         // Set the title of the app
         primaryStage.setTitle("Audio Recorder");
@@ -150,3 +150,4 @@ public class AudioRecorder extends Application {
         launch(args);
     }
 }
+*/

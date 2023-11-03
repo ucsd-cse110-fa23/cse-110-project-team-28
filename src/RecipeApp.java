@@ -16,6 +16,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import multithreading.RecordingAppFrame;
+
+
 class Recipe extends HBox {
     private TextField recipeName;
     private Button deleteButton;
@@ -167,13 +170,17 @@ class AppFrame extends BorderPane {
     }
 
 }
-
+ 
+/*
+ * Class for the seperate window for user to enter recipe parameters (meal type, ingredients) for recipe creation 
+ */
 class RecipeInputWindow extends Stage {
 
     private TextField recipeNameField;
     private Button saveButton;
     private RecipeList recipeList;
     private AppFrame appFrame;
+    private Button recordButton;
 
     RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
         this.recipeList = recipeList;
@@ -189,13 +196,18 @@ class RecipeInputWindow extends Stage {
         saveButton = new Button("Save");
         saveButton.setOnAction(e -> saveRecipe());
 
-        layout.getChildren().addAll(recipeNameField, saveButton);
+        RecordingAppFrame recorder = new RecordingAppFrame();
+
+        layout.getChildren().addAll(recipeNameField, saveButton, recorder);
 
         Scene scene = new Scene(layout, 300, 200);
         this.setScene(scene);
         this.setTitle("Add New Recipe");
     }
 
+    /*
+     * Saves recipe to main app list
+     */
     private void saveRecipe() {
         String recipeName = recipeNameField.getText();
         Recipe recipe = new Recipe();
@@ -207,11 +219,20 @@ class RecipeInputWindow extends Stage {
         }
         appFrame.addDeleteListener(recipe);
     }
+
+    private void recordRecipe(){
+
+    }
 }
 
+
+/*
+ * Window for for actual recipe (ingredients + instructions)
+ */
 class RecipeDetailWindow extends Stage {
 
     private Recipe recipe;
+
 
     RecipeDetailWindow(Recipe recipe) {
         this.recipe = recipe;
@@ -227,7 +248,7 @@ class RecipeDetailWindow extends Stage {
 
         Scene scene = new Scene(layout, 300, 200);
         this.setScene(scene);
-        this.setTitle("Recipe Details");
+        this.setTitle("Recipe: "+ recipe.getRecipeName().getText());
     }
 }
 
