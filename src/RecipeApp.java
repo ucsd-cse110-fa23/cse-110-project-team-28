@@ -21,6 +21,8 @@ import multithreading.RecordingAppFrame;
 
 class Recipe extends HBox {
     private TextField recipeName;
+    private Label mealTypeLabel;
+    private String mealType;
     private Button deleteButton;
 
     Recipe() {
@@ -28,10 +30,17 @@ class Recipe extends HBox {
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
 
         recipeName = new TextField();
-        recipeName.setPrefSize(380, 20);
+        recipeName.setPrefSize(300, 20);
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
         recipeName.setPadding(new Insets(10, 0, 10, 0));
         this.getChildren().add(recipeName);
+
+        // meal type label
+        mealTypeLabel = new Label(mealType);
+        mealTypeLabel.setPrefSize(100, 20);
+        mealTypeLabel.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
+        mealTypeLabel.setPadding(new Insets(10, 0, 10, 0));
+        this.getChildren().add(mealTypeLabel);
 
         deleteButton = new Button("Delete");
         deleteButton.setPrefSize(100, 20);
@@ -54,6 +63,13 @@ class Recipe extends HBox {
 
     public Button getDeleteButton() {
         return this.deleteButton;
+    }
+
+
+    // meal type stuff next two methods
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+        mealTypeLabel.setText(mealType);
     }
 }
 
@@ -176,11 +192,20 @@ class AppFrame extends BorderPane {
  */
 class RecipeInputWindow extends Stage {
 
+    private Label recipeNameTitle;
+    
+    private Label recordTitle;
     private TextField recipeNameField;
+    private Button mealTypeButton;
     private Button saveButton;
     private RecipeList recipeList;
     private AppFrame appFrame;
     private Button recordButton;
+
+    // meal type stuff added by dominic
+    private String mealType;
+    private Label mealTypeTitle;
+    private TextField mealTypeField;
 
     RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
         this.recipeList = recipeList;
@@ -190,19 +215,43 @@ class RecipeInputWindow extends Stage {
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
 
+
+        // recipe name
+        recipeNameTitle = new Label("Name:");
+        recipeNameTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(recipeNameTitle);
+        
         recipeNameField = new TextField();
         recipeNameField.setPromptText("Enter Recipe Name");
+        layout.getChildren().add(recipeNameField);
 
+        // meal type
+        mealTypeTitle = new Label("Meal Type:");
+        mealTypeTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(mealTypeTitle);
+        
+        mealTypeButton = new Button("Select Meal Type");
+        mealTypeButton.setOnAction(e -> mealTypeSelector());
+        layout.getChildren().add(mealTypeButton);
+
+        // record
+        recordTitle = new Label("Record Voice Input:");
+        recordTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(recordTitle);
+        
+        RecordingAppFrame recorder = new RecordingAppFrame();
+        layout.getChildren().add(recorder);
+        recorder.setAlignment(Pos.CENTER);
+
+        // save button
         saveButton = new Button("Save");
         saveButton.setOnAction(e -> saveRecipe());
+        layout.getChildren().add(saveButton);
 
-        RecordingAppFrame recorder = new RecordingAppFrame();
-
-        layout.getChildren().addAll(recipeNameField, saveButton, recorder);
-
-        Scene scene = new Scene(layout, 300, 200);
+        Scene scene = new Scene(layout, 500, 600);
         this.setScene(scene);
         this.setTitle("Add New Recipe");
+        this.setResizable(false);
     }
 
     /*
@@ -214,15 +263,104 @@ class RecipeInputWindow extends Stage {
         if (!recipeName.isEmpty()) {
 
             recipe.getRecipeName().setText(recipeName);
+            recipe.setMealType(mealType);
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
         appFrame.addDeleteListener(recipe);
     }
 
+    /*
+     * opens external meal type selection window
+     */
+    private void mealTypeSelector() {
+        RecipeMealTypeSelectorWindow recipeMealTypeSelectorWindow = new RecipeMealTypeSelectorWindow(this);
+        recipeMealTypeSelectorWindow.show();
+    }
+
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
+
+    
+    
     private void recordRecipe(){
 
     }
+}
+/* select breakfast, lunch, dinner, or enter other (window opens from mealtype button in recipeinputwindow) */
+class RecipeMealTypeSelectorWindow extends Stage {
+
+    private Label title;
+    private RecipeInputWindow inputWindow;
+    private Button breakfastButton;
+    private Button lunchButton;
+    private Button dinnerButton;
+    private Button otherButton;
+    private TextField otherField;
+
+    private Button backButton;
+
+    RecipeMealTypeSelectorWindow(RecipeInputWindow inputWindow) {
+        this.inputWindow = inputWindow;
+        
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        title = new Label("Select Meal Type");
+        title.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(title);
+
+        breakfastButton = new Button("Breakfast");
+        breakfastButton.setOnAction(e -> breakfast());
+        layout.getChildren().add(breakfastButton);
+
+        lunchButton = new Button("Lunch");
+        lunchButton.setOnAction(e -> lunch());
+        layout.getChildren().add(lunchButton);
+
+        dinnerButton = new Button("Dinner");
+        dinnerButton.setOnAction(e -> dinner());
+        layout.getChildren().add(dinnerButton);
+
+        otherButton = new Button("Other (Enter)");
+        otherButton.setOnAction(e -> other());
+        layout.getChildren().add(otherButton);
+
+        otherField = new TextField();
+        otherField.setPromptText("Specify Other Type");
+        layout.getChildren().add(otherField);
+
+        Scene scene = new Scene(layout, 500, 600);
+        
+        this.setScene(scene);
+        this.setTitle("Select Meal Type");
+        this.setResizable(false);
+    }
+
+    private void breakfast() {
+        inputWindow.setMealType("breakfast");
+        this.close();
+    }
+
+    private void lunch() {
+        inputWindow.setMealType("lunch");
+        this.close();
+    }
+
+    private void dinner() {
+        inputWindow.setMealType("dinner");
+        this.close();
+    }
+
+    /* TODO: make new window with just a textfield that allows you to input a custom string for mealtype,
+        then do the same setmealtype stuff as in the breakfast(), lunch(), dinner() methods */
+    private void other() {
+        this.close();
+    }
+
+
 }
 
 
