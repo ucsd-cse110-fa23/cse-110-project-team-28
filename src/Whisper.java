@@ -44,7 +44,7 @@ public class Whisper {
     }
 
     // Helper method to handle a successful response
-    private static void handleSuccessResponse(HttpURLConnection connection)
+    private static String handleSuccessResponse(HttpURLConnection connection)
             throws IOException, JSONException {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(connection.getInputStream()));
@@ -60,11 +60,12 @@ public class Whisper {
         String generatedText = responseJson.getString("text");
 
         // Print the transcription result
-        System.out.println("Transcription Result: " + generatedText);
+        //System.out.println("Transcription Result: " + generatedText);
+        return generatedText;
     }
 
     // Helper method to handle an error response
-    private static void handleErrorResponse(HttpURLConnection connection)
+    private static String handleErrorResponse(HttpURLConnection connection)
             throws IOException, JSONException {
         BufferedReader errorReader = new BufferedReader(
                 new InputStreamReader(connection.getErrorStream()));
@@ -75,19 +76,15 @@ public class Whisper {
         }
         errorReader.close();
         String errorResult = errorResponse.toString(); 
-        System.out.println("Error Result: " + errorResult);
+        //System.out.println("Error Result: " + errorResult);
+        return errorResult;
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static String getWhisperTranscript(String filePath) throws IOException, URISyntaxException {
         // Create file object from file path
         // File file = new File(FILE_PATH);
 
-        if (args.length != 1) {
-            System.out.println("Usage: java Whisper <path to voice recording>");
-            return;
-        }
-
-        File file = new File(args[0]);
+        File file = new File(filePath);
 
         // Set up HTTP connection
         URL url = new URI(API_ENDPOINT).toURL();
@@ -123,13 +120,14 @@ public class Whisper {
 
         // Check response code and handle response accordingly
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            handleSuccessResponse(connection);
+            return handleSuccessResponse(connection);
         } else {
-            handleErrorResponse(connection);
+            return handleErrorResponse(connection);
+
         }
 
         // Disconnect connection
-        connection.disconnect();
+        //connection.disconnect();
     }
 
 }
