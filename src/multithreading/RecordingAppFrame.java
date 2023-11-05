@@ -127,27 +127,4 @@ public class RecordingAppFrame extends FlowPane {
         this.stopRecording();
     }
 }
-/* 
-public class AudioRecorder extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        // Setting the Layout of the Window (Flow Pane)
-        RecordingAppFrame root = new RecordingAppFrame();
-
-        // Set the title of the app
-        primaryStage.setTitle("Audio Recorder");
-        // Create scene of mentioned size with the border pane
-        primaryStage.setScene(new Scene(root, 370, 120));
-        // Make window non-resizable
-        primaryStage.setResizable(false);
-        // Show the app
-        primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-}
-*/

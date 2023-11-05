@@ -13,6 +13,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,6 +25,7 @@ class Recipe extends HBox {
     private Label mealTypeLabel;
     private String mealType;
     private Button deleteButton;
+    private String ingredients;
 
     Recipe() {
         this.setPrefSize(500, 20);
@@ -70,6 +72,10 @@ class Recipe extends HBox {
     public void setMealType(String mealType) {
         this.mealType = mealType;
         mealTypeLabel.setText(mealType);
+    }
+
+    public void setIngredients(String ingredients){
+        this.ingredients = ingredients;
     }
 }
 
@@ -201,6 +207,9 @@ class RecipeInputWindow extends Stage {
     private RecipeList recipeList;
     private AppFrame appFrame;
 
+    //button to signal that user is done recording and start transcription
+    //Find a better solution to 
+    private Button doneRecordingButton;
 
 
     // meal type stuff added by dominic
@@ -210,6 +219,8 @@ class RecipeInputWindow extends Stage {
     private Button breakfastButton;
     private Button lunchButton;
     private Button dinnerButton;
+
+    private TextField ingrediantsField;
 
     RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
         this.recipeList = recipeList;
@@ -252,9 +263,20 @@ class RecipeInputWindow extends Stage {
         recordTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(recordTitle);
         
+        
         RecordingAppFrame recorder = new RecordingAppFrame();
         layout.getChildren().add(recorder);
         recorder.setAlignment(Pos.CENTER);
+
+
+        ingrediantsField = new TextField();
+        ingrediantsField.setText("ingrediants");
+        layout.getChildren().add(ingrediantsField);
+
+        doneRecordingButton = new Button("Done");
+        doneRecordingButton.setOnAction(e -> ingrediantsField.setText(getIngredients()));
+        layout.getChildren().add(doneRecordingButton);
+
 
         // save button
         saveButton = new Button("Save");
@@ -274,9 +296,9 @@ class RecipeInputWindow extends Stage {
         String recipeName = recipeNameField.getText();
         Recipe recipe = new Recipe();
         if (!recipeName.isEmpty()) {
-
             recipe.getRecipeName().setText(recipeName);
             recipe.setMealType(mealType);
+            recipe.setIngredients(ingrediantsField.getText());
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
@@ -285,9 +307,21 @@ class RecipeInputWindow extends Stage {
     public void setMealType(String mealType) {
         this.mealType = mealType;
     }
+
+    public String getIngredients() {
+        try {
+            return Whisper.getWhisperTranscript("recording.wav");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An I/O error occurred: " + e.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("Invalid URI: Check file path.");
+        } 
+        return "Error";
+}
     
 }
-/* select breakfast, lunch, dinner, or enter other (window opens from mealtype button in recipeinputwindow) */
 
 
 
