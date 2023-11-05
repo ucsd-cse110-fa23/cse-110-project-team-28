@@ -220,9 +220,7 @@ class RecipeInputWindow extends Stage {
         appFrame.addDeleteListener(recipe);
     }
 
-    private void recordRecipe(){
-
-    }
+    
 }
 
 
