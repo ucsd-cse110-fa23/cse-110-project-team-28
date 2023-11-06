@@ -22,11 +22,17 @@ import multithreading.RecordingAppFrame;
 
 
 class Recipe extends HBox {
+    //Recipe atcual attributes
     private TextField recipeName;
+    private String ingredients;
+    private String steps;
+
+    //Recipe UI attributes in the main app view
     private Label mealTypeLabel;
     private String mealType;
     private Button deleteButton;
-    private String ingredients;
+    
+
 
     Recipe() {
         this.setPrefSize(500, 20);
@@ -78,6 +84,14 @@ class Recipe extends HBox {
     public void setIngredients(String ingredients){
         this.ingredients = ingredients;
     }
+
+    public void setSteps(String steps){
+        this.steps = steps;
+    }
+
+    public String getSteps(){
+        return this.steps;
+    }
 }
 
 class RecipeList extends VBox {
@@ -104,7 +118,7 @@ class Footer extends HBox {
 
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
 
-        addButton = new Button("Add Recipe");
+        addButton = new Button("New Recipe");
         addButton.setStyle(defaultButtonStyle);
 
         saveButton = new Button("Save Recipes");
@@ -200,7 +214,7 @@ class AppFrame extends BorderPane {
 class RecipeInputWindow extends Stage {
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients: [listOfIngredients]. Please include preparation instructions and cooking steps.\n" + //
+    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only: [listOfIngredients]. Please include preparation instructions and cooking steps.\n" + //
             "\n" + //
             "Meal Type: [mealType]\n" + //
             "Ingredients: [listOfIngredients]\n" + //
@@ -280,7 +294,7 @@ class RecipeInputWindow extends Stage {
 
 
         ingredientsField = new TextField();
-        ingredientsField.setText("ingredients");
+        ingredientsField.setText("Ingredients");
 
         stepsField = new TextArea();
         stepsField.setText("steps");
@@ -327,6 +341,7 @@ class RecipeInputWindow extends Stage {
             recipe.getRecipeName().setText(recipeName);
             recipe.setMealType(mealType);
             recipe.setIngredients(ingredientsField.getText());
+            recipe.setSteps(stepsField.getText());
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
@@ -390,10 +405,16 @@ class RecipeDetailWindow extends Stage {
         recipeNameLabel.setStyle("-fx-font-weight: bold;");
 
         // Other UI components for displaying recipe details
+        TextArea recipeStepsArea = new TextArea();
+        recipeStepsArea.setText(recipe.getSteps());
+
+        
 
         Scene scene = new Scene(layout, 300, 200);
         this.setScene(scene);
         this.setTitle("Recipe: "+ recipe.getRecipeName().getText());
+
+        layout.getChildren().add(recipeStepsArea);
     }
 }
 
