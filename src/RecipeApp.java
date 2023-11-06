@@ -214,7 +214,8 @@ class AppFrame extends BorderPane {
 class RecipeInputWindow extends Stage {
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only: [listOfIngredients]. Please include preparation instructions and numbered cooking steps.\n" + //
+    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. "+// 
+            "Please include list of ingredients, preparation instructions, and numbered cooking steps. Place title of recipe on first line. \n" + //
             "\n" + //
             "Meal Type: [mealType]\n" + //
             "Ingredients: [listOfIngredients]\n" + //
@@ -387,7 +388,7 @@ class RecipeInputWindow extends Stage {
         if (newlineIndex != -1) {
             String firstLine = steps.substring(0, newlineIndex);
             // Check if the first line is empty and adjust accordingly
-            if (firstLine.isEmpty()) {
+            if (firstLine.isEmpty() || firstLine.equals(" ")) {
                 // The first line is empty, so we consider it as the second line
                 int secondNewlineIndex = steps.indexOf("\n", newlineIndex + 1);
                 if (secondNewlineIndex != -1) {
