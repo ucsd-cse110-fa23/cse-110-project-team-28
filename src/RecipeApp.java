@@ -24,8 +24,8 @@ import multithreading.RecordingAppFrame;
 class Recipe extends HBox {
     //Recipe atcual attributes
     private TextField recipeName;
-    private String ingredients;
-    private String steps;
+    private String ingredients; //ingredients that user provides
+    private String steps; //the gpt generated recipe (maybe needs a better name)
 
     //Recipe UI attributes in the main app view
     private Label mealTypeLabel;
@@ -214,14 +214,12 @@ class AppFrame extends BorderPane {
 class RecipeInputWindow extends Stage {
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only: [listOfIngredients]. Please include preparation instructions and cooking steps.\n" + //
+    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only: [listOfIngredients]. Please include preparation instructions and numbered cooking steps.\n" + //
             "\n" + //
             "Meal Type: [mealType]\n" + //
             "Ingredients: [listOfIngredients]\n" + //
             "\n" + //
             "Recipe:";
-
-    private Label recipeNameTitle;
     
     private Label recordTitle;
     private TextField recipeNameField;
@@ -256,7 +254,7 @@ class RecipeInputWindow extends Stage {
 
 
         // recipe name
-        recipeNameTitle = new Label("Name:");
+        Label recipeNameTitle = new Label("Name:");
         recipeNameTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(recipeNameTitle);
         
@@ -292,13 +290,13 @@ class RecipeInputWindow extends Stage {
         layout.getChildren().add(recorder);
         recorder.setAlignment(Pos.CENTER);
 
-
         ingredientsField = new TextField();
         ingredientsField.setText("Ingredients");
 
         stepsField = new TextArea();
         stepsField.setText("steps");
-        stepsField.setPrefWidth(800);
+        stepsField.setPrefWidth(300);
+        stepsField.setPrefHeight(800);
 
         doneRecordingButton = new Button("Done");
         doneRecordingButton.setOnAction(e -> {
@@ -314,6 +312,7 @@ class RecipeInputWindow extends Stage {
                 }
                 else{
                     stepsField.setText(recipeResults);
+                    recipeNameField.setText(getRecipeName(recipeResults));
                 }
             }
         });
@@ -363,7 +362,7 @@ class RecipeInputWindow extends Stage {
             System.out.println("Invalid URI: Check file path.");
             return ERROR_FLAG;
         } 
-}
+    }
     public String getRecipeSteps() {
         try {
             return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]", mealType).replace("[listOfIngredients]",ingredientsField.getText()));
@@ -380,7 +379,31 @@ class RecipeInputWindow extends Stage {
             System.out.println("InterruptedException");
             return ERROR_FLAG;
         }
-}
+    }
+
+    public String getRecipeName(String steps){
+        int newlineIndex = steps.indexOf("\n");
+
+        if (newlineIndex != -1) {
+            String firstLine = steps.substring(0, newlineIndex);
+            // Check if the first line is empty and adjust accordingly
+            if (firstLine.isEmpty()) {
+                // The first line is empty, so we consider it as the second line
+                int secondNewlineIndex = steps.indexOf("\n", newlineIndex + 1);
+                if (secondNewlineIndex != -1) {
+                    firstLine = steps.substring(newlineIndex + 1, secondNewlineIndex);
+                } else {
+                    // No more lines found, consider the entire string as the first line
+                    firstLine = steps.substring(newlineIndex + 1);
+                }
+            }
+            return firstLine;
+        } else {
+            System.out.println("No lines found in the string.");
+            return null;
+        }
+
+    }
     
 }
 
@@ -406,15 +429,18 @@ class RecipeDetailWindow extends Stage {
 
         // Other UI components for displaying recipe details
         TextArea recipeStepsArea = new TextArea();
+        recipeStepsArea.setEditable(false);
         recipeStepsArea.setText(recipe.getSteps());
+        recipeStepsArea.setPrefWidth(300);
+        recipeStepsArea.setPrefHeight(480);
 
         
 
-        Scene scene = new Scene(layout, 300, 200);
+        Scene scene = new Scene(layout, 500, 600);
         this.setScene(scene);
         this.setTitle("Recipe: "+ recipe.getRecipeName().getText());
 
-        layout.getChildren().add(recipeStepsArea);
+        layout.getChildren().addAll(recipeNameLabel, recipeStepsArea);
     }
 }
 
