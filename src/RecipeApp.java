@@ -214,8 +214,10 @@ class AppFrame extends BorderPane {
 class RecipeInputWindow extends Stage {
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. "+// 
-            "Please include list of ingredients, preparation instructions, and numbered cooking steps. Place title of recipe on first line. \n" + //
+    private final String promptTemplate = "" +//
+            "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. "+// 
+            "Please include list of ingredients, preparation instructions, and numbered cooking steps. "+// 
+            "Place title of recipe on first line of your reponse. \n" + //
             "\n" + //
             "Meal Type: [mealType]\n" + //
             "Ingredients: [listOfIngredients]\n" + //
