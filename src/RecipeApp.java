@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
@@ -198,6 +199,14 @@ class AppFrame extends BorderPane {
  */
 class RecipeInputWindow extends Stage {
 
+    public static final String ERROR_FLAG = "ERROR";
+    private final String promptTemplate = "Generate a [mealType] recipe using the following ingredients: [listOfIngredients]. Please include preparation instructions and cooking steps.\n" + //
+            "\n" + //
+            "Meal Type: [mealType]\n" + //
+            "Ingredients: [listOfIngredients]\n" + //
+            "\n" + //
+            "Recipe:";
+
     private Label recipeNameTitle;
     
     private Label recordTitle;
@@ -220,7 +229,8 @@ class RecipeInputWindow extends Stage {
     private Button lunchButton;
     private Button dinnerButton;
 
-    private TextField ingrediantsField;
+    private TextField ingredientsField;
+    private TextArea stepsField;
 
     RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
         this.recipeList = recipeList;
@@ -259,7 +269,7 @@ class RecipeInputWindow extends Stage {
         layout.getChildren().add(dinnerButton);
 
         // record
-        recordTitle = new Label("Ingrediants:");
+        recordTitle = new Label("ingredients:");
         recordTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(recordTitle);
         
@@ -269,13 +279,31 @@ class RecipeInputWindow extends Stage {
         recorder.setAlignment(Pos.CENTER);
 
 
-        ingrediantsField = new TextField();
-        ingrediantsField.setText("ingrediants");
-        layout.getChildren().add(ingrediantsField);
+        ingredientsField = new TextField();
+        ingredientsField.setText("ingredients");
+
+        stepsField = new TextArea();
+        stepsField.setText("steps");
+        stepsField.setPrefWidth(800);
 
         doneRecordingButton = new Button("Done");
-        doneRecordingButton.setOnAction(e -> ingrediantsField.setText(getIngredients()));
-        layout.getChildren().add(doneRecordingButton);
+        doneRecordingButton.setOnAction(e -> {
+            String ingredientsResult = getIngredients();
+            if(ingredientsResult.equals(ERROR_FLAG)){
+                System.out.println("An error occurred while getting ingredients"); //maybe throw an exception instead
+            }
+            else{
+                ingredientsField.setText(ingredientsResult);
+                String recipeResults = getRecipeSteps();
+                if(recipeResults.equals(ERROR_FLAG)){
+                    System.out.println("An error occured while getting steps");
+                }
+                else{
+                    stepsField.setText(recipeResults);
+                }
+            }
+        });
+        layout.getChildren().addAll(doneRecordingButton, ingredientsField, stepsField);
 
 
         // save button
@@ -298,7 +326,7 @@ class RecipeInputWindow extends Stage {
         if (!recipeName.isEmpty()) {
             recipe.getRecipeName().setText(recipeName);
             recipe.setMealType(mealType);
-            recipe.setIngredients(ingrediantsField.getText());
+            recipe.setIngredients(ingredientsField.getText());
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
@@ -314,11 +342,29 @@ class RecipeInputWindow extends Stage {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("An I/O error occurred: " + e.getMessage());
+            return ERROR_FLAG;
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("Invalid URI: Check file path.");
+            return ERROR_FLAG;
         } 
-        return "Error";
+}
+    public String getRecipeSteps() {
+        try {
+            return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]", mealType).replace("[listOfIngredients]",ingredientsField.getText()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An I/O error occurred: " + e.getMessage());
+            return ERROR_FLAG;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("Invalid URI: Check file path.");
+            return ERROR_FLAG;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+            System.out.println("InterruptedException");
+            return ERROR_FLAG;
+        }
 }
     
 }
