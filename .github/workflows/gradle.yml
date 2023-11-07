@@ -26,8 +26,6 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: "17"
-          distribution: "zulu"
+          distribution: "temurin"
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-        with:
-          arguments: build --warning-mode all
+        run: xvfb-run gradle build --warning-mode all # use xvfb-run
