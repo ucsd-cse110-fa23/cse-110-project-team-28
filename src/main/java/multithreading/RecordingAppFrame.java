@@ -130,7 +130,3 @@ public class RecordingAppFrame extends FlowPane {
         this.stopRecording();
     }
 }
-<<<<<<< HEAD:src/main/java/multithreading/RecordingAppFrame.java
-=======
-
->>>>>>> origin:src/multithreading/RecordingAppFrame.java
