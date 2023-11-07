@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import java.io.*;
 import javax.sound.sampled.*;
 
-
 public class RecordingAppFrame extends FlowPane {
     private Button startButton;
     private Button stopButton;
@@ -93,7 +92,7 @@ public class RecordingAppFrame extends FlowPane {
 
     private void startRecording() {
         recordingLabel.setVisible(true);
-        
+
         recordingThread = new Thread(() -> {
             try {
                 DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
@@ -115,6 +114,7 @@ public class RecordingAppFrame extends FlowPane {
 
         recordingThread.start();
     }
+
     public void getStartRecording() {
         this.startRecording();
     }
@@ -122,11 +122,15 @@ public class RecordingAppFrame extends FlowPane {
     private void stopRecording() {
         if (targetDataLine != null) {
             targetDataLine.stop();
-            //targetDataLine.close(); 
+            // targetDataLine.close();
         }
     }
+
     public void getStopRecording() {
         this.stopRecording();
     }
 }
+<<<<<<< HEAD:src/main/java/multithreading/RecordingAppFrame.java
+=======
 
+>>>>>>> origin:src/multithreading/RecordingAppFrame.java

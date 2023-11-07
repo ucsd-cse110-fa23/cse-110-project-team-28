@@ -12,14 +12,14 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.json.JSONException;
 
 import multithreading.RecordingAppFrame;
 
@@ -59,7 +59,6 @@ class Recipe extends HBox {
         this.getChildren().add(deleteButton);
 
         recipeName.setOnMouseClicked(e -> openDetailWindow());
-
     }
 
     private void openDetailWindow() {
@@ -81,8 +80,16 @@ class Recipe extends HBox {
         mealTypeLabel.setText(mealType);
     }
 
+    public String getMealType() {
+        return this.mealType;
+    }
+
     public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public String getIngredients() {
+        return this.ingredients;
     }
 
     public void setSteps(String steps) {
@@ -116,14 +123,16 @@ class Footer extends HBox {
         this.setSpacing(15);
         this.getStyleClass().add("footer");
 
-        Font customFont = Font.loadFont("file:src/resources/fonts/Roboto-Medium.ttf", 12);
+        Font customFont = Font.loadFont(getClass().getResourceAsStream("fonts/Roboto-Medium.ttf"),
+                12);
 
         addButton = new Button();
         addButton.getStyleClass().add("add-button");
-        addButton.setText("New Recipe");
+        addButton.setText("Add Recipe");
         addButton.setFont(customFont);
 
-        Image addImage = new Image(getClass().getResourceAsStream("resources/images/add.png"));
+        Image addImage = new Image(
+                getClass().getResourceAsStream("images/add.png"));
         addButton.setGraphic(new ImageView(addImage));
 
         saveButton = new Button();
@@ -132,7 +141,7 @@ class Footer extends HBox {
         saveButton.setFont(customFont);
 
         // using download icon for save button
-        Image saveImage = new Image(getClass().getResourceAsStream("resources/images/download.png"));
+        Image saveImage = new Image(getClass().getResourceAsStream("images/download.png"));
         saveButton.setGraphic(new ImageView(saveImage));
 
         this.getChildren().addAll(addButton, saveButton);
@@ -157,7 +166,8 @@ class Header extends HBox {
         this.setPrefSize(500, 60);
         this.getStyleClass().add("header");
 
-        Font customFont = Font.loadFont("file:src/resources/fonts/Roboto-Black.ttf", 24);
+        Font customFont = Font.loadFont(getClass().getResourceAsStream("fonts/Roboto-Black.ttf"),
+                24);
 
         Text titleText = new Text("PantryPal");
         titleText.setId("title-text");
@@ -342,7 +352,8 @@ class RecipeInputWindow extends Stage {
                 System.out.println("An error occurred while getting ingredients"); // maybe throw an exception instead
             } else {
                 ingredientsField.setText(ingredientsResult);
-                String recipeResults = getRecipeSteps();
+                String recipeResults;
+                recipeResults = getRecipeSteps();
                 if (recipeResults.equals(ERROR_FLAG)) {
                     System.out.println("An error occured while getting steps");
                 } else {
@@ -418,30 +429,14 @@ class RecipeInputWindow extends Stage {
         }
     }
 
-    public String getRecipeName(String steps) {
-        int newlineIndex = steps.indexOf("\n");
-
-        if (newlineIndex != -1) {
-            String firstLine = steps.substring(0, newlineIndex);
-            // Check if the first line is empty and adjust accordingly
-            if (firstLine.isEmpty() || firstLine.equals(" ")) {
-                // The first line is empty, so we consider it as the second line
-                int secondNewlineIndex = steps.indexOf("\n", newlineIndex + 1);
-                if (secondNewlineIndex != -1) {
-                    firstLine = steps.substring(newlineIndex + 1, secondNewlineIndex);
-                } else {
-                    // No more lines found, consider the entire string as the first line
-                    firstLine = steps.substring(newlineIndex + 1);
-                }
-            }
-            return firstLine;
-        } else {
-            System.out.println("No lines found in the string.");
-            return null;
-        }
-
+    static public String getRecipeName(String steps) {
+        String[] lines = steps.split("\n");
+        return lines[0].trim();
     }
 
+    public String getIngredients() {
+        return ingredientsField.getText();
+    }
 }
 
 /*
@@ -485,7 +480,7 @@ public class RecipeApp extends Application {
         primaryStage.setTitle("PantryPal");
 
         Scene scene = new Scene(root, 500, 500);
-        scene.getStylesheets().add("resources/css/style.css");
+        scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

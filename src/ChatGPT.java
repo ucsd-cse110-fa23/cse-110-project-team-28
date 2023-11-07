@@ -9,13 +9,13 @@ import org.json.JSONObject;
 
 public class ChatGPT {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    //private static final String API_KEY = "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"; //Keyan
-    private static final String API_KEY = "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"; //Alan
+    // private static final String API_KEY =
+    // "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"; //Keyan
+    private static final String API_KEY = "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"; // Alan
     private static final String MODEL = "text-davinci-003";
 
-    public static String getGPTResponse(int maxTokens, String prompt) throws IOException, InterruptedException, URISyntaxException {
-         
-        
+    public static String getGPTResponse(int maxTokens, String prompt)
+            throws IOException, InterruptedException, URISyntaxException {
 
         // Create a request body which you will pass into request object
         JSONObject requestBody = new JSONObject();

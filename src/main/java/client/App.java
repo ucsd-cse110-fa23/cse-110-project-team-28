@@ -12,7 +12,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        
+
         View view = new View();
         Model model = new Model();
         Controller controller = new Controller(view, model);
