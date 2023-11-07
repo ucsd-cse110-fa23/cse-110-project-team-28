@@ -1,10 +1,13 @@
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -99,7 +102,7 @@ class RecipeList extends VBox {
     RecipeList() {
         this.setSpacing(5);
         this.setPrefSize(500, 560);
-        this.setStyle("-fx-background-color: #F0F8FF;");
+        this.getStyleClass().add("recipe-list");
     }
 
     public void saveRecipes() {
@@ -114,16 +117,29 @@ class Footer extends HBox {
 
     Footer() {
         this.setPrefSize(500, 60);
-        this.setStyle("-fx-background-color: #F0F8FF;");
         this.setSpacing(15);
+        this.getStyleClass().add("footer");
 
-        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
+        Font customFont = Font.loadFont("file:src/resources/fonts/Roboto-Medium.ttf", 12);
 
-        addButton = new Button("New Recipe");
-        addButton.setStyle(defaultButtonStyle);
 
-        saveButton = new Button("Save Recipes");
-        saveButton.setStyle(defaultButtonStyle);
+        addButton = new Button();
+        addButton.getStyleClass().add("add-button");
+        addButton.setText("New Recipe");
+        addButton.setFont(customFont);
+
+
+        Image addImage = new Image(getClass().getResourceAsStream("resources/images/add.png"));
+        addButton.setGraphic(new ImageView(addImage));
+
+        saveButton = new Button();
+        saveButton.getStyleClass().add("save-button");
+        saveButton.setText("Save Recipes");
+        saveButton.setFont(customFont);
+
+        // using download icon for save button
+        Image saveImage = new Image(getClass().getResourceAsStream("resources/images/download.png"));
+        saveButton.setGraphic(new ImageView(saveImage));
 
         this.getChildren().addAll(addButton, saveButton);
         this.setAlignment(Pos.CENTER);
@@ -145,10 +161,14 @@ class Footer extends HBox {
 class Header extends HBox {
     Header() {
         this.setPrefSize(500, 60);
-        this.setStyle("-fx-background-color: #F0F8FF;");
+        this.getStyleClass().add("header");
+
+        Font customFont = Font.loadFont("file:src/resources/fonts/Roboto-Black.ttf", 24);
 
         Text titleText = new Text("PantryPal");
-        titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
+        titleText.setId("title-text");
+        titleText.setFont(customFont);
+
         this.getChildren().add(titleText);
         this.setAlignment(Pos.CENTER);
     }
@@ -170,6 +190,7 @@ class AppFrame extends BorderPane {
         ScrollPane scrollPane = new ScrollPane(recipeList);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
+        scrollPane.getStyleClass().add("scroll-pane");
 
         this.setTop(header);
         this.setCenter(scrollPane);
@@ -478,7 +499,11 @@ public class RecipeApp extends Application {
         AppFrame root = new AppFrame();
 
         primaryStage.setTitle("PantryPal");
-        primaryStage.setScene(new Scene(root, 500, 600));
+
+        Scene scene = new Scene(root, 500, 500);
+        scene.getStylesheets().add("resources/css/style.css");
+
+        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
     }
