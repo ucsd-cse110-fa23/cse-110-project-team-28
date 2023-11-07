@@ -23,7 +23,7 @@ dependencies {
   implementation 'org.json:json:20090211'
   testImplementation 'junit:junit:4.12'
   // https://mvnrepository.com/artifact/org.mockito/mockito-core
-  testImplementation 'org.mockito:mockito-core:5.7.0'
+  testImplementation 'org.mockito:mockito-core:4.11.0'
 }
 
 // sourceSets.main.java.srcDirs = ['src']
@@ -37,10 +37,15 @@ sourceSets {
 }
 
 test {
+  useJUnit()
+
   // Show test results.
   testLogging {
-      events "passed", "skipped", "failed"
+    events "passed", "skipped", "failed"
+    exceptionFormat = 'full'
   }
+
+  maxParallelForks = 1
 }
 
 mainClassName = 'RecipeApp'

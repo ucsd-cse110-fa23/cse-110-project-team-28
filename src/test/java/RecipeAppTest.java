@@ -3,23 +3,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class RecipeAppTest {
 
-    private static boolean platformStarted = false;
+    private boolean platformStarted = false;
 
-    @Before
-    public void setUp() throws Exception {
-        if (platformStarted) {
-            return;
-        }
-
+    @BeforeClass
+    public static void onlyOnce() {
         // run toolkit
         javafx.application.Platform.startup(() -> {
         });
+    }
 
-        platformStarted = true;
+    @Before
+    public void setUp() {
+        // ...
     }
 
     @Test
