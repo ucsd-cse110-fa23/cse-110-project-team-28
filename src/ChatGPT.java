@@ -9,24 +9,13 @@ import org.json.JSONObject;
 
 public class ChatGPT {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    private static final String API_KEY = "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";
+    //private static final String API_KEY = "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"; //Keyan
+    private static final String API_KEY = "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"; //Alan
     private static final String MODEL = "text-davinci-003";
 
-    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
+    public static String getGPTResponse(int maxTokens, String prompt) throws IOException, InterruptedException, URISyntaxException {
          
-        if (args.length != 2) {
-            System.out.println("Usage: java ChatGPT <maxTokens> <prompt>");
-            return;
-        }
-
-        int maxTokens;
-        try {
-            maxTokens = Integer.parseInt(args[0]);
-        } catch (NumberFormatException e) {
-            System.out.println("The maxTokens argument must be an integer.");
-            return;
-        }
-        String prompt = args[1];
+        
 
         // Create a request body which you will pass into request object
         JSONObject requestBody = new JSONObject();
@@ -57,7 +46,7 @@ public class ChatGPT {
         JSONArray choices = responseJson.getJSONArray("choices");
         String generatedText = choices.getJSONObject(0).getString("text");
 
-        System.out.println(generatedText);
+        return generatedText;
 
     }
 }

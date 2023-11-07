@@ -17,17 +17,19 @@ public class RecordingAppFrame extends FlowPane {
     private AudioFormat audioFormat;
     private TargetDataLine targetDataLine;
     private Label recordingLabel;
+    private String fileName;
 
     private Thread recordingThread;
 
     // Set a default style for buttons and fields - background color, font size,
     // italics
     String defaultButtonStyle = "-fx-border-color: #000000; -fx-font: 13 arial; -fx-pref-width: 175px; -fx-pref-height: 50px;";
-    String defaultLabelStyle = "-fx-font: 13 arial; -fx-pref-width: 175px; -fx-pref-height: 50px; -fx-text-fill: red; visibility: hidden";
+    String defaultLabelStyle = "-fx-font: 13 arial; -fx-pref-width: 150px; -fx-pref-height: 10px; -fx-text-fill: red; visibility: hidden";
 
-    public RecordingAppFrame() {
+    public RecordingAppFrame(String fileName) {
+        this.fileName = fileName;
         // Set properties for the flowpane
-        this.setPrefSize(370, 120);
+        this.setPrefSize(100, 120);
         this.setPadding(new Insets(5, 0, 5, 5));
         this.setVgap(10);
         this.setHgap(10);
@@ -100,7 +102,7 @@ public class RecordingAppFrame extends FlowPane {
                 targetDataLine.start();
 
                 AudioInputStream audioInputStream = new AudioInputStream(targetDataLine);
-                File audioFile = new File("recording.wav");
+                File audioFile = new File(fileName);
                 AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
 
             } catch (Exception ex) {
@@ -127,27 +129,4 @@ public class RecordingAppFrame extends FlowPane {
         this.stopRecording();
     }
 }
-/* 
-public class AudioRecorder extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        // Setting the Layout of the Window (Flow Pane)
-        RecordingAppFrame root = new RecordingAppFrame();
-
-        // Set the title of the app
-        primaryStage.setTitle("Audio Recorder");
-        // Create scene of mentioned size with the border pane
-        primaryStage.setScene(new Scene(root, 370, 120));
-        // Make window non-resizable
-        primaryStage.setResizable(false);
-        // Show the app
-        primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-}
-*/

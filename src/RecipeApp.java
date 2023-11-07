@@ -11,11 +11,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,18 +25,35 @@ import multithreading.RecordingAppFrame;
 
 
 class Recipe extends HBox {
+    //Recipe atcual attributes
     private TextField recipeName;
+    private String ingredients; //ingredients that user provides
+    private String steps; //the gpt generated recipe (maybe needs a better name)
+
+    //Recipe UI attributes in the main app view
+    private Label mealTypeLabel;
+    private String mealType;
     private Button deleteButton;
+    
+
 
     Recipe() {
         this.setPrefSize(500, 20);
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
 
         recipeName = new TextField();
-        recipeName.setPrefSize(380, 20);
+        recipeName.setPrefSize(300, 20);
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
         recipeName.setPadding(new Insets(10, 0, 10, 0));
+        recipeName.setEditable(false);
         this.getChildren().add(recipeName);
+
+        // meal type label
+        mealTypeLabel = new Label(mealType);
+        mealTypeLabel.setPrefSize(100, 20);
+        mealTypeLabel.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
+        mealTypeLabel.setPadding(new Insets(10, 0, 10, 0));
+        this.getChildren().add(mealTypeLabel);
 
         deleteButton = new Button("Delete");
         deleteButton.setPrefSize(100, 20);
@@ -57,6 +76,25 @@ class Recipe extends HBox {
 
     public Button getDeleteButton() {
         return this.deleteButton;
+    }
+
+
+    // meal type stuff next two methods
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+        mealTypeLabel.setText(mealType);
+    }
+
+    public void setIngredients(String ingredients){
+        this.ingredients = ingredients;
+    }
+
+    public void setSteps(String steps){
+        this.steps = steps;
+    }
+
+    public String getSteps(){
+        return this.steps;
     }
 }
 
@@ -84,10 +122,12 @@ class Footer extends HBox {
 
         Font customFont = Font.loadFont("file:src/resources/fonts/Roboto-Medium.ttf", 12);
 
+
         addButton = new Button();
         addButton.getStyleClass().add("add-button");
-        addButton.setText("Add Recipe");
+        addButton.setText("New Recipe");
         addButton.setFont(customFont);
+
 
         Image addImage = new Image(getClass().getResourceAsStream("resources/images/add.png"));
         addButton.setGraphic(new ImageView(addImage));
@@ -195,11 +235,41 @@ class AppFrame extends BorderPane {
  */
 class RecipeInputWindow extends Stage {
 
+    public static final String ERROR_FLAG = "ERROR";
+    private final String promptTemplate = "" +//
+            "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. "+// 
+            "Please include list of ingredients, preparation instructions, and numbered cooking steps. "+// 
+            "Place title of recipe on first line of your reponse. \n" + //
+            "\n" + //
+            "Meal Type: [mealType]\n" + //
+            "Ingredients: [listOfIngredients]\n" + //
+            "\n" + //
+            "Recipe:";
+    
+    private Label recordTitle;
     private TextField recipeNameField;
+
     private Button saveButton;
     private RecipeList recipeList;
     private AppFrame appFrame;
-    private Button recordButton;
+
+    //button to signal that user is done recording and start transcription
+    //Find a better solution to 
+    private Button ingredientsDoneButton;
+    private Button mealTypeDoneButton;
+
+
+    // meal type stuff added by dominic
+    private String mealType;
+    private Label mealTypeTitle;
+
+    private Button breakfastButton;
+    private Button lunchButton;
+    private Button dinnerButton;
+
+    private TextField ingredientsField;
+    private TextArea stepsField;
+    private TextField mealTypeField;
 
     RecipeInputWindow(RecipeList recipeList, AppFrame appFrame) {
         this.recipeList = recipeList;
@@ -209,19 +279,103 @@ class RecipeInputWindow extends Stage {
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
 
+
+        // recipe name
+        Label recipeNameTitle = new Label("Name:");
+        recipeNameTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(recipeNameTitle);
+        
         recipeNameField = new TextField();
         recipeNameField.setPromptText("Enter Recipe Name");
+        layout.getChildren().add(recipeNameField);
 
+
+        // meal type
+        mealTypeTitle = new Label("Meal Type:");
+        mealTypeTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(mealTypeTitle);
+        /* 
+        breakfastButton = new Button("Breakfast");
+        breakfastButton.setOnAction(e -> setMealType("Breakfast"));
+        layout.getChildren().add(breakfastButton);
+        
+        lunchButton = new Button("Lunch");
+        lunchButton.setOnAction(e -> setMealType("Lunch"));
+        layout.getChildren().add(lunchButton);
+
+        dinnerButton = new Button("Dinner");
+        dinnerButton.setOnAction(e -> setMealType("Dinner"));
+        layout.getChildren().add(dinnerButton);
+        */
+
+        mealTypeField = new TextField();
+        mealTypeField.setText("Meal Type");
+        
+        RecordingAppFrame mealTypeRecorder = new RecordingAppFrame("mealType.wav");
+        mealTypeRecorder.setAlignment(Pos.CENTER);
+
+        mealTypeDoneButton = new Button("Done");
+        mealTypeDoneButton.setOnAction(e ->{
+            String mealTypeResult = getRecordingTranscript("mealType.wav");
+            if(mealTypeResult.equals(ERROR_FLAG)){
+                System.out.println("An error occurred while getting meal type"); //maybe throw an exception instead
+            }
+            else{
+                mealTypeField.setText(mealTypeResult);
+                setMealType(mealTypeField.getText());
+            }
+        });
+        layout.getChildren().addAll(mealTypeRecorder, mealTypeDoneButton, mealTypeField);
+        
+
+        // record
+        recordTitle = new Label("ingredients:");
+        recordTitle.setStyle("-fx-font-weight: bold;");
+        layout.getChildren().add(recordTitle);
+        
+        
+        RecordingAppFrame ingredientsRecorder = new RecordingAppFrame("ingredients.wav");
+        layout.getChildren().add(ingredientsRecorder);
+        ingredientsRecorder.setAlignment(Pos.CENTER);
+
+        ingredientsField = new TextField();
+        ingredientsField.setText("Ingredients");
+
+        stepsField = new TextArea();
+        stepsField.setText("steps");
+        stepsField.setPrefWidth(300);
+        stepsField.setPrefHeight(800);
+
+        ingredientsDoneButton = new Button("Done");
+        ingredientsDoneButton.setOnAction(e -> {
+            String ingredientsResult = getRecordingTranscript("ingredients.wav");
+            if(ingredientsResult.equals(ERROR_FLAG)){
+                System.out.println("An error occurred while getting ingredients"); //maybe throw an exception instead
+            }
+            else{
+                ingredientsField.setText(ingredientsResult);
+                String recipeResults = getRecipeSteps();
+                if(recipeResults.equals(ERROR_FLAG)){
+                    System.out.println("An error occured while getting steps");
+                }
+                else{
+                    stepsField.setText(recipeResults);
+                    recipeNameField.setText(getRecipeName(recipeResults));
+                }
+            }
+        });
+        layout.getChildren().addAll(ingredientsDoneButton, ingredientsField, stepsField);
+
+
+        // save button
         saveButton = new Button("Save");
         saveButton.setOnAction(e -> saveRecipe());
+        layout.getChildren().add(saveButton);
 
-        RecordingAppFrame recorder = new RecordingAppFrame();
-
-        layout.getChildren().addAll(recipeNameField, saveButton, recorder);
-
-        Scene scene = new Scene(layout, 300, 200);
+        Scene scene = new Scene(layout, 500, 600);
         this.setScene(scene);
         this.setTitle("Add New Recipe");
+        this.setResizable(false);
     }
 
     /*
@@ -231,18 +385,76 @@ class RecipeInputWindow extends Stage {
         String recipeName = recipeNameField.getText();
         Recipe recipe = new Recipe();
         if (!recipeName.isEmpty()) {
-
             recipe.getRecipeName().setText(recipeName);
+            recipe.setMealType(mealType);
+            recipe.setIngredients(ingredientsField.getText());
+            recipe.setSteps(stepsField.getText());
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
         appFrame.addDeleteListener(recipe);
     }
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
 
-    private void recordRecipe(){
+    public String getRecordingTranscript(String fileName) {
+        try {
+            return Whisper.getWhisperTranscript(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An I/O error occurred: " + e.getMessage());
+            return ERROR_FLAG;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("Invalid URI: Check file path.");
+            return ERROR_FLAG;
+        } 
+    }
+    public String getRecipeSteps() {
+        try {
+            return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]", mealType).replace("[listOfIngredients]",ingredientsField.getText()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An I/O error occurred: " + e.getMessage());
+            return ERROR_FLAG;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("Invalid URI: Check file path.");
+            return ERROR_FLAG;
+        } catch (InterruptedException e){
+            e.printStackTrace();
+            System.out.println("InterruptedException");
+            return ERROR_FLAG;
+        }
+    }
+
+    public String getRecipeName(String steps){
+        int newlineIndex = steps.indexOf("\n");
+
+        if (newlineIndex != -1) {
+            String firstLine = steps.substring(0, newlineIndex);
+            // Check if the first line is empty and adjust accordingly
+            if (firstLine.isEmpty() || firstLine.equals(" ")) {
+                // The first line is empty, so we consider it as the second line
+                int secondNewlineIndex = steps.indexOf("\n", newlineIndex + 1);
+                if (secondNewlineIndex != -1) {
+                    firstLine = steps.substring(newlineIndex + 1, secondNewlineIndex);
+                } else {
+                    // No more lines found, consider the entire string as the first line
+                    firstLine = steps.substring(newlineIndex + 1);
+                }
+            }
+            return firstLine;
+        } else {
+            System.out.println("No lines found in the string.");
+            return null;
+        }
 
     }
+    
 }
+
 
 
 /*
@@ -264,10 +476,19 @@ class RecipeDetailWindow extends Stage {
         recipeNameLabel.setStyle("-fx-font-weight: bold;");
 
         // Other UI components for displaying recipe details
+        TextArea recipeStepsArea = new TextArea();
+        //recipeStepsArea.setEditable(false);
+        recipeStepsArea.setText(recipe.getSteps());
+        recipeStepsArea.setPrefWidth(300);
+        recipeStepsArea.setPrefHeight(480);
 
-        Scene scene = new Scene(layout, 300, 200);
+        
+
+        Scene scene = new Scene(layout, 500, 600);
         this.setScene(scene);
         this.setTitle("Recipe: "+ recipe.getRecipeName().getText());
+
+        layout.getChildren().addAll(recipeNameLabel, recipeStepsArea);
     }
 }
 
