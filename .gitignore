@@ -4,6 +4,8 @@
 
 bin/
 
+# From https://github.com/github/gitignore/blob/main/Gradle.gitignore
+
 .gradle
 **/build/
 !src/**/build/
