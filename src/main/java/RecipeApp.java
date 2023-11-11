@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -14,6 +15,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
+import javafx.fxml.FXMLLoader;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.Collections;
 
 import org.json.JSONException;
 
+import controllers.MainController;
+import controllers.RecipeController;
 import multithreading.RecordingAppFrame;
 
 class Recipe extends HBox {
@@ -473,18 +477,43 @@ class RecipeDetailWindow extends Stage {
 
 public class RecipeApp extends Application {
 
+    final int WIDTH = 500;
+    final int HEIGHT = 500;
+    final int WINDOW_PADDING = 10;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        AppFrame root = new AppFrame();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
+        Parent root = loader.load();
+        MainController mainController = loader.getController();
+
+        // debugging
+        // mainController.addRecipe("Chicken");
+        // mainController.addRecipe("Bananas");
+        // mainController.addRecipe("Apples");
+        // mainController.addRecipe("Oranges");
+        // mainController.addRecipe("Pears");
+        // mainController.addRecipe("Peaches");
+        // mainController.addRecipe("Pineapples");
+        // mainController.addRecipe("Strawberries");
+        // mainController.addRecipe("Blueberries");
+        // mainController.addRecipe("Raspberries");
+        // mainController.addRecipe("Blackberries");
+        // mainController.addRecipe("Mangoes");
 
         primaryStage.setTitle("PantryPal");
 
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
+
+        primaryStage.setMinWidth(WIDTH);
+        primaryStage.setMinHeight(HEIGHT);
+
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {

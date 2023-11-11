@@ -7,7 +7,15 @@
     -fx-background-color: #dedede;
 }
 
-.header {
+.button.darker {
+    -fx-background-color: #e0e0e0;
+}
+
+.button.darker:hover {
+    -fx-background-color: #cecece;
+}
+
+#header {
     -fx-background-color: #fefefe;
 
     /* add bottom border */
@@ -16,17 +24,17 @@
     -fx-border-style: none none solid none;
 }
 
-.recipe-list {
+#recipeList {
     -fx-background-color: #fefefe;
 }
 
-.scroll-pane {
+#scroll-pane {
     /* remove border */
     -fx-background-insets: 0;
     -fx-padding: 0;
 }
 
-.footer {
+#footer {
     -fx-background-color: #fefefe;
 
     /* add top border */
@@ -35,6 +43,7 @@
     -fx-border-style: solid none none none;
 }
 
-#title-text {
-    -fx-font-size: 24;
+.recipe {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 4;
 }
