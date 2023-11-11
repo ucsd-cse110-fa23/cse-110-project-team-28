@@ -27,5 +27,7 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
+      - name: chmod +x gradlew
+        run: chmod +x gradlew
       - name: Build with Gradle
-        run: xvfb-run gradle build --warning-mode all # use xvfb-run
+        run: xvfb-run ./gradlew build --warning-mode all # use xvfb-run
