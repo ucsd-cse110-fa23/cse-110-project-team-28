@@ -13,7 +13,7 @@
 
 <GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipe"
    stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21"
-   xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RecipeController">
+   xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
    <columnConstraints>
       <ColumnConstraints fillWidth="false" hgrow="ALWAYS" />
       <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
@@ -30,7 +30,8 @@
             <Insets left="8.0" right="8.0" />
          </GridPane.margin>
       </Label>
-      <Button alignment="CENTER" mnemonicParsing="false" text="Details" GridPane.columnIndex="1">
+      <Button fx:id="detailsButton" alignment="CENTER" mnemonicParsing="false" text="Details"
+         GridPane.columnIndex="1" onAction="#detailsButtonHandler">
          <font>
             <Font name="PP Neue Machina Regular" size="12.0" />
          </font>
