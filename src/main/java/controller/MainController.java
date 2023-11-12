@@ -1,4 +1,4 @@
-package controllers;
+package controller;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Recipe;
+import model.RecipeData;
 
 public class MainController implements Initializable {
 
@@ -28,12 +30,21 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // bind prefHeight of noRecipesLabel to height of parent recipeList
-        // noRecipesLabel.prefHeightProperty().bind(recipeList.heightProperty());
         // bind managed property of noRecipesLabel to visible property of noRecipesLabel
         noRecipesLabel.managedProperty().bind(noRecipesLabel.visibleProperty());
         // set noRecipesLabel to visible
         noRecipesLabel.setVisible(true);
+
+        // add recipes to recipeList
+        RecipeData recipeData = RecipeData.getInstance();
+
+        for (Recipe recipe : recipeData.getRecipes()) {
+            try {
+                addRecipe(recipe);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -42,17 +53,17 @@ public class MainController implements Initializable {
      * @param recipeName the name of the recipe to add
      * @throws IOException
      */
-    public void addRecipe(String recipeName) throws IOException {
+    public void addRecipe(Recipe recipe) throws IOException {
         // set noRecipesLabel to invisible
         noRecipesLabel.setVisible(false);
 
         // load recipePane.fxml and get its RecipeController
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
         GridPane recipePane = loader.load();
-        RecipePaneController recipeController = loader.getController();
+        RecipePaneController recipePaneController = loader.getController();
 
         // set recipeName
-        recipeController.setRecipeName(recipeName);
+        recipePaneController.setRecipe(recipe);
 
         // add recipePane to recipeList
         recipeList.getChildren().add(recipePane);
@@ -64,9 +75,9 @@ public class MainController implements Initializable {
      * @param recipeNames the names of the recipes to add
      * @throws IOException
      */
-    public void addRecipes(String[] recipeNames) throws IOException {
-        for (String recipeName : recipeNames) {
-            addRecipe(recipeName);
+    public void addRecipes(Recipe[] recipes) throws IOException {
+        for (Recipe recipe : recipes) {
+            addRecipe(recipe);
         }
     }
 
