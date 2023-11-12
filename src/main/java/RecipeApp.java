@@ -34,7 +34,10 @@ class Recipe extends HBox {
     private String mealType;
     private Button deleteButton;
 
-    Recipe() {
+    private RecipeList recipeList;
+
+    Recipe(RecipeList recipeList) {
+        this.recipeList = recipeList;
         this.setPrefSize(500, 20);
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
 
@@ -52,17 +55,11 @@ class Recipe extends HBox {
         mealTypeLabel.setPadding(new Insets(10, 0, 10, 0));
         this.getChildren().add(mealTypeLabel);
 
-        deleteButton = new Button("Delete");
-        deleteButton.setPrefSize(100, 20);
-        deleteButton.setPrefHeight(Double.MAX_VALUE);
-        deleteButton.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-        this.getChildren().add(deleteButton);
-
         recipeName.setOnMouseClicked(e -> openDetailWindow());
     }
 
     private void openDetailWindow() {
-        RecipeDetailWindow recipeDetailWindow = new RecipeDetailWindow(this);
+        RecipeDetailWindow recipeDetailWindow = new RecipeDetailWindow(this, this.recipeList);
         recipeDetailWindow.show();
     }
 
@@ -70,9 +67,6 @@ class Recipe extends HBox {
         return this.recipeName;
     }
 
-    public Button getDeleteButton() {
-        return this.deleteButton;
-    }
 
     // meal type stuff next two methods
     public void setMealType(String mealType) {
@@ -115,7 +109,7 @@ class RecipeList extends VBox {
 
 class Footer extends HBox {
     private Button addButton;
-    private Button deleteButton;
+   // private Button deleteButton;
     private Button saveButton;
 
     Footer() {
@@ -152,9 +146,6 @@ class Footer extends HBox {
         return addButton;
     }
 
-    public Button getDeleteButton() {
-        return deleteButton;
-    }
 
     public Button getSaveButton() {
         return saveButton;
@@ -209,12 +200,6 @@ class AppFrame extends BorderPane {
         addListeners();
     }
 
-    public void addDeleteListener(Recipe recipe) {
-        Button deleteButton = recipe.getDeleteButton();
-        deleteButton.setOnAction(e -> {
-            recipeList.getChildren().remove(recipe);
-        });
-    }
 
     public void addListeners() {
 
@@ -222,12 +207,6 @@ class AppFrame extends BorderPane {
             RecipeInputWindow recipeInputWindow = new RecipeInputWindow(recipeList,
                     this);
             recipeInputWindow.show();
-
-            for (Node node : recipeList.getChildren()) {
-                if (node instanceof Recipe) {
-                    addDeleteListener((Recipe) node);
-                }
-            }
         });
 
     }
@@ -271,6 +250,8 @@ class RecipeInputWindow extends Stage {
     private Button lunchButton;
     private Button dinnerButton;
 
+    private Button cancelButton;
+
     private TextField ingredientsField;
     private TextArea stepsField;
     private TextField mealTypeField;
@@ -296,19 +277,6 @@ class RecipeInputWindow extends Stage {
         mealTypeTitle = new Label("Meal Type:");
         mealTypeTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(mealTypeTitle);
-        /*
-         * breakfastButton = new Button("Breakfast");
-         * breakfastButton.setOnAction(e -> setMealType("Breakfast"));
-         * layout.getChildren().add(breakfastButton);
-         * 
-         * lunchButton = new Button("Lunch");
-         * lunchButton.setOnAction(e -> setMealType("Lunch"));
-         * layout.getChildren().add(lunchButton);
-         * 
-         * dinnerButton = new Button("Dinner");
-         * dinnerButton.setOnAction(e -> setMealType("Dinner"));
-         * layout.getChildren().add(dinnerButton);
-         */
 
         mealTypeField = new TextField();
         mealTypeField.setText("Meal Type");
@@ -362,7 +330,13 @@ class RecipeInputWindow extends Stage {
                 }
             }
         });
-        layout.getChildren().addAll(ingredientsDoneButton, ingredientsField, stepsField);
+
+        // Cancel button to discard the recipe creation process
+        cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(e -> {
+            this.close(); // Close the input window, discarding any entered data
+        });
+        layout.getChildren().addAll(ingredientsDoneButton, ingredientsField, stepsField, cancelButton);
 
         // save button
         saveButton = new Button("Save");
@@ -373,6 +347,19 @@ class RecipeInputWindow extends Stage {
         this.setScene(scene);
         this.setTitle("Add New Recipe");
         this.setResizable(false);
+
+        HBox buttonLayout = new HBox(10); // Create a container for buttons with spacing
+        buttonLayout.setAlignment(Pos.CENTER); // Center align the button container
+
+        // Add buttons to the buttonLayout container
+        buttonLayout.getChildren().addAll(saveButton, cancelButton);
+
+        // Add the buttonLayout container to the main VBox layout
+        layout.getChildren().add(buttonLayout);
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
     }
 
     /*
@@ -380,7 +367,7 @@ class RecipeInputWindow extends Stage {
      */
     private void saveRecipe() {
         String recipeName = recipeNameField.getText();
-        Recipe recipe = new Recipe();
+        Recipe recipe = new Recipe(recipeList);
         if (!recipeName.isEmpty()) {
             recipe.getRecipeName().setText(recipeName);
             recipe.setMealType(mealType);
@@ -389,7 +376,6 @@ class RecipeInputWindow extends Stage {
             recipeList.getChildren().add(0, recipe);
             this.close();
         }
-        appFrame.addDeleteListener(recipe);
     }
 
     public void setMealType(String mealType) {
@@ -445,8 +431,10 @@ class RecipeInputWindow extends Stage {
 class RecipeDetailWindow extends Stage {
 
     private Recipe recipe;
+    private Button backButton;
+    private Button deleteButton;
 
-    RecipeDetailWindow(Recipe recipe) {
+    RecipeDetailWindow(Recipe recipe, RecipeList recipeList) {
         this.recipe = recipe;
 
         VBox layout = new VBox(10);
@@ -463,11 +451,31 @@ class RecipeDetailWindow extends Stage {
         recipeStepsArea.setPrefWidth(300);
         recipeStepsArea.setPrefHeight(480);
 
+        // Initialize the Delete button
+        deleteButton = new Button("Delete");
+        deleteButton.setOnAction(e -> {
+            recipeList.getChildren().remove(recipe); // Remove recipe from the list
+            this.close(); // Close the detail window
+        });
+
+        // Back button to close the detail window
+        backButton = new Button("Back");
+        backButton.setOnAction(e -> this.close()); // Close the detail window
+
+
         Scene scene = new Scene(layout, 500, 600);
         this.setScene(scene);
         this.setTitle("Recipe: " + recipe.getRecipeName().getText());
 
-        layout.getChildren().addAll(recipeNameLabel, recipeStepsArea);
+        layout.getChildren().addAll(recipeNameLabel, recipeStepsArea, backButton, deleteButton);
+    }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    public Button getDeleteButton() {
+        return deleteButton;
     }
 }
 
