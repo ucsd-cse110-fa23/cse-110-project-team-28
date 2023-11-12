@@ -62,6 +62,8 @@ public class EditRecipeController implements Initializable {
 
     public void deleteRecipeButtonHandler() throws IOException {
         deleteRecipe();
+        MainController mainController = new MainController(); 
+        mainController.saveAllRecipesToFile();
         goHome();
     }
 

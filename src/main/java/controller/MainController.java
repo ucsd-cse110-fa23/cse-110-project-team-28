@@ -6,6 +6,11 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.text.RandomStringGenerator;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,6 +25,8 @@ import model.RecipeData;
 
 public class MainController implements Initializable {
 
+    private String recipeFilePath = "recipes.json";
+
     @FXML
     private VBox recipeList;
 
@@ -28,6 +35,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loadRecipes();
         this.updateRecipeList();
     }
 
@@ -101,5 +109,56 @@ public class MainController implements Initializable {
         RecipeData.getInstance().addRecipe(recipe);
 
         updateRecipeList();
+    }
+
+    public void onSaveRecipesAction(ActionEvent event) {
+        RecipeData recipeData = RecipeData.getInstance();
+        // Save each Recipe using the RecipeData instance
+        recipeData.getRecipes().forEach(this::saveRecipe);
+    }
+
+    // Method to save a recipe to a file
+    public void saveRecipe(Recipe recipe) {
+        String json = recipe.toJson();
+        // Open the file in append mode
+        try (FileWriter fileWriter = new FileWriter(recipeFilePath, true)) {
+            fileWriter.write(json + System.lineSeparator());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveAllRecipesToFile() {
+        try (FileWriter fileWriter = new FileWriter(recipeFilePath, false)) { // false to overwrite
+            for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+                fileWriter.write(recipe.toJson() + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to change the file path, mainly for testing purposes
+    public void setRecipeFile(String filePath) {
+        this.recipeFilePath = filePath;
+    }
+
+    // Method to load recipes from a file
+    public void loadRecipes() {
+        RecipeData.getInstance().getRecipes().clear(); // Clear the current list before loading
+        File file = new File(recipeFilePath);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Recipe recipe = Recipe.fromJson(line);
+                    if (recipe != null) {
+                        RecipeData.getInstance().addRecipe(recipe);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
