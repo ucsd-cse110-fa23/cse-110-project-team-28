@@ -25,7 +25,7 @@ import org.json.JSONException;
 
 import controllers.MainController;
 import controllers.RecipePaneController;
-import multithreading.RecordingAppFrame;
+import multithreading.*;
 
 class Recipe extends HBox {
     // Recipe atcual attributes
@@ -271,10 +271,6 @@ class RecipeInputWindow extends Stage {
     private String mealType;
     private Label mealTypeTitle;
 
-    private Button breakfastButton;
-    private Button lunchButton;
-    private Button dinnerButton;
-
     private TextField ingredientsField;
     private TextArea stepsField;
     private TextField mealTypeField;
@@ -293,26 +289,13 @@ class RecipeInputWindow extends Stage {
         layout.getChildren().add(recipeNameTitle);
 
         recipeNameField = new TextField();
-        recipeNameField.setPromptText("Enter Recipe Name");
+        recipeNameField.setPromptText("Recipe Name");
         layout.getChildren().add(recipeNameField);
 
-        // meal type
+        // meal type recording and transcription
         mealTypeTitle = new Label("Meal Type:");
         mealTypeTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(mealTypeTitle);
-        /*
-         * breakfastButton = new Button("Breakfast");
-         * breakfastButton.setOnAction(e -> setMealType("Breakfast"));
-         * layout.getChildren().add(breakfastButton);
-         * 
-         * lunchButton = new Button("Lunch");
-         * lunchButton.setOnAction(e -> setMealType("Lunch"));
-         * layout.getChildren().add(lunchButton);
-         * 
-         * dinnerButton = new Button("Dinner");
-         * dinnerButton.setOnAction(e -> setMealType("Dinner"));
-         * layout.getChildren().add(dinnerButton);
-         */
 
         mealTypeField = new TextField();
         mealTypeField.setText("Meal Type");
@@ -320,25 +303,22 @@ class RecipeInputWindow extends Stage {
         RecordingAppFrame mealTypeRecorder = new RecordingAppFrame("mealType.wav");
         mealTypeRecorder.setAlignment(Pos.CENTER);
 
-        mealTypeDoneButton = new Button("Done");
-        mealTypeDoneButton.setOnAction(e -> {
-            String mealTypeResult = getRecordingTranscript("mealType.wav");
-            if (mealTypeResult.equals(ERROR_FLAG)) {
-                System.out.println("An error occurred while getting meal type"); // maybe throw an exception instead
+        mealTypeRecorder.setTranscriptionCallback(transcript -> {
+            if (transcript.equals(ERROR_FLAG)) {
+                System.out.println("An error occurred while getting meal type");
             } else {
-                mealTypeField.setText(mealTypeResult);
+                mealTypeField.setText(transcript);
                 setMealType(mealTypeField.getText());
             }
         });
-        layout.getChildren().addAll(mealTypeRecorder, mealTypeDoneButton, mealTypeField);
+        layout.getChildren().addAll(mealTypeRecorder, mealTypeField);
 
-        // record
+        // ingredients recordings, transcription, and recipe steps generation
         recordTitle = new Label("ingredients:");
         recordTitle.setStyle("-fx-font-weight: bold;");
         layout.getChildren().add(recordTitle);
 
         RecordingAppFrame ingredientsRecorder = new RecordingAppFrame("ingredients.wav");
-        layout.getChildren().add(ingredientsRecorder);
         ingredientsRecorder.setAlignment(Pos.CENTER);
 
         ingredientsField = new TextField();
@@ -349,24 +329,21 @@ class RecipeInputWindow extends Stage {
         stepsField.setPrefWidth(300);
         stepsField.setPrefHeight(800);
 
-        ingredientsDoneButton = new Button("Done");
-        ingredientsDoneButton.setOnAction(e -> {
-            String ingredientsResult = getRecordingTranscript("ingredients.wav");
-            if (ingredientsResult.equals(ERROR_FLAG)) {
-                System.out.println("An error occurred while getting ingredients"); // maybe throw an exception instead
+        ingredientsRecorder.setTranscriptionCallback(transcript -> {
+            if (transcript.equals(ERROR_FLAG)) {
+                System.out.println("An error occurred while getting ingredients");
             } else {
-                ingredientsField.setText(ingredientsResult);
-                String recipeResults;
-                recipeResults = getRecipeSteps();
+                ingredientsField.setText(transcript);
+                String recipeResults = getRecipeSteps();
                 if (recipeResults.equals(ERROR_FLAG)) {
-                    System.out.println("An error occured while getting steps");
+                    System.out.println("An error occurred while getting steps");
                 } else {
                     stepsField.setText(recipeResults);
                     recipeNameField.setText(getRecipeName(recipeResults));
                 }
             }
         });
-        layout.getChildren().addAll(ingredientsDoneButton, ingredientsField, stepsField);
+        layout.getChildren().addAll(ingredientsRecorder, ingredientsField, stepsField);
 
         // save button
         saveButton = new Button("Save");
@@ -398,20 +375,6 @@ class RecipeInputWindow extends Stage {
 
     public void setMealType(String mealType) {
         this.mealType = mealType;
-    }
-
-    public String getRecordingTranscript(String fileName) {
-        try {
-            return Whisper.getWhisperTranscript(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
-            return ERROR_FLAG;
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
-            return ERROR_FLAG;
-        }
     }
 
     public String getRecipeSteps() {
