@@ -1,49 +1,76 @@
 .button {
-    -fx-background-color: #f0f0f0;
-    -fx-background-radius: 4;
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 4;
 }
 
 .button:hover {
-    -fx-background-color: #dedede;
+  -fx-background-color: #dedede;
 }
 
 .button.darker {
-    -fx-background-color: #e0e0e0;
+  -fx-background-color: #e0e0e0;
 }
 
 .button.darker:hover {
-    -fx-background-color: #cecece;
+  -fx-background-color: #cecece;
 }
 
-#header {
-    -fx-background-color: #fefefe;
-
-    /* add bottom border */
-    -fx-border-width: 1;
-    -fx-border-color: #dedede;
-    -fx-border-style: none none solid none;
+.scrollPane {
+  /* remove border */
+  -fx-background-insets: 0;
+  -fx-padding: 0;
 }
 
 #recipeList {
-    -fx-background-color: #fefefe;
+  -fx-background-color: #fefefe;
 }
 
-#scroll-pane {
-    /* remove border */
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+#main .header {
+  -fx-background-color: #fefefe;
+
+  /* add bottom border */
+  -fx-border-width: 1;
+  -fx-border-color: #dedede;
+  -fx-border-style: hidden hidden solid hidden;
 }
 
-#footer {
-    -fx-background-color: #fefefe;
+#main .footer {
+  -fx-background-color: #fefefe;
 
-    /* add top border */
-    -fx-border-width: 1;
-    -fx-border-color: #dedede;
-    -fx-border-style: solid none none none;
+  /* add top border */
+  -fx-border-width: 1;
+  -fx-border-color: #dedede;
+  -fx-border-style: solid none none none;
 }
 
 .recipe {
-    -fx-background-color: #f0f0f0;
-    -fx-background-radius: 4;
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 4;
+}
+
+/**
+ * newRecipe
+*/
+
+#newRecipe,
+#newRecipe .header,
+#newRecipe .footer {
+  -fx-background-color: #fefefe;
+}
+
+#newRecipe .header {
+  /* add bottom border */
+  -fx-border-width: 1;
+  -fx-border-color: #dedede;
+  -fx-border-style: hidden hidden solid hidden;
+}
+
+#startRecording {
+  -fx-background-color: #9ccc65;
+  -fx-background-radius: 8;
+}
+
+#stopRecording {
+  -fx-background-color: #ffa726;
+  -fx-background-radius: 8;
 }

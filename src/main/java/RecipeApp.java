@@ -24,7 +24,7 @@ import java.util.Collections;
 import org.json.JSONException;
 
 import controllers.MainController;
-import controllers.RecipeController;
+import controllers.RecipePaneController;
 import multithreading.RecordingAppFrame;
 
 class Recipe extends HBox {
@@ -477,7 +477,7 @@ class RecipeDetailWindow extends Stage {
 
 public class RecipeApp extends Application {
 
-    final int WIDTH = 500;
+    final int WIDTH = 800;
     final int HEIGHT = 500;
     final int WINDOW_PADDING = 10;
 
@@ -485,21 +485,6 @@ public class RecipeApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
         Parent root = loader.load();
-        MainController mainController = loader.getController();
-
-        // debugging
-        // mainController.addRecipe("Chicken");
-        // mainController.addRecipe("Bananas");
-        // mainController.addRecipe("Apples");
-        // mainController.addRecipe("Oranges");
-        // mainController.addRecipe("Pears");
-        // mainController.addRecipe("Peaches");
-        // mainController.addRecipe("Pineapples");
-        // mainController.addRecipe("Strawberries");
-        // mainController.addRecipe("Blueberries");
-        // mainController.addRecipe("Raspberries");
-        // mainController.addRecipe("Blackberries");
-        // mainController.addRecipe("Mangoes");
 
         primaryStage.setTitle("PantryPal");
 
@@ -507,7 +492,8 @@ public class RecipeApp extends Application {
         scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
         primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
+        // resizing is not super stable right now
+        primaryStage.setResizable(false);
 
         primaryStage.setMinWidth(WIDTH);
         primaryStage.setMinHeight(HEIGHT);

@@ -7,9 +7,13 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class MainController implements Initializable {
 
@@ -19,10 +23,13 @@ public class MainController implements Initializable {
     @FXML
     private Label noRecipesLabel;
 
+    @FXML
+    private Button addRecipeButton;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // bind prefHeight of noRecipesLabel to height of parent recipeList
-        noRecipesLabel.prefHeightProperty().bind(recipeList.heightProperty());
+        // noRecipesLabel.prefHeightProperty().bind(recipeList.heightProperty());
         // bind managed property of noRecipesLabel to visible property of noRecipesLabel
         noRecipesLabel.managedProperty().bind(noRecipesLabel.visibleProperty());
         // set noRecipesLabel to visible
@@ -39,10 +46,10 @@ public class MainController implements Initializable {
         // set noRecipesLabel to invisible
         noRecipesLabel.setVisible(false);
 
-        // load recipe.fxml and get its RecipeController
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipe.fxml"));
+        // load recipePane.fxml and get its RecipeController
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
         GridPane recipePane = loader.load();
-        RecipeController recipeController = loader.getController();
+        RecipePaneController recipeController = loader.getController();
 
         // set recipeName
         recipeController.setRecipeName(recipeName);
@@ -61,5 +68,15 @@ public class MainController implements Initializable {
         for (String recipeName : recipeNames) {
             addRecipe(recipeName);
         }
+    }
+
+    public void addRecipeHandler() throws IOException {
+        Scene scene = addRecipeButton.getScene();
+        Stage stage = (Stage) scene.getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/newRecipe.fxml"));
+        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+
+        stage.setScene(newScene);
+        stage.show();
     }
 }

@@ -15,30 +15,15 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <top>
-      <GridPane id="header" alignment="CENTER" prefHeight="64.0" BorderPane.alignment="CENTER">
+      <GridPane alignment="CENTER" prefHeight="64.0" styleClass="header" BorderPane.alignment="CENTER">
          <columnConstraints>
-            <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="33.333333333" />
-            <ColumnConstraints fillWidth="false" halignment="CENTER" maxWidth="1.7976931348623157E308" percentWidth="33.333333333" />
-            <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="33.333333333" />
+            <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="30.0" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" maxWidth="1.7976931348623157E308" percentWidth="40.0" />
+            <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="30.0" />
          </columnConstraints>
          <children>
-            <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Back">
-               <GridPane.margin>
-                  <Insets left="12.0" />
-               </GridPane.margin>
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                     <image>
-                        <Image url="@../images/back.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-            </Button>
             <Text id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="PantryPal" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
                   <Font name="PP Eiko Medium" size="28.0" />
@@ -54,9 +39,9 @@
       </GridPane>
    </top>
    <center>
-      <ScrollPane id="scroll-pane" fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" styleClass="scrollPane" BorderPane.alignment="CENTER">
          <content>
-            <VBox fx:id="recipeList" alignment="TOP_CENTER" prefHeight="200.0" spacing="8.0">
+            <VBox fx:id="recipeList" alignment="TOP_CENTER" spacing="8.0">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -75,9 +60,9 @@
       </ScrollPane>
    </center>
    <bottom>
-      <HBox id="footer" alignment="CENTER" prefHeight="64.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" styleClass="footer" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Add Recipe" textAlignment="CENTER">
+            <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" text="Add Recipe" textAlignment="CENTER">
                <HBox.margin>
                   <Insets right="6.0" />
                </HBox.margin>
@@ -90,7 +75,8 @@
                </graphic>
                <font>
                   <Font name="PP Neue Machina Regular" size="12.0" />
-               </font></Button>
+               </font>
+            </Button>
             <Button mnemonicParsing="false" text="Save Recipes" textAlignment="CENTER">
                <HBox.margin>
                   <Insets left="6.0" />
@@ -104,7 +90,8 @@
                </graphic>
                <font>
                   <Font name="PP Neue Machina Regular" size="12.0" />
-               </font></Button>
+               </font>
+            </Button>
          </children>
       </HBox>
    </bottom>
