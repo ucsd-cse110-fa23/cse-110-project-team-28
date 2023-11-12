@@ -6,6 +6,8 @@ bin/
 
 lib/
 
+*.wav
+
 # From https://github.com/github/gitignore/blob/main/Gradle.gitignore
 
 .gradle
