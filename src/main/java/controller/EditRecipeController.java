@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.Recipe;
-import model.RecipeData;
 
 public class EditRecipeController implements Initializable {
 

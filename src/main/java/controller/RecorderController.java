@@ -8,7 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import multithreading.Whisper;
+import utilites.Whisper;
+
 import java.io.*;
 import javax.sound.sampled.*;
 
@@ -53,7 +54,12 @@ public class RecorderController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         audioFormat = getAudioFormat();
+
         recordingLabel.setVisible(false);
+
+        startRecordingButton.setDisable(false);
+        stopRecordingButton.setDisable(true);
+
         defaultRecordingLabelText = recordingLabel.getText();
     }
 
@@ -100,6 +106,9 @@ public class RecorderController implements Initializable {
         recordingLabel.setVisible(true);
         recordingLabel.setText(defaultRecordingLabelText);
 
+        startRecordingButton.setDisable(true);
+        stopRecordingButton.setDisable(false);
+
         recordingThread = new Thread(() -> {
             try {
                 DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
@@ -124,6 +133,9 @@ public class RecorderController implements Initializable {
     }
 
     private void stopRecording() {
+        stopRecordingButton.setDisable(true);
+        startRecordingButton.setDisable(false);
+
         if (targetDataLine != null) {
             targetDataLine.stop();
             // targetDataLine.close();

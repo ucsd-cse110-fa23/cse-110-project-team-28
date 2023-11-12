@@ -1,3 +1,18 @@
+.defaultBackground,
+#recipeList,
+#main .header,
+#main .footer,
+#newRecipe,
+#newRecipe .header,
+#newRecipe .footer {
+  -fx-background-color: #fefefe;
+}
+
+.subheading {
+  -fx-font-size: 16pt;
+  -fx-font-family: "PP Eiko Medium";
+}
+
 .button {
   -fx-background-color: #f0f0f0;
   -fx-background-radius: 4;
@@ -21,13 +36,7 @@
   -fx-padding: 0;
 }
 
-#recipeList {
-  -fx-background-color: #fefefe;
-}
-
 #main .header {
-  -fx-background-color: #fefefe;
-
   /* add bottom border */
   -fx-border-width: 1;
   -fx-border-color: #dedede;
@@ -35,8 +44,6 @@
 }
 
 #main .footer {
-  -fx-background-color: #fefefe;
-
   /* add top border */
   -fx-border-width: 1;
   -fx-border-color: #dedede;
@@ -51,12 +58,6 @@
 /**
  * newRecipe
 */
-
-#newRecipe,
-#newRecipe .header,
-#newRecipe .footer {
-  -fx-background-color: #fefefe;
-}
 
 #newRecipe .header {
   /* add bottom border */

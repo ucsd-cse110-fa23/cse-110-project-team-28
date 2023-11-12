@@ -12,10 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import model.Recipe;
 import model.RecipeData;
 import utilites.ChatGPT;
@@ -53,10 +51,12 @@ public class NewRecipeController implements Initializable {
         saveRecipeButton.setDisable(true);
 
         Label mealTypePrompt = new Label();
-        mealTypePrompt.setText("Record your meal type:");
+        mealTypePrompt.setText("Meal Type");
+        mealTypePrompt.getStyleClass().add("subheading");
 
         Label ingredientsPrompt = new Label();
-        ingredientsPrompt.setText("Record your ingredients:");
+        ingredientsPrompt.setText("Ingredients");
+        ingredientsPrompt.getStyleClass().add("subheading");
 
         Button saveButton = new Button();
         saveButton.setText("Save Recipe");
