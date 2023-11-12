@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.commons.text.RandomStringGenerator;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,7 +37,13 @@ public class MainController implements Initializable {
         // set noRecipesLabel to visible
         noRecipesLabel.setVisible(true);
 
-        // add recipes to recipeList
+        this.updateRecipeList();
+    }
+
+    private void updateRecipeList() {
+        // clear recipeList
+        recipeList.getChildren().clear();
+
         RecipeData recipeData = RecipeData.getInstance();
 
         for (Recipe recipe : recipeData.getRecipes()) {
@@ -89,5 +97,15 @@ public class MainController implements Initializable {
 
         stage.setScene(newScene);
         stage.show();
+    }
+
+    public void debugAddRecipeHandler() throws IOException {
+        RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
+        Recipe recipe = new Recipe(generator.generate(10), "Dinner",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        RecipeData.getInstance().addRecipe(recipe);
+
+        updateRecipeList();
     }
 }

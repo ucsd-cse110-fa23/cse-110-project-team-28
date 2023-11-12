@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import model.Recipe;
+import model.RecipeData;
 
 public class EditRecipeController implements Initializable {
 
@@ -58,4 +59,17 @@ public class EditRecipeController implements Initializable {
     private void saveRecipe() {
         recipe.setSteps(editRecipeTextArea.getText());
     }
+
+    public void deleteRecipeButtonHandler() throws IOException {
+        deleteRecipe();
+        goHome();
+    }
+
+    /*
+     * Deletes recipe from main app list
+     */
+    private void deleteRecipe() {
+        RecipeData.getInstance().getRecipes().remove(recipe);
+    }
+
 }

@@ -16,8 +16,9 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-   minWidth="-Infinity" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21"
-   xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+   minWidth="-Infinity" prefHeight="400.0" stylesheets="@../css/style.css"
+   xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="controller.MainController">
    <top>
       <GridPane alignment="CENTER" prefHeight="64.0" styleClass="header"
          BorderPane.alignment="CENTER">
@@ -46,8 +47,7 @@
       </GridPane>
    </top>
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity"
-         styleClass="scrollPane" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="340.0" styleClass="scrollPane">
          <content>
             <VBox fx:id="recipeList" alignment="TOP_CENTER" spacing="8.0">
                <padding>
@@ -70,14 +70,27 @@
       </ScrollPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" styleClass="footer"
-         BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0"
+         styleClass="footer" BorderPane.alignment="CENTER">
          <children>
+            <Button mnemonicParsing="false" text="Save Recipes" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                     preserveRatio="true" smooth="false">
+                     <image>
+                        <Image url="@../images/download.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="PP Neue Machina Regular" size="12.0" />
+               </font>
+            </Button>
             <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler"
                text="Add Recipe" textAlignment="CENTER">
-               <HBox.margin>
-                  <Insets right="6.0" />
-               </HBox.margin>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                      preserveRatio="true">
@@ -90,15 +103,16 @@
                   <Font name="PP Neue Machina Regular" size="12.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" text="Save Recipes" textAlignment="CENTER">
+            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false"
+               onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
                <HBox.margin>
-                  <Insets left="6.0" />
+                  <Insets />
                </HBox.margin>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
-                     preserveRatio="true" smooth="false">
+                     preserveRatio="true">
                      <image>
-                        <Image url="@../images/download.png" />
+                        <Image url="@../images/add.png" />
                      </image>
                   </ImageView>
                </graphic>
