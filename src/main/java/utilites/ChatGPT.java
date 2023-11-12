@@ -52,7 +52,6 @@ public class ChatGPT {
 
             return generatedText;
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

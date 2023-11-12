@@ -12,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -25,19 +24,15 @@ public class MainController implements Initializable {
     private VBox recipeList;
 
     @FXML
-    private Label noRecipesLabel;
-
-    @FXML
     private Button addRecipeButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // bind managed property of noRecipesLabel to visible property of noRecipesLabel
-        noRecipesLabel.managedProperty().bind(noRecipesLabel.visibleProperty());
-        // set noRecipesLabel to visible
-        noRecipesLabel.setVisible(true);
-
         this.updateRecipeList();
+    }
+
+    public VBox getRecipeList() {
+        return recipeList;
     }
 
     private void updateRecipeList() {
@@ -47,11 +42,7 @@ public class MainController implements Initializable {
         RecipeData recipeData = RecipeData.getInstance();
 
         for (Recipe recipe : recipeData.getRecipes()) {
-            try {
-                addRecipe(recipe);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            addRecipe(recipe);
         }
     }
 
@@ -61,20 +52,23 @@ public class MainController implements Initializable {
      * @param recipeName the name of the recipe to add
      * @throws IOException
      */
-    public void addRecipe(Recipe recipe) throws IOException {
-        // set noRecipesLabel to invisible
-        noRecipesLabel.setVisible(false);
-
+    public void addRecipe(Recipe recipe) {
         // load recipePane.fxml and get its RecipeController
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
-        GridPane recipePane = loader.load();
-        RecipePaneController recipePaneController = loader.getController();
+        GridPane recipePane;
+        try {
+            recipePane = loader.load();
 
-        // set recipeName
-        recipePaneController.setRecipe(recipe);
+            RecipePaneController recipePaneController = loader.getController();
 
-        // add recipePane to recipeList
-        recipeList.getChildren().add(recipePane);
+            // set recipeName
+            recipePaneController.setRecipe(recipe);
+
+            // add recipePane to recipeList
+            recipeList.getChildren().add(recipePane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -11,9 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipe"
-   stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21"
-   xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
+<GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipe" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
    <columnConstraints>
       <ColumnConstraints fillWidth="false" hgrow="ALWAYS" />
       <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
@@ -22,7 +20,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="recipeName" text="Lorem Ipsum">
+      <Label fx:id="recipeName" styleClass="recipePaneTitle" text="Lorem Ipsum">
          <font>
             <Font name="PP Eiko Medium" size="18.0" />
          </font>
@@ -30,14 +28,12 @@
             <Insets left="8.0" right="8.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="detailsButton" alignment="CENTER" mnemonicParsing="false" text="Details"
-         GridPane.columnIndex="1" onAction="#detailsButtonHandler">
+      <Button fx:id="detailsButton" alignment="CENTER" mnemonicParsing="false" onAction="#detailsButtonHandler" text="Details" GridPane.columnIndex="1">
          <font>
             <Font name="PP Neue Machina Regular" size="12.0" />
          </font>
          <graphic>
-            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true"
-               smooth="false">
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                <image>
                   <Image url="@../images/forward.png" />
                </image>
@@ -47,8 +43,8 @@
             <Insets right="8.0" />
          </GridPane.margin>
          <styleClass>
-            <String fx:value="button" />
             <String fx:value="darker" />
+            <String fx:value="recipePaneDetailsButton" />
          </styleClass>
       </Button>
    </children>

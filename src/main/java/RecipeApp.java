@@ -8,7 +8,6 @@ public class RecipeApp extends Application {
 
     final int WIDTH = 800;
     final int HEIGHT = 500;
-    final int WINDOW_PADDING = 10;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
