@@ -6,9 +6,14 @@ bin/
 
 lib/
 
-*.wav
+# Ignore user recorded audio
+/*.wav
 
-# From https://github.com/github/gitignore/blob/main/Gradle.gitignore
+# Ignore user saved recipes
+/*.json
+/*.jsonl
+
+# https://github.com/github/gitignore/blob/main/Gradle.gitignore
 
 .gradle
 **/build/
