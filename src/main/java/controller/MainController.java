@@ -25,7 +25,7 @@ import model.RecipeData;
 
 public class MainController implements Initializable {
 
-    private String recipeFilePath = "recipes.json";
+    private String recipeFilePath = "recipes.jsonl";
 
     @FXML
     private VBox recipeList;

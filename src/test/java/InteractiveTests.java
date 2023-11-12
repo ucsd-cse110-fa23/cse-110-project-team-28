@@ -35,7 +35,7 @@ public class InteractiveTests extends ApplicationTest {
 
     private MainController controller;
 
-    private String TEST_RECIPE_FILE = "test_recipes.json";
+    private String TEST_RECIPE_FILE = "test_recipes.jsonl";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
