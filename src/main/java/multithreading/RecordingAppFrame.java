@@ -9,8 +9,16 @@ import javafx.scene.layout.FlowPane;
 import javafx.geometry.Insets;
 import java.io.*;
 import javax.sound.sampled.*;
+import java.net.URISyntaxException;
 
 public class RecordingAppFrame extends FlowPane {
+
+    public static final String ERROR_FLAG = "ERROR";
+
+    public interface TranscriptionCallback{
+        void onTranscriptionComplete(String transcript);
+    }
+
     private Button startButton;
     private Button stopButton;
     private AudioFormat audioFormat;
@@ -18,6 +26,7 @@ public class RecordingAppFrame extends FlowPane {
     private Label recordingLabel;
     private String fileName;
 
+    private TranscriptionCallback transcriptionCallback;
     private Thread recordingThread;
 
     // Set a default style for buttons and fields - background color, font size,
@@ -27,7 +36,7 @@ public class RecordingAppFrame extends FlowPane {
 
     public RecordingAppFrame(String fileName) {
         this.fileName = fileName;
-        // Set properties for the flowpane
+        // Set properties for the flowPane
         this.setPrefSize(100, 120);
         this.setPadding(new Insets(5, 0, 5, 5));
         this.setVgap(10);
@@ -124,9 +133,31 @@ public class RecordingAppFrame extends FlowPane {
             targetDataLine.stop();
             // targetDataLine.close();
         }
+        if (transcriptionCallback != null) {
+            String transcript = getRecordingTranscript(fileName);
+            transcriptionCallback.onTranscriptionComplete(transcript);
+        }
     }
 
     public void getStopRecording() {
         this.stopRecording();
+    }
+
+    public void setTranscriptionCallback(TranscriptionCallback callback) {
+        this.transcriptionCallback = callback;
+    }
+
+    public String getRecordingTranscript(String fileName) {
+        try {
+            return Whisper.getWhisperTranscript(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An I/O error occurred: " + e.getMessage());
+            return ERROR_FLAG;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("Invalid URI: Check file path.");
+            return ERROR_FLAG;
+        } 
     }
 }
