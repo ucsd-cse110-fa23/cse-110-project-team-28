@@ -22,7 +22,7 @@ To run the tests, run the following command in the root directory of the project
 
 ## Project Architecture
 
-Our app follows the Model-View-Controller (MVC) architecture. The model is responsible for storing the data of the app. The view is responsible for displaying the data to the user. The controller is responsible for handling user input and updating the model and view accordingly.
+Our app follows the Model-View-Controller (MVC) architecture.
 
 ### Models
 
@@ -44,7 +44,9 @@ The controller is responsible for handling user input and updating the model and
 
 ## Editing & Creating Views
 
-To edit or create a view, edit or create an FXML file in the `resources/fxml` directory. Then, create a controller for the view in the `controller` package. For consistency, the controller must have the same name as the FXML file, but with the word `Controller` appended to the end. For example, the controller for `main.fxml` is `MainController.java`.
+Edit or create views by editing or creating FXML files in the `resources/fxml` directory. Each FXML file must have a corresponding controller in the `controller` package.
+
+For consistency, the controller must have the same name as the FXML file, but with the word `Controller` appended to the end. For example, the controller for `main.fxml` is `MainController.java`.
 
 ## Scene Builder
 
@@ -73,7 +75,7 @@ private Button myButton;
 
 #### Switching Between Views
 
-Below is an example from `EditRecipeController.java` that navigates to the `MainController` view when the "Cancel" button is clicked:
+Below is an example from `EditRecipeController.java` that switches to the `main.fxml` view:
 
 ```java
 @FXML
