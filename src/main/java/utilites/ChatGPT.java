@@ -1,3 +1,5 @@
+package utilites;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,7 +52,6 @@ public class ChatGPT {
 
             return generatedText;
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
