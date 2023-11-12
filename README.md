@@ -73,7 +73,7 @@ private Button myButton;
 
 #### Switching Between Views
 
-Below is an example from `EditRecipeController.java` that navigates to the `MainController` view when the "Cancel" button is clicked:
+Below is an example from `EditRecipeController.java` that switches to the `main.fxml` view:
 
 ```java
 @FXML
