@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class RecipeData {
     private static RecipeData instance = null;
     private ArrayList<Recipe> recipes;
+    private Boolean loaded = false;
 
     private RecipeData() {
         recipes = new ArrayList<>();
@@ -15,6 +16,12 @@ public class RecipeData {
             instance = new RecipeData();
         }
         return instance;
+    }
+
+    public void loadRecipes() {
+        if (!loaded) {
+            loaded = true;
+        }
     }
 
     public void addRecipe(Recipe recipe) {

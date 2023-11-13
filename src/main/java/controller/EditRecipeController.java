@@ -70,6 +70,6 @@ public class EditRecipeController implements Initializable {
      */
     private void deleteRecipe() {
         RecipeData.getInstance().getRecipes().remove(recipe);
-    }
+        MainController.saveAllRecipesToFile();    }
 
 }

@@ -6,6 +6,11 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.text.RandomStringGenerator;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,7 +24,7 @@ import model.Recipe;
 import model.RecipeData;
 import java.util.ArrayList;
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, RecipeUpdateListener {
 
     @FXML
     private VBox recipeList;
@@ -27,9 +32,17 @@ public class MainController implements Initializable {
     @FXML
     private Button addRecipeButton;
 
+    private static String recipeFilePath = "recipes.jsonl";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //loadRecipes();
         this.updateRecipeList();
+    }
+    
+    @Override
+    public void onRecipeUpdated() {
+        updateRecipeList();
     }
 
     public VBox getRecipeList() {
@@ -71,6 +84,7 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        saveAllRecipesToFile();
     }
 
     /**
@@ -112,6 +126,54 @@ public class MainController implements Initializable {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         RecipeData.getInstance().addRecipe(recipe);
 
+        updateRecipeList();
+    }
+
+    public void onSaveRecipesAction(ActionEvent event) {
+        saveAllRecipesToFile();
+    }
+
+    public void onShowView() {
+        updateRecipeList(); // Make sure this method refreshes the view correctly.
+    }
+
+    // Method to save recipes to a file
+    public static void saveAllRecipesToFile() {
+        // Get all recipes from RecipeData
+        RecipeData recipeData = RecipeData.getInstance();
+        // Convert the entire list to JSON and write to the file
+        try (FileWriter fileWriter = new FileWriter(recipeFilePath, false)) { // false to overwrite
+            for (Recipe recipe : recipeData.getRecipes()) {
+                String json = recipe.toJson();
+                fileWriter.write(json + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to change the file path, mainly for testing purposes
+    public static void setRecipeFile(String filePath) {
+        recipeFilePath = filePath; //this.
+    }
+
+    // Method to load recipes from a file
+    public void loadRecipes() {
+        RecipeData.getInstance().getRecipes().clear(); // Clear the current list before loading
+        File file = new File(recipeFilePath);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Recipe recipe = Recipe.fromJson(line);
+                    if (recipe != null) {
+                        RecipeData.getInstance().addRecipe(recipe);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         updateRecipeList();
     }
 }
