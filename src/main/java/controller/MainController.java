@@ -105,7 +105,6 @@ public class MainController implements Initializable, RecipeUpdateListener {
 
         stage.setScene(newScene);
         stage.show();
-        onShowView();
     }
 
     public void debugAddRecipeHandler() throws IOException {
