@@ -1,5 +1,15 @@
-import java.io.IOException;
+
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
@@ -23,6 +33,8 @@ public class InteractiveTests extends ApplicationTest {
     final int HEIGHT = 500;
 
     private MainController controller;
+
+    private String TEST_RECIPE_FILE = "test_recipes.jsonl";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -85,4 +97,38 @@ public class InteractiveTests extends ApplicationTest {
             Assert.assertEquals(RecipeData.getInstance().getRecipes().isEmpty(), true);
         });
     }
+    @Test
+    public void testSaveAndLoadRecipes() throws Exception {
+        // Setup
+        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps");
+        RecipeData.getInstance().getRecipes().clear(); // Clear existing recipes
+        RecipeData.getInstance().addRecipe(recipe); // Add a test recipe
+
+        // Save current recipes to file
+        MainController.saveAllRecipesToFile(); // Static call to save recipes
+
+        // Verify save
+        assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_RECIPE_FILE)));
+
+        // Prepare for load test by clearing the recipes list
+        RecipeData.getInstance().getRecipes().clear(); // Ensure the list is clear before loading
+
+        // Create an instance of MainController to call loadRecipes
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        loader.setControllerFactory(c -> new MainController()); // Override controller creation
+        Parent root = loader.load(); // Load the FXML
+        MainController controller = loader.getController(); // Get the controller instance
+
+        // Set the file path for the MainController instance
+        controller.setRecipeFile(TEST_RECIPE_FILE); // Use instance method to set file path
+
+        // Load recipes using the instance method
+        controller.loadRecipes(); // Call instance method to load recipes
+
+        // Verify load
+        assertEquals("There should be one recipe after loading", 1, RecipeData.getInstance().getRecipes().size());
+        Recipe loadedRecipe = RecipeData.getInstance().getRecipes().get(0);
+        assertEquals("Loaded recipe name should match", "Test Recipe", loadedRecipe.getName());
+    }
+
 }

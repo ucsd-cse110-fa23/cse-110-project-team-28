@@ -1,5 +1,6 @@
 import controller.MainController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -26,13 +27,13 @@ public class RecipeApp extends Application {
 
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
-        RecipeData.getInstance().loadRecipes();
 
-        MainController mainController = new MainController();
-        scene.setUserData(mainController);
 
         primaryStage.show();
 
+        MainController controller = loader.getController();
+        // Postponing the loading of recipes until the stage is shown and the scene is fully loaded
+        Platform.runLater(controller::loadRecipes);
     }
 
     public static void main(String[] args) {

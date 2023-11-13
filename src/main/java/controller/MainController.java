@@ -31,7 +31,7 @@ public class MainController implements Initializable, RecipeUpdateListener {
     @FXML
     private Button addRecipeButton;
 
-    private String recipeFilePath = "recipes.jsonl";
+    private static String recipeFilePath = "recipes.jsonl";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,6 +82,7 @@ public class MainController implements Initializable, RecipeUpdateListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        saveAllRecipesToFile();
     }
 
     /**
@@ -126,7 +127,7 @@ public class MainController implements Initializable, RecipeUpdateListener {
     }
 
     // Method to save recipes to a file
-    public void saveAllRecipesToFile() {
+    public static void saveAllRecipesToFile() {
         // Get all recipes from RecipeData
         RecipeData recipeData = RecipeData.getInstance();
         // Convert the entire list to JSON and write to the file
@@ -141,8 +142,8 @@ public class MainController implements Initializable, RecipeUpdateListener {
     }
 
     // Method to change the file path, mainly for testing purposes
-    public void setRecipeFile(String filePath) {
-        this.recipeFilePath = filePath;
+    public static void setRecipeFile(String filePath) {
+        recipeFilePath = filePath; //this.
     }
 
     // Method to load recipes from a file
@@ -162,5 +163,6 @@ public class MainController implements Initializable, RecipeUpdateListener {
                 e.printStackTrace();
             }
         }
+        updateRecipeList();
     }
 }
