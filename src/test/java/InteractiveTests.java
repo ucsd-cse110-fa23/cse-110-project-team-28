@@ -33,6 +33,8 @@ public class InteractiveTests extends ApplicationTest {
     final int HEIGHT = 500;
 
     private MainController controller;
+    private Recipe originalRecipe;
+    private RecipeData recipeData;
 
     private String TEST_RECIPE_FILE = "test_recipes.jsonl";
 
@@ -105,6 +107,7 @@ public class InteractiveTests extends ApplicationTest {
         RecipeData.getInstance().addRecipe(recipe); // Add a test recipe
 
         // Save current recipes to file
+        MainController.setRecipeFile(TEST_RECIPE_FILE);
         MainController.saveAllRecipesToFile(); // Static call to save recipes
 
         // Verify save
@@ -129,6 +132,54 @@ public class InteractiveTests extends ApplicationTest {
         assertEquals("There should be one recipe after loading", 1, RecipeData.getInstance().getRecipes().size());
         Recipe loadedRecipe = RecipeData.getInstance().getRecipes().get(0);
         assertEquals("Loaded recipe name should match", "Test Recipe", loadedRecipe.getName());
+    }
+
+    @Test
+    public void testEditRecipe() throws Exception {
+        // Initialize the controller and recipe data
+        controller = new MainController();
+        recipeData = RecipeData.getInstance();
+        recipeData.getRecipes().clear(); // Clear existing data
+
+        // Add a recipe to be edited
+        originalRecipe = new Recipe("Original Recipe", "Lunch", "Original ingredients", "Original steps");
+        recipeData.addRecipe(originalRecipe);
+        // Simulate user editing a recipe
+        // For this example, let's say you're editing the name and ingredients
+        String newRecipeName = "Edited Recipe";
+        String newIngredients = "Edited ingredients";
+        String newSteps = "Edited steps";
+
+        // Retrieve the recipe to edit (normally you would do some sort of selection or search here)
+        Recipe recipeToEdit = recipeData.getRecipes().get(0);
+
+        // Perform the edit (this logic would be in your edit handling method)
+        recipeToEdit.setName(newRecipeName);
+        recipeToEdit.setIngredients(newIngredients);
+        recipeToEdit.setSteps(newSteps);
+
+        // Assert that the changes have been made in the data model
+        assertEquals("Recipe name should be edited", newRecipeName, recipeToEdit.getName());
+        assertEquals("Ingredients should be edited", newIngredients, recipeToEdit.getIngredients());
+        assertEquals("Steps should be edited", newSteps, recipeToEdit.getSteps());
+
+        // Optionally, save the recipes and assert that the file has changed
+        controller.saveAllRecipesToFile(); // Assuming this method works as intended
+
+        // Now clear the list and reload from file to ensure persistence
+        recipeData.getRecipes().clear();
+
+       FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        loader.setControllerFactory(c -> new MainController()); // Override controller creation
+        Parent root = loader.load(); // Load the FXML
+        MainController controller = loader.getController(); // Get the controller instance
+        controller.loadRecipes(); // Reload to reflect changes from file
+
+        // Verify the first (and only) recipe is the edited one
+        Recipe reloadedRecipe = recipeData.getRecipes().get(0);
+        assertEquals("Reloaded recipe name should match edited name", newRecipeName, reloadedRecipe.getName());
+        assertEquals("Reloaded ingredients should match edited ingredients", newIngredients, reloadedRecipe.getIngredients());
+        assertEquals("Reloaded steps should match edited steps", newSteps, reloadedRecipe.getSteps());
     }
 
 }

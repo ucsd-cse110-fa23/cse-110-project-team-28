@@ -56,5 +56,5 @@ public class StaticTests {
         assertEquals("The ingredients of the recipe should match", "Ingredients", recipe.getIngredients());
         assertEquals("The steps of the recipe should match", "Steps", recipe.getSteps());
     }
-
+        
 }
