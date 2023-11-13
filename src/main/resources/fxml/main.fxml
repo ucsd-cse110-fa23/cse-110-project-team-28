@@ -51,7 +51,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0" styleClass="footer" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Save Recipes" textAlignment="CENTER">
+            <Button mnemonicParsing="false" text="Save Recipes" onAction="#onSaveRecipesAction" textAlignment="CENTER">
                <HBox.margin>
                   <Insets />
                </HBox.margin>

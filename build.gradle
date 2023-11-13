@@ -22,6 +22,7 @@ javafx {
 dependencies {
   implementation 'org.json:json:20090211'
   implementation 'org.apache.commons:commons-text:1.11.0'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
 
   testImplementation 'junit:junit:4.12'
   testImplementation "org.testfx:testfx-junit:4.0.17"
