@@ -65,7 +65,7 @@
                 <Insets />
             </BorderPane.margin>
             <children>
-                <Button fx:id="saveRecipeButton1" disable="true" mnemonicParsing="false" onAction="#saveRecipeButtonHandler" text="Save Recipe">
+                <Button fx:id="saveRecipeButton" mnemonicParsing="false" onAction="#saveRecipeButtonHandler" text="Save Recipe">
                     <font>
                         <Font name="PP Neue Machina Regular" size="12.0" />
                     </font>
