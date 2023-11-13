@@ -1,7 +1,9 @@
+import controller.MainController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.RecipeData;
 import javafx.fxml.FXMLLoader;
 
 public class RecipeApp extends Application {
@@ -24,6 +26,10 @@ public class RecipeApp extends Application {
 
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
+        RecipeData.getInstance().loadRecipes();
+
+        MainController mainController = new MainController();
+        scene.setUserData(mainController);
 
         primaryStage.show();
 
