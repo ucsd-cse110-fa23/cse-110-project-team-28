@@ -167,7 +167,5 @@ public class NewRecipeController implements Initializable {
 
         RecipeData recipeData = RecipeData.getInstance();
         recipeData.addRecipe(recipe);
-
-        MainController.saveAllRecipesToFile();
     }
 }

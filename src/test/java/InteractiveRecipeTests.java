@@ -1,5 +1,6 @@
 import java.io.IOException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import controller.MainController;
@@ -41,6 +42,14 @@ public class InteractiveRecipeTests extends ApplicationTest {
         primaryStage.show();
     }
 
+    @Before
+    public void setup() {
+        RecipeData.getInstance().getRecipes().clear();
+
+        RecipeData.getInstance().addRecipe(new Recipe("Tasty Tests", "breakfast",
+                "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass."));
+    }
+
     @Test
     public void sanityTest() {
         Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
@@ -49,9 +58,6 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Test
     public void recipePaneTest() throws IOException {
         Platform.runLater(() -> {
-            controller.addRecipe(new Recipe("Tasty Tests", "breakfast", "JUnit, TestFX, Gradle, and GitHub Actions",
-                    "1. Mix well and pray your tests pass."));
-
             Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
             Assert.assertNotNull(lookup(".recipePaneDetailsButton").queryAs(Button.class));
         });
@@ -60,11 +66,6 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Test
     public void deleteRecipeTest() throws IOException {
         Platform.runLater(() -> {
-            Assert.assertEquals(true, controller.getRecipeList().getChildren().isEmpty());
-
-            RecipeData.getInstance().addRecipe(new Recipe("Tasty Tests", "breakfast",
-                    "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass."));
-
             controller.setRecipes(RecipeData.getInstance().getRecipes());
 
             sleep(100); // without this, the test may fail because the recipe is not added to the list
@@ -88,20 +89,13 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Test
     public void editRecipeTest() {
         Platform.runLater(() -> {
-            Assert.assertEquals(true, controller.getRecipeList().getChildren().isEmpty());
-
-            RecipeData.getInstance().addRecipe(new Recipe("Tasty Tests", "breakfast",
-                    "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass."));
-
             controller.setRecipes(RecipeData.getInstance().getRecipes());
 
-            sleep(100); // the test may fail because the recipe is not added to the list yet
+            sleep(100); // without this, the test may fail because the recipe is not added to the list
+                        // yet
 
-            // confirm recipe node was added
             Assert.assertEquals(false, controller.getRecipeList().getChildren().isEmpty());
-            // confirm recipe was added to recipedata
             Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
-            // confirm recipe title is correct
             Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
 
             Button recipePanelDetailsButton = lookup(".recipePaneDetailsButton").query();
@@ -115,6 +109,10 @@ public class InteractiveRecipeTests extends ApplicationTest {
 
             // confirm navigation back to main screen
             Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
+
+            Assert.assertEquals(false, controller.getRecipeList().getChildren().isEmpty());
+            Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
+            Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
 
             recipePanelDetailsButton = lookup(".recipePaneDetailsButton").query();
             recipePanelDetailsButton.fire();

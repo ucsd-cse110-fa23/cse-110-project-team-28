@@ -1,5 +1,7 @@
 
 import org.junit.Assert;
+import org.junit.Before;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,18 +23,17 @@ public class InteractiveTests extends ApplicationTest {
     final int WIDTH = 800;
     final int HEIGHT = 500;
 
-    private MainController controller;
     private Recipe originalRecipe;
     private RecipeData recipeData;
 
-    private String TEST_RECIPE_FILE = "test_recipes.jsonl";
+    private String TEST_RECIPE_FILE = "test_recipes.json";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
 
-        controller = loader.getController();
+        loader.getController();
 
         primaryStage.setTitle("PantryPal");
 
@@ -47,6 +48,15 @@ public class InteractiveTests extends ApplicationTest {
         primaryStage.show();
     }
 
+    @Before
+    public void setUp() throws Exception {
+        // clear the recipe list before each test
+        RecipeData.getInstance().getRecipes().clear();
+
+        // clear the recipe file before each test
+        Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE));
+    }
+
     @Test
     public void sanityTest() {
         Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
@@ -59,9 +69,7 @@ public class InteractiveTests extends ApplicationTest {
         RecipeData.getInstance().getRecipes().clear(); // Clear existing recipes
         RecipeData.getInstance().addRecipe(recipe); // Add a test recipe
 
-        // Save current recipes to file
-        MainController.setRecipeFile(TEST_RECIPE_FILE);
-        MainController.saveAllRecipesToFile(); // Static call to save recipes
+        RecipeData.getInstance().saveRecipes(TEST_RECIPE_FILE);
 
         // Verify save
         assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_RECIPE_FILE)));
@@ -69,17 +77,8 @@ public class InteractiveTests extends ApplicationTest {
         // Prepare for load test by clearing the recipes list
         RecipeData.getInstance().getRecipes().clear(); // Ensure the list is clear before loading
 
-        // Create an instance of MainController to call loadRecipes
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        loader.setControllerFactory(c -> new MainController()); // Override controller creation
-        Parent root = loader.load(); // Load the FXML
-        MainController controller = loader.getController(); // Get the controller instance
-
-        // Set the file path for the MainController instance
-        controller.setRecipeFile(TEST_RECIPE_FILE); // Use instance method to set file path
-
         // Load recipes using the instance method
-        controller.loadRecipes(); // Call instance method to load recipes
+        RecipeData.getInstance().loadRecipes(TEST_RECIPE_FILE);
 
         // Verify load
         assertEquals("There should be one recipe after loading", 1, RecipeData.getInstance().getRecipes().size());
@@ -89,8 +88,7 @@ public class InteractiveTests extends ApplicationTest {
 
     @Test
     public void testEditRecipe() throws Exception {
-        // Initialize the controller and recipe data
-        controller = new MainController();
+        new MainController();
         recipeData = RecipeData.getInstance();
         recipeData.getRecipes().clear(); // Clear existing data
 
@@ -117,16 +115,13 @@ public class InteractiveTests extends ApplicationTest {
         assertEquals("Steps should be edited", newSteps, recipeToEdit.getSteps());
 
         // Optionally, save the recipes and assert that the file has changed
-        controller.saveAllRecipesToFile(); // Assuming this method works as intended
+        RecipeData.getInstance().saveRecipes(TEST_RECIPE_FILE);
 
         // Now clear the list and reload from file to ensure persistence
         recipeData.getRecipes().clear();
 
-       FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        loader.setControllerFactory(c -> new MainController()); // Override controller creation
-        Parent root = loader.load(); // Load the FXML
-        MainController controller = loader.getController(); // Get the controller instance
-        controller.loadRecipes(); // Reload to reflect changes from file
+        // Load recipes using the instance method
+        RecipeData.getInstance().loadRecipes(TEST_RECIPE_FILE);
 
         // Verify the first (and only) recipe is the edited one
         Recipe reloadedRecipe = recipeData.getRecipes().get(0);

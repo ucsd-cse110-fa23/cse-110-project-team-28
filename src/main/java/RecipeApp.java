@@ -1,9 +1,9 @@
-import controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.RecipeData;
 import javafx.fxml.FXMLLoader;
 
 public class RecipeApp extends Application {
@@ -30,9 +30,11 @@ public class RecipeApp extends Application {
 
         primaryStage.show();
 
-        MainController controller = loader.getController();
         // Postponing the loading of recipes until the stage is shown and the scene is fully loaded
-        Platform.runLater(controller::loadRecipes);
+        Platform.runLater(() -> {
+            System.out.println("Loading recipes...");
+            RecipeData.getInstance().loadRecipes();
+        });
     }
 
     public static void main(String[] args) {
