@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;
+import java.util.ArrayList;
 
 public class MainController implements Initializable {
 
@@ -56,6 +57,7 @@ public class MainController implements Initializable {
         // load recipePane.fxml and get its RecipeController
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
         GridPane recipePane;
+
         try {
             recipePane = loader.load();
 
@@ -77,10 +79,20 @@ public class MainController implements Initializable {
      * @param recipeNames the names of the recipes to add
      * @throws IOException
      */
-    public void addRecipes(Recipe[] recipes) throws IOException {
+    public void addRecipes(ArrayList<Recipe> recipes) {
         for (Recipe recipe : recipes) {
             addRecipe(recipe);
         }
+    }
+
+    /**
+     * Clears the recipeList and adds the given recipes
+     * @param recipes the recipes to add
+     */
+    public void setRecipes(ArrayList<Recipe> recipes) {
+        recipeList.getChildren().clear();
+
+        addRecipes(recipes);
     }
 
     public void addRecipeHandler() throws IOException {

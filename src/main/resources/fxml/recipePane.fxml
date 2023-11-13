@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipe" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
+<GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipePane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
    <columnConstraints>
       <ColumnConstraints fillWidth="false" hgrow="ALWAYS" />
       <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
@@ -20,7 +20,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label fx:id="recipeName" styleClass="recipePaneTitle" text="Lorem Ipsum">
+      <Label fx:id="recipeName" styleClass="recipePaneLabel" text="Lorem Ipsum">
          <font>
             <Font name="PP Eiko Medium" size="18.0" />
          </font>

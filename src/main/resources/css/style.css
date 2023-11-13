@@ -50,7 +50,7 @@
   -fx-border-style: solid none none none;
 }
 
-.recipe {
+.recipePane {
   -fx-background-color: #f0f0f0;
   -fx-background-radius: 4;
 }
