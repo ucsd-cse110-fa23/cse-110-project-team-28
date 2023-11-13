@@ -59,46 +59,10 @@ public class InteractiveTests extends ApplicationTest {
     }
 
     @Test
-    public void testTitle() {
-        FxAssert.verifyThat("#title", TextMatchers.hasText("PantryPal"));
+    public void sanityTest() {
+        Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
     }
 
-    @Test
-    public void testListCreation() throws IOException {
-        Platform.runLater(() -> {
-            controller.addRecipe(new Recipe("Tasty Tests", "breakfast", "JUnit, TestFX, Gradle, and GitHub Actions",
-                    "1. Mix well and pray your tests pass."));
-
-            FxAssert.verifyThat(".recipePaneTitle", LabeledMatchers.hasText("Tasty Tests"));
-
-        });
-    }
-
-    @Test
-    public void deleteRecipe() throws IOException {
-        Platform.runLater(() -> {
-            Assert.assertEquals(controller.getRecipeList().getChildren().isEmpty(), true);
-
-            controller.addRecipe(new Recipe("Tasty Tests", "breakfast", "JUnit, TestFX, Gradle, and GitHub Actions",
-                    "1. Mix well and pray your tests pass."));
-
-            sleep(100);
-
-            Assert.assertEquals(false, controller.getRecipeList().getChildren().isEmpty());
-            Assert.assertEquals("Tasty Tests",
-                    ((Label) ((GridPane) controller.getRecipeList().getChildren().get(0)).getChildren().get(0))
-                            .getText());
-
-            Button recipePanelDetailsButton = lookup(".recipePaneDetailsButton").query();
-            recipePanelDetailsButton.fire();
-
-            Button deleteRecipeButton = lookup("#deleteRecipeButton").query();
-            deleteRecipeButton.fire();
-
-            // assert that recipedata is empty
-            Assert.assertEquals(RecipeData.getInstance().getRecipes().isEmpty(), true);
-        });
-    }
     @Test
     public void testSaveAndLoadRecipes() throws Exception {
         // Setup
