@@ -57,6 +57,28 @@ public class Recipe {
         return "Recipe [name=" + name + ", mealType=" + mealType + ", ingredients=" + ingredients + ", steps=" + steps
                 + "]";
     }
+    
+    // Convert a Recipe object to a JSON string
+    public String toJson() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Create a Recipe object from a JSON string
+    public static Recipe fromJson(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, Recipe.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     // Convert a Recipe object to a JSON string
     public String toJson() {

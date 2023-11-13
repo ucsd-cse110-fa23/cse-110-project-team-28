@@ -112,26 +112,18 @@ public class MainController implements Initializable {
     }
 
     public void onSaveRecipesAction(ActionEvent event) {
-        RecipeData recipeData = RecipeData.getInstance();
-        // Save each Recipe using the RecipeData instance
-        recipeData.getRecipes().forEach(this::saveRecipe);
+        saveAllRecipesToFile();
     }
 
-    // Method to save a recipe to a file
-    public void saveRecipe(Recipe recipe) {
-        String json = recipe.toJson();
-        // Open the file in append mode
-        try (FileWriter fileWriter = new FileWriter(recipeFilePath, true)) {
-            fileWriter.write(json + System.lineSeparator());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // Method to save recipes to a file
     public void saveAllRecipesToFile() {
+        // Get all recipes from RecipeData
+        RecipeData recipeData = RecipeData.getInstance();
+        // Convert the entire list to JSON and write to the file
         try (FileWriter fileWriter = new FileWriter(recipeFilePath, false)) { // false to overwrite
-            for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
-                fileWriter.write(recipe.toJson() + System.lineSeparator());
+            for (Recipe recipe : recipeData.getRecipes()) {
+                String json = recipe.toJson();
+                fileWriter.write(json + System.lineSeparator());
             }
         } catch (IOException e) {
             e.printStackTrace();
