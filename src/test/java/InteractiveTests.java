@@ -1,28 +1,17 @@
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Assert.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.Test;
-import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.matcher.control.TextMatchers;
 import controller.MainController;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;

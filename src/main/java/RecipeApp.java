@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.RecipeData;
 import javafx.fxml.FXMLLoader;
 
 public class RecipeApp extends Application {
