@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;
@@ -45,6 +46,7 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Before
     public void setup() {
         RecipeData.getInstance().getRecipes().clear();
+        RecipeData.getInstance().removeObserver();
 
         RecipeData.getInstance().addRecipe(new Recipe("Tasty Tests", "breakfast",
                 "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass."));
@@ -89,12 +91,7 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Test
     public void editRecipeTest() {
         Platform.runLater(() -> {
-            controller.setRecipes(RecipeData.getInstance().getRecipes());
-
-            sleep(100); // without this, the test may fail because the recipe is not added to the list
-                        // yet
-
-            Assert.assertEquals(false, controller.getRecipeList().getChildren().isEmpty());
+            Assert.assertEquals(false, lookup("#recipeList").queryAs(VBox.class).getChildren().isEmpty());
             Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
             Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
 

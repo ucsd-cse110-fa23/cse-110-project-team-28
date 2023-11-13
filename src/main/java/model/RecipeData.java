@@ -160,6 +160,11 @@ public class RecipeData implements Observable {
     }
 
     @Override
+    public void removeObserver() {
+        this.observer = null;
+    }
+
+    @Override
     public void notifyObservers() {
         if (observer != null)
             observer.update();
