@@ -1,5 +1,6 @@
 
 //import org.assertj.core.internal.Paths;
+//import static org.assertj.core.api.Assertions.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.After;
@@ -110,30 +111,35 @@ public class InteractiveTests extends ApplicationTest {
     public void tearDown() throws Exception {
         Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE)); // Delete the test file
         RecipeData.getInstance().getRecipes().clear(); // Clear recipes after test
-    }
+    }*/
  
     @Test
     public void testSaveAndLoadRecipes() throws Exception {
-        // Setup
-        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps");
-        MainController controller = new MainController();
-        controller.setRecipeFile(TEST_RECIPE_FILE); 
-        controller.saveRecipe(recipe);
+       // Setup
+       Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps");
+       RecipeData.getInstance().getRecipes().clear(); // Clear existing recipes
+       RecipeData.getInstance().addRecipe(recipe); // Add a test recipe
 
-        // Execute save
-        controller.saveAllRecipesToFile();
+       MainController controller = new MainController();
+       controller.setRecipeFile(TEST_RECIPE_FILE); 
 
-        // Verify save
-        assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_RECIPE_FILE)));
+       // Execute save
+       controller.saveAllRecipesToFile(); // Save current recipes to file
 
-        // Execute load
-        controller.loadRecipes();
+       // Verify save
+       assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_RECIPE_FILE)));
 
-        // Verify load
-        RecipeData recipeData = RecipeData.getInstance();
-        assertEquals("There should be one recipe after loading", 1, recipeData.getRecipes().size());
-        Recipe loadedRecipe = recipeData.getRecipes().get(0);
-        assertEquals("Loaded recipe name should match", "Test Recipe", loadedRecipe.getName());
-    }*/
+       // Prepare for load test by clearing the recipes list
+       RecipeData.getInstance().getRecipes().clear(); // Ensure the list is clear before loading
+
+       // Execute load
+       controller.loadRecipes();
+
+       // Verify load
+       RecipeData recipeData = RecipeData.getInstance();
+       assertEquals("There should be one recipe after loading", 1, recipeData.getRecipes().size());
+       Recipe loadedRecipe = recipeData.getRecipes().get(0);
+       assertEquals("Loaded recipe name should match", "Test Recipe", loadedRecipe.getName());
+    }
 
 }
