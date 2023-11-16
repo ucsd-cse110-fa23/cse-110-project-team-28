@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -8,8 +7,8 @@ import javafx.fxml.FXMLLoader;
 
 public class RecipeApp extends Application {
 
-    final int WIDTH = 800;
-    final int HEIGHT = 500;
+    final static int WIDTH = 800;
+    final static int HEIGHT = 500;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -28,7 +27,6 @@ public class RecipeApp extends Application {
 
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
-
 
         primaryStage.show();
     }

@@ -6,17 +6,16 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.text.RandomStringGenerator;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;
+import utilites.SceneHelper;
 
 import java.util.ArrayList;
 
@@ -30,20 +29,20 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.updateRecipeList();
+        Platform.runLater(() -> {
+            this.reloadRecipeList();
+        });
     }
 
     public VBox getRecipeList() {
         return recipeList;
     }
 
-    private void updateRecipeList() {
+    private void reloadRecipeList() {
         // clear recipeList
         recipeList.getChildren().clear();
 
-        RecipeData recipeData = RecipeData.getInstance();
-
-        for (Recipe recipe : recipeData.getRecipes()) {
+        for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
             addRecipe(recipe);
         }
     }
@@ -56,11 +55,13 @@ public class MainController implements Initializable {
      */
     public void addRecipe(Recipe recipe) {
         // load recipePane.fxml and get its RecipeController
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
+        // todo: using testing recipePane and RecipePaneControllerV2
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePaneV2.fxml"));
 
         try {
             Parent recipePane = loader.load();
-            RecipePaneController recipePaneController = loader.getController();
+
+            RecipePaneControllerV2 recipePaneController = loader.getController();
 
             // set recipeName
             recipePaneController.setRecipe(recipe);
@@ -86,6 +87,7 @@ public class MainController implements Initializable {
 
     /**
      * Clears the recipeList and adds the given recipes
+     * 
      * @param recipes the recipes to add
      */
     public void setRecipes(ArrayList<Recipe> recipes) {
@@ -95,21 +97,18 @@ public class MainController implements Initializable {
     }
 
     public void addRecipeHandler() throws IOException {
-        Scene scene = addRecipeButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/newRecipe.fxml"));
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
+        SceneHelper.switchToNewRecipeScene(addRecipeButton.getScene());
     }
 
     public void debugAddRecipeHandler() throws IOException {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         Recipe recipe = new Recipe(generator.generate(10), "Dinner",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "https://picsum.photos/600/200");
+
         RecipeData.getInstance().addRecipe(recipe);
 
-        updateRecipeList();
+        reloadRecipeList();
     }
 }

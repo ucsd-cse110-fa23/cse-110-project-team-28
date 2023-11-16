@@ -6,31 +6,36 @@ import java.io.IOException;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 public class RecipeData {
-    private static String recipeFilePath = "recipes.json";
-
+    private final static String DEFAULT_FILE = "recipes.json";
     private static RecipeData instance = null;
 
+    private String fileLocation;
     private ArrayList<Recipe> recipes;
-
-    private RecipeData() {
-        recipes = new ArrayList<>();
-    }
 
     public static RecipeData getInstance() {
         if (instance == null) {
             instance = new RecipeData();
+            instance.setFileLocation(DEFAULT_FILE);
         }
+
         return instance;
     }
 
-    public static void setFilePath(String filePath) {
-        RecipeData.recipeFilePath = filePath;
+    public RecipeData() {
+        this.recipes = new ArrayList<Recipe>();
+    }
+
+    public static void setInstance(RecipeData recipeData) {
+        instance = recipeData;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 
     public ArrayList<Recipe> getRecipes() {
@@ -44,6 +49,10 @@ public class RecipeData {
     public void addRecipe(Recipe recipe) {
         recipes.add(recipe);
         saveRecipes();
+    }
+
+    public void clear() {
+        recipes.clear();
     }
 
     /**
@@ -100,21 +109,16 @@ public class RecipeData {
         return -1;
     }
 
+    /**
+     * Method to load recipes from a file
+     */
     public void loadRecipes() {
-        loadRecipes(recipeFilePath);
-    }
-
-    // Method to load recipes from a file
-    public void loadRecipes(String recipeFilePath) {
-        // Get all recipes from RecipeData
-        RecipeData recipeData = RecipeData.getInstance();
-
         // use Gson to convert recipes to JSON
         Gson gson = new Gson();
 
         // read JSON from file
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(recipeFilePath));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileLocation));
 
             // convert JSON to Recipe array
             Type recipeListType = new TypeToken<ArrayList<Recipe>>() {
@@ -122,8 +126,9 @@ public class RecipeData {
 
             ArrayList<Recipe> recipes = gson.fromJson(bufferedReader, recipeListType);
 
-            // add recipes to RecipeData
-            recipeData.setRecipes(recipes);
+            if (recipes != null)
+                // add recipes to RecipeData
+                setRecipes(recipes);
 
             bufferedReader.close();
         } catch (IOException e) {
@@ -131,23 +136,17 @@ public class RecipeData {
         }
     }
 
+    /**
+     * Method to save recipes to a file
+     */
     public void saveRecipes() {
-        saveRecipes(recipeFilePath);
-    }
-
-    // Method to save recipes to a file
-    public void saveRecipes(String recipeFilePath) {
-        // Get all recipes from RecipeData
-        RecipeData recipeData = RecipeData.getInstance();
-
         // use Gson to convert recipes to JSON
         Gson gson = new Gson();
 
         try {
-            // write JSON to file
-            FileWriter fileWriter = new FileWriter(recipeFilePath);
+            FileWriter fileWriter = new FileWriter(fileLocation);
 
-            gson.toJson(recipeData.getRecipes(), fileWriter);
+            gson.toJson(getRecipes(), fileWriter);
 
             fileWriter.close();
         } catch (IOException e) {
