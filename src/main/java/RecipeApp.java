@@ -13,6 +13,8 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        RecipeData.getInstance().loadRecipes();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
         Parent root = loader.load();
 
@@ -29,12 +31,6 @@ public class RecipeApp extends Application {
 
 
         primaryStage.show();
-
-        // Postponing the loading of recipes until the stage is shown and the scene is fully loaded
-        Platform.runLater(() -> {
-            System.out.println("Loading recipes...");
-            RecipeData.getInstance().loadRecipes();
-        });
     }
 
     public static void main(String[] args) {
