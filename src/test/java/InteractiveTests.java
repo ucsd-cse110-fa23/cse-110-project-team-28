@@ -24,38 +24,36 @@ public class InteractiveTests extends ApplicationTest {
     final int WIDTH = 800;
     final int HEIGHT = 500;
 
-    private Recipe originalRecipe;
-    private RecipeData recipeData;
-
-    private String TEST_RECIPE_FILE = "test_recipes.json";
+    private String TEST_FILE = "test_recipes.json";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
 
+        RecipeData mockRecipeData = new RecipeData();
+
+        mockRecipeData.setFileLocation(TEST_FILE);
+
+        RecipeData.setInstance(mockRecipeData);
+
         loader.getController();
 
         primaryStage.setTitle("PantryPal");
-
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
-
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
-
         primaryStage.show();
     }
 
     @Before
     public void setUp() throws Exception {
         // clear the recipe list before each test
-        RecipeData.getInstance().getRecipes().clear();
+        RecipeData.getInstance().clear();
 
         // clear the recipe file before each test
-        Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE));
+        Files.deleteIfExists(Paths.get(TEST_FILE));
     }
 
     @After
@@ -64,7 +62,7 @@ public class InteractiveTests extends ApplicationTest {
         RecipeData.getInstance().getRecipes().clear();
 
         // clear the recipe file after each test
-        Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE));
+        Files.deleteIfExists(Paths.get(TEST_FILE));
     }
 
     @Test
@@ -75,20 +73,20 @@ public class InteractiveTests extends ApplicationTest {
     @Test
     public void testSaveAndLoadRecipes() throws Exception {
         // Setup
-        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps");
+        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps", null);
         RecipeData.getInstance().getRecipes().clear(); // Clear existing recipes
         RecipeData.getInstance().addRecipe(recipe); // Add a test recipe
 
-        RecipeData.getInstance().saveRecipes(TEST_RECIPE_FILE);
+        RecipeData.getInstance().saveRecipes();
 
         // Verify save
-        assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_RECIPE_FILE)));
+        assertTrue("Recipe file should be created", Files.exists(Paths.get(TEST_FILE)));
 
         // Prepare for load test by clearing the recipes list
         RecipeData.getInstance().getRecipes().clear(); // Ensure the list is clear before loading
 
         // Load recipes using the instance method
-        RecipeData.getInstance().loadRecipes(TEST_RECIPE_FILE);
+        RecipeData.getInstance().loadRecipes();
 
         // Verify load
         assertEquals("There should be one recipe after loading", 1, RecipeData.getInstance().getRecipes().size());
@@ -99,20 +97,19 @@ public class InteractiveTests extends ApplicationTest {
     @Test
     public void testEditRecipe() throws Exception {
         new MainController();
-        recipeData = RecipeData.getInstance();
-        recipeData.getRecipes().clear(); // Clear existing data
 
         // Add a recipe to be edited
-        originalRecipe = new Recipe("Original Recipe", "Lunch", "Original ingredients", "Original steps");
-        recipeData.addRecipe(originalRecipe);
+        RecipeData.getInstance()
+                .addRecipe(new Recipe("Original Recipe", "Lunch", "Original ingredients", "Original steps", null));
         // Simulate user editing a recipe
         // For this example, let's say you're editing the name and ingredients
         String newRecipeName = "Edited Recipe";
         String newIngredients = "Edited ingredients";
         String newSteps = "Edited steps";
 
-        // Retrieve the recipe to edit (normally you would do some sort of selection or search here)
-        Recipe recipeToEdit = recipeData.getRecipes().get(0);
+        // Retrieve the recipe to edit (normally you would do some sort of selection or
+        // search here)
+        Recipe recipeToEdit = RecipeData.getInstance().getRecipes().get(0);
 
         // Perform the edit (this logic would be in your edit handling method)
         recipeToEdit.setName(newRecipeName);
@@ -125,18 +122,19 @@ public class InteractiveTests extends ApplicationTest {
         assertEquals("Steps should be edited", newSteps, recipeToEdit.getSteps());
 
         // Optionally, save the recipes and assert that the file has changed
-        RecipeData.getInstance().saveRecipes(TEST_RECIPE_FILE);
+        RecipeData.getInstance().saveRecipes();
 
         // Now clear the list and reload from file to ensure persistence
-        recipeData.getRecipes().clear();
+        RecipeData.getInstance().getRecipes().clear();
 
         // Load recipes using the instance method
-        RecipeData.getInstance().loadRecipes(TEST_RECIPE_FILE);
+        RecipeData.getInstance().loadRecipes();
 
         // Verify the first (and only) recipe is the edited one
-        Recipe reloadedRecipe = recipeData.getRecipes().get(0);
+        Recipe reloadedRecipe = RecipeData.getInstance().getRecipes().get(0);
         assertEquals("Reloaded recipe name should match edited name", newRecipeName, reloadedRecipe.getName());
-        assertEquals("Reloaded ingredients should match edited ingredients", newIngredients, reloadedRecipe.getIngredients());
+        assertEquals("Reloaded ingredients should match edited ingredients", newIngredients,
+                reloadedRecipe.getIngredients());
         assertEquals("Reloaded steps should match edited steps", newSteps, reloadedRecipe.getSteps());
     }
 

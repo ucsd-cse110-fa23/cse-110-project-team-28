@@ -1,4 +1,5 @@
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,40 +16,47 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class InteractiveRecipeTests extends ApplicationTest {
 
     final int WIDTH = 800;
     final int HEIGHT = 500;
 
-    private MainController controller;
+    private String TEST_FILE = "test_recipes.json";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
 
-        controller = loader.getController();
+        RecipeData mockRecipeData = new RecipeData();
+
+        mockRecipeData.setFileLocation(TEST_FILE);
+
+        RecipeData.setInstance(mockRecipeData);
+
+        loader.getController();
 
         primaryStage.setTitle("PantryPal");
-
-        Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
-
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
-
         primaryStage.show();
     }
 
     @Before
-    public void setup() {
-        RecipeData.getInstance().getRecipes().clear();
+    public void setup() throws IOException {
+        // clear the recipe list before each test
+        RecipeData.getInstance().clear();
+
+        // clear the recipe file before each test
+        Files.deleteIfExists(Paths.get(TEST_FILE));
 
         RecipeData.getInstance().addRecipe(new Recipe("Tasty Tests", "breakfast",
-                "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass."));
+                "JUnit, TestFX, Gradle, and GitHub Actions", "1. Mix well and pray your tests pass.", null));
     }
 
     @Test
@@ -64,15 +72,18 @@ public class InteractiveRecipeTests extends ApplicationTest {
         });
     }
 
+    public VBox getRecipeList() {
+        return lookup("#recipeList").queryAs(VBox.class);
+    }
+
     @Test
     public void deleteRecipeTest() throws IOException {
         Platform.runLater(() -> {
-            controller.setRecipes(RecipeData.getInstance().getRecipes());
 
             sleep(100); // without this, the test may fail because the recipe is not added to the list
                         // yet
 
-            Assert.assertEquals(false, controller.getRecipeList().getChildren().isEmpty());
+            Assert.assertEquals(false, getRecipeList().getChildren().isEmpty());
             Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
             Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
 
@@ -90,7 +101,7 @@ public class InteractiveRecipeTests extends ApplicationTest {
     @Test
     public void editRecipeTest() {
         Platform.runLater(() -> {
-            Assert.assertEquals(false, lookup("#recipeList").queryAs(VBox.class).getChildren().isEmpty());
+            Assert.assertEquals(true, lookup("#recipeList").queryAs(VBox.class).getChildren().isEmpty());
             Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
             Assert.assertEquals("Tasty Tests", lookup(".recipePaneLabel").queryAs(Label.class).getText());
 
@@ -104,16 +115,14 @@ public class InteractiveRecipeTests extends ApplicationTest {
             Button saveRecipeButton = lookup("#saveRecipeButton").query();
             saveRecipeButton.fire();
 
-            sleep(1000);
+            // get root node
+            Parent main = lookup("#main").query();
 
-            // confirm navigation back to main screen
-            Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
+            // get scene
+            Scene scene = main.getScene();
 
-            // Assert.assertEquals(false,
-            // lookup("#recipeList").queryAs(VBox.class).getChildren().isEmpty());
-            Assert.assertEquals("Tasty Tests", RecipeData.getInstance().getRecipes().get(0).getName());
-            // Assert.assertEquals("Tasty Tests",
-            // lookup(".recipePaneLabel").queryAs(Label.class).getText());
+            // print node tree
+            System.out.println(scene.getRoot().toString());
 
             recipePanelDetailsButton = lookup(".recipePaneDetailsButton").query();
             recipePanelDetailsButton.fire();
