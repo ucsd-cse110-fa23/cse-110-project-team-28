@@ -6,46 +6,47 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane minHeight="-Infinity" prefHeight="48.0" styleClass="recipePane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
-   <columnConstraints>
-      <ColumnConstraints fillWidth="false" hgrow="ALWAYS" />
-      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-   </rowConstraints>
+
+<VBox prefHeight="96.0" prefWidth="1000.0" styleClass="recipePane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneController">
    <children>
-      <Label fx:id="recipeName" styleClass="recipePaneLabel" text="Lorem Ipsum">
-         <font>
-            <Font name="PP Eiko Medium" size="18.0" />
-         </font>
-         <GridPane.margin>
-            <Insets left="8.0" right="8.0" />
-         </GridPane.margin>
-      </Label>
-      <Button fx:id="detailsButton" alignment="CENTER" mnemonicParsing="false" onAction="#detailsButtonHandler" text="Details" GridPane.columnIndex="1">
-         <font>
-            <Font name="PP Neue Machina Regular" size="12.0" />
-         </font>
-         <graphic>
-            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-               <image>
-                  <Image url="@../images/forward.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <GridPane.margin>
-            <Insets right="8.0" />
-         </GridPane.margin>
-         <styleClass>
-            <String fx:value="darker" />
-            <String fx:value="recipePaneDetailsButton" />
-         </styleClass>
-      </Button>
+      <ImageView fitHeight="48.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true" smooth="false" VBox.vgrow="ALWAYS">
+         <image>
+            <Image url="@../../../../../../../Downloads/images/idle%20hours%20square.jpg" />
+         </image>
+      </ImageView>
+      <HBox alignment="CENTER_LEFT" fillHeight="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="48.0">
+         <children>
+            <Label fx:id="recipeName" styleClass="recipePaneLabel" text="Lorem Ipsum">
+               <font>
+                  <Font name="PP Eiko Medium" size="18.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="detailsButton" alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" onAction="#detailsButtonHandler" text="Details">
+               <font>
+                  <Font name="PP Neue Machina Regular" size="12.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                     <image>
+                        <Image url="@../images/forward.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="darker" />
+                  <String fx:value="recipePaneDetailsButton" />
+               </styleClass>
+            </Button>
+         </children>
+         <padding>
+            <Insets left="12.0" right="12.0" />
+         </padding>
+      </HBox>
    </children>
-</GridPane>
+</VBox>

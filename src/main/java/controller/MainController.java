@@ -59,7 +59,7 @@ public class MainController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
 
         try {
-            GridPane recipePane = loader.load();
+            Parent recipePane = loader.load();
             RecipePaneController recipePaneController = loader.getController();
 
             // set recipeName

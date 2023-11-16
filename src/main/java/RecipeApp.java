@@ -24,7 +24,7 @@ public class RecipeApp extends Application {
         scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
 
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);

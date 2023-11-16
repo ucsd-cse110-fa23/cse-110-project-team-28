@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <top>
       <GridPane alignment="CENTER" prefHeight="64.0" styleClass="header" BorderPane.alignment="CENTER">
          <columnConstraints>
@@ -37,7 +37,7 @@
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="340.0" styleClass="scrollPane">
          <content>
-            <VBox fx:id="recipeList" alignment="TOP_CENTER" spacing="8.0">
+            <VBox fx:id="recipeList" alignment="TOP_CENTER" fillWidth="false" spacing="8.0">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
