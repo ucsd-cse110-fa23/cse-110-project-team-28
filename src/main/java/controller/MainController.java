@@ -15,13 +15,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Observer;
 import model.Recipe;
 import model.RecipeData;
 
 import java.util.ArrayList;
 
-public class MainController implements Initializable, Observer {
+public class MainController implements Initializable {
 
     @FXML
     private VBox recipeList;
@@ -32,8 +31,6 @@ public class MainController implements Initializable, Observer {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.updateRecipeList();
-
-        RecipeData.getInstance().setObserver(this);
     }
 
     public VBox getRecipeList() {
@@ -113,11 +110,6 @@ public class MainController implements Initializable, Observer {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         RecipeData.getInstance().addRecipe(recipe);
 
-        updateRecipeList();
-    }
-
-    @Override
-    public void update() {
         updateRecipeList();
     }
 }

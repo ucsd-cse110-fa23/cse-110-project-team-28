@@ -11,13 +11,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
-public class RecipeData implements Observable {
-    private final static String recipeFilePath = "recipes.json";
+public class RecipeData {
+    private static String recipeFilePath = "recipes.json";
 
     private static RecipeData instance = null;
 
     private ArrayList<Recipe> recipes;
-    private Observer observer;
 
     private RecipeData() {
         recipes = new ArrayList<>();
@@ -28,6 +27,10 @@ public class RecipeData implements Observable {
             instance = new RecipeData();
         }
         return instance;
+    }
+
+    public static void setFilePath(String filePath) {
+        RecipeData.recipeFilePath = filePath;
     }
 
     public ArrayList<Recipe> getRecipes() {
@@ -126,8 +129,6 @@ public class RecipeData implements Observable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        notifyObservers();
     }
 
     public void saveRecipes() {
@@ -152,21 +153,5 @@ public class RecipeData implements Observable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void setObserver(Observer observer) {
-        this.observer = observer;
-    }
-
-    @Override
-    public void removeObserver() {
-        this.observer = null;
-    }
-
-    @Override
-    public void notifyObservers() {
-        if (observer != null)
-            observer.update();
     }
 }

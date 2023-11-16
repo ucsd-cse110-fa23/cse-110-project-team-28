@@ -1,4 +1,5 @@
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -52,10 +53,17 @@ public class InteractiveTests extends ApplicationTest {
     public void setUp() throws Exception {
         // clear the recipe list before each test
         RecipeData.getInstance().getRecipes().clear();
-        // note: not removing the observer will cause fx thread errors
-        RecipeData.getInstance().removeObserver();
 
         // clear the recipe file before each test
+        Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // clear the recipe list after each test
+        RecipeData.getInstance().getRecipes().clear();
+
+        // clear the recipe file after each test
         Files.deleteIfExists(Paths.get(TEST_RECIPE_FILE));
     }
 

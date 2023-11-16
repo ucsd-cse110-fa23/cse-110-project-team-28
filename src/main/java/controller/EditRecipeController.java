@@ -58,6 +58,10 @@ public class EditRecipeController implements Initializable {
      */
     private void saveRecipe() {
         recipe.setSteps(editRecipeTextArea.getText());
+
+        // save change to file
+        RecipeData recipeData = RecipeData.getInstance();
+        recipeData.saveRecipes();
     }
 
     public void deleteRecipeButtonHandler() throws IOException {
