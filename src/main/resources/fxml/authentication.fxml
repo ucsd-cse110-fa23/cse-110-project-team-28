@@ -19,6 +19,8 @@
         <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
     </GridPane>
+    <Label fx:id="errorLabel" textFill="red"/>
     <Button text="Sign Up" fx:id="signUpButton" onAction="#handleSignUp"/>
+    <Button text="Log In" fx:id="logInButton" onAction="#handleLogIn"/>
     <CheckBox fx:id="autoLoginCheckBox" text="Remember me"/>
 </VBox>
