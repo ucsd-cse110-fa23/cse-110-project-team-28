@@ -14,26 +14,10 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
-        Parent root = loader.load();
-
-        primaryStage.setTitle("PantryPal");
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-
-        primaryStage.setWidth(WIDTH);
-        primaryStage.setHeight(HEIGHT);
-
-
+        Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
+        primaryStage.setTitle("Sign Up");
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
-        MainController controller = loader.getController();
-        // Postponing the loading of recipes until the stage is shown and the scene is fully loaded
-        Platform.runLater(controller::loadRecipes);
     }
 
     public static void main(String[] args) {
