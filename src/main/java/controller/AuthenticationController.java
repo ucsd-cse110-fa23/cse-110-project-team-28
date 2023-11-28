@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import controller.MainController;
 import javafx.application.Application;
+import java.util.prefs.Preferences;
 import model.RecipeData;
 
 import com.mongodb.client.MongoClient;
@@ -122,6 +123,9 @@ public class AuthenticationController {
 
         if (isUsernameTaken(username)) {
             if (isPasswordCorrect(username, password)) {
+                if (autoLoginCheckBox.isSelected()) {
+                    saveLoginCredentials(username, password);
+                }
                 navigateToMainView();
             } else {
                 setError("Incorrect password.");
@@ -129,6 +133,12 @@ public class AuthenticationController {
         } else {
             setError("Username does not exist.");
         }
+    }
+
+    private void saveLoginCredentials(String username, String password) {
+        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
+        prefs.put("username", username);
+        prefs.put("password", password); 
     }
 
     private void setError(String message) {
