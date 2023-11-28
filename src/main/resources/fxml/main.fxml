@@ -22,6 +22,7 @@
             <ColumnConstraints fillWidth="false" halignment="CENTER" maxWidth="1.7976931348623157E308" percentWidth="40.0" />
             <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="30.0" />
          </columnConstraints>
+         <Button fx:id="logoutButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Logout" onAction="#handleLogout"/>
          <children>
             <Text id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="PantryPal" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>

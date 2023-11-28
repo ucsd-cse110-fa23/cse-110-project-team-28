@@ -17,6 +17,8 @@ public class RecipeApp extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
         primaryStage.setTitle("Sign Up");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setWidth(WIDTH);
+        primaryStage.setHeight(HEIGHT);
         primaryStage.show();
     }
 
