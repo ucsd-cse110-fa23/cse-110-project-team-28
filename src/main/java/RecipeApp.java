@@ -1,9 +1,10 @@
+import controller.AuthenticationController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.RecipeData;
 import javafx.fxml.FXMLLoader;
+import java.util.prefs.Preferences;
 
 public class RecipeApp extends Application {
 
@@ -12,23 +13,33 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        RecipeData.getInstance().loadRecipes();
+        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
+        String username = prefs.get("username", null);
+        String password = prefs.get("password", null);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/main.fxml"));
-        Parent root = loader.load();
+        if (username != null && password != null) {
+            Parent root = FXMLLoader.load(getClass().getResource("fxml/main.fxml"));
+            primaryStage.setTitle("PantryPal 2");
 
-        primaryStage.setTitle("PantryPal");
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.setWidth(WIDTH);
+            primaryStage.setHeight(HEIGHT);
+            primaryStage.show();
+        } else {
+            Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
+            primaryStage.setTitle("Sign Up");
 
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
-        primaryStage.setWidth(WIDTH);
-        primaryStage.setHeight(HEIGHT);
-
-        primaryStage.show();
+            primaryStage.setScene(scene);
+            primaryStage.setWidth(WIDTH);
+            primaryStage.setHeight(HEIGHT);
+            primaryStage.show();
+        }
     }
 
     public static void main(String[] args) {

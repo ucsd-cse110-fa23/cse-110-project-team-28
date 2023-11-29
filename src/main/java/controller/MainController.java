@@ -11,8 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import java.util.prefs.Preferences;
 import model.Recipe;
 import model.RecipeData;
 import utilites.SceneHelper;
@@ -26,6 +29,9 @@ public class MainController implements Initializable {
 
     @FXML
     private Button addRecipeButton;
+
+    @FXML
+    private Button logoutButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -111,4 +117,26 @@ public class MainController implements Initializable {
 
         reloadRecipeList();
     }
+
+    @FXML
+    private void handleLogout() throws Exception {
+        clearStoredCredentials();
+        // Load the login view
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
+        Parent loginViewRoot = loader.load();
+
+        // Get the current stage from any UI component
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+
+        // Set the login view on the stage
+        stage.setScene(new Scene(loginViewRoot));
+        stage.show();
+    }
+
+    private void clearStoredCredentials() {
+        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
+        prefs.remove("username");
+        prefs.remove("password");
+    }
+
 }
