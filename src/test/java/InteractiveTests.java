@@ -67,7 +67,7 @@ public class InteractiveTests extends ApplicationTest {
 
     @Test
     public void sanityTest() {
-        Assert.assertEquals("PantryPal", lookup("#titleLabel").queryAs(Label.class).getText());
+        Assert.assertEquals("PantryPal 2", lookup("#titleLabel").queryAs(Label.class).getText());
     }
 
     @Test

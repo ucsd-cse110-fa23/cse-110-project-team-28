@@ -53,7 +53,7 @@ public class CurrentInteractiveTests extends ApplicationTest {
 
     @Test
     public void testTitle() {
-        FxAssert.verifyThat("#titleLabel", LabeledMatchers.hasText("PantryPal"));
+        FxAssert.verifyThat("#titleLabel", LabeledMatchers.hasText("PantryPal 2"));
     }
 
     @Test

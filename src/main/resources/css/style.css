@@ -4,7 +4,8 @@
 #main .footer,
 #newRecipe,
 #newRecipe .header,
-#newRecipe .footer {
+#newRecipe .footer,
+#auth {
   -fx-background-color: #fefefe;
 }
 
@@ -77,3 +78,7 @@
   -fx-background-color: #ffa726;
   -fx-background-radius: 8;
 }
+
+/**
+ * auth
+*/

@@ -20,6 +20,12 @@ To run the tests, run the following command in the root directory of the project
 
 <!-- tree -I "build|.gradle|.vscode|bin|gradle" -->
 
+## Client Config
+
+The configuration for the client is relatively primitive. The client configuration is stored in `src/main/resources/config.json` in JSON with the following properties:
+
+- `MONGODB_URI`: The URI of the MongoDB database.
+
 ## Project Architecture
 
 Our app follows the Model-View-Controller (MVC) architecture.
@@ -79,7 +85,7 @@ Below is an example from `EditRecipeController.java` that switches to the `main.
 
 ```java
 @FXML
-private TextArea editRecipeTextArea;   
+private TextArea editRecipeTextArea;
 
 // ...
 

@@ -30,9 +30,6 @@ public class MainController implements Initializable {
     @FXML
     private Button addRecipeButton;
 
-    @FXML
-    private Button logoutButton;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
@@ -119,18 +116,9 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void handleLogout() throws Exception {
+    private void handleLogout() throws IOException {
         clearStoredCredentials();
-        // Load the login view
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
-        Parent loginViewRoot = loader.load();
-
-        // Get the current stage from any UI component
-        Stage stage = (Stage) logoutButton.getScene().getWindow();
-
-        // Set the login view on the stage
-        stage.setScene(new Scene(loginViewRoot));
-        stage.show();
+        SceneHelper.switchToAuthenticationScene(recipeList.getScene());
     }
 
     private void clearStoredCredentials() {

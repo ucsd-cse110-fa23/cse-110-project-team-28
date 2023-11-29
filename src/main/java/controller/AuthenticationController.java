@@ -10,16 +10,17 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
-import controller.MainController;
-import javafx.application.Application;
 import java.util.prefs.Preferences;
 import model.RecipeData;
+import utilites.SceneHelper;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+
+import config.Config;
 
 import org.bson.Document;
 
@@ -40,22 +41,21 @@ public class AuthenticationController {
     private MongoCollection<Document> userCollection;
 
     @FXML
-    private void handleSignUp() throws Exception {
+    private void signUpHandler() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
         boolean autoLogin = autoLoginCheckBox.isSelected();
 
         if (isSignUpSuccessful(username)) {
             addUserToDB(username, password);
-            navigateToMainView();
+            SceneHelper.switchToMainScene(usernameField.getScene());
         } else {
             setError("That username is taken.");
         }
     }
 
     public void addUserToDB(String username, String password) {
-        String uri = "mongodb+srv://kazbijar:8DpFkd65TNEzaNv7@cluster0.34t1sqc.mongodb.net/?retryWrites=true&w=majority";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
+        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
 
             MongoDatabase userDB = mongoClient.getDatabase("users");
             userCollection = userDB.getCollection("usernames_passwords");
@@ -64,8 +64,7 @@ public class AuthenticationController {
     }
 
     public Boolean isUsernameTaken(String username) {
-        String uri = "mongodb+srv://kazbijar:8DpFkd65TNEzaNv7@cluster0.34t1sqc.mongodb.net/?retryWrites=true&w=majority";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
+        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
             MongoDatabase userDB = mongoClient.getDatabase("users");
             userCollection = userDB.getCollection("usernames_passwords");
 
@@ -91,34 +90,8 @@ public class AuthenticationController {
         }
     }
 
-    private void navigateToMainView() throws Exception {
-        // Load the main view FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        Parent root = loader.load();
-        Stage primaryStage = (Stage) usernameField.getScene().getWindow();
-
-        primaryStage.setTitle("PantryPal 2");
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(500);
-
-        primaryStage.show();
-
-        // Load recipes after showing the primary stage
-        MainController controller = loader.getController();
-        Platform.runLater(() -> {
-            RecipeData.getInstance().loadRecipes();
-        });
-    }
-
     @FXML
-    private void handleLogIn() throws Exception {
+    private void loginHandler() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
         boolean autoLogin = autoLoginCheckBox.isSelected();
@@ -128,7 +101,7 @@ public class AuthenticationController {
                 if (autoLoginCheckBox.isSelected()) {
                     saveLoginCredentials(username, password);
                 }
-                navigateToMainView();
+                SceneHelper.switchToMainScene(usernameField.getScene());
             } else {
                 setError("Incorrect password.");
             }
@@ -157,8 +130,7 @@ public class AuthenticationController {
     }
 
     public Boolean isPasswordCorrect(String username, String password) {
-        String uri = "mongodb+srv://kazbijar:8DpFkd65TNEzaNv7@cluster0.34t1sqc.mongodb.net/?retryWrites=true&w=majority";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
+        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
             MongoDatabase userDB = mongoClient.getDatabase("users");
             userCollection = userDB.getCollection("usernames_passwords");
 

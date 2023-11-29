@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import java.util.prefs.Preferences;
 
+import config.Config;
+
 public class RecipeApp extends Application {
 
     final static int WIDTH = 800;
@@ -13,6 +15,8 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Config.init();
+
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         String username = prefs.get("username", null);
         String password = prefs.get("password", null);
@@ -27,6 +31,7 @@ public class RecipeApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.setWidth(WIDTH);
             primaryStage.setHeight(HEIGHT);
+            primaryStage.setResizable(true);
             primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
@@ -38,6 +43,7 @@ public class RecipeApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.setWidth(WIDTH);
             primaryStage.setHeight(HEIGHT);
+            primaryStage.setResizable(true);
             primaryStage.show();
         }
     }

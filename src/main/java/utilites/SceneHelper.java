@@ -38,4 +38,14 @@ public class SceneHelper {
         stage.setScene(newScene);
         stage.show();
     }
+
+    public static void switchToAuthenticationScene(Scene scene) throws IOException {
+        Stage stage = (Stage) scene.getWindow();
+        URL sceneUrl = SceneHelper.class.getResource("/fxml/authentication.fxml");
+        Parent root = FXMLLoader.load(sceneUrl);
+        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+
+        stage.setScene(newScene);
+        stage.show();
+    }
 }

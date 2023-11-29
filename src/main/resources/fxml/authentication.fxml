@@ -1,26 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AuthenticationController">
-    <GridPane hgap="10.0" vgap="10.0">
-        <padding>
-            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
-        </padding>
-        <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-        <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-    </GridPane>
-    <Label fx:id="errorLabel" textFill="red"/>
-    <Button text="Sign Up" fx:id="signUpButton" onAction="#handleSignUp"/>
-    <Button text="Log In" fx:id="logInButton" onAction="#handleLogIn"/>
-    <CheckBox fx:id="autoLoginCheckBox" text="Remember me"/>
-</VBox>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21"
+   xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AuthenticationController">
+   <center>
+      <VBox id="auth" alignment="CENTER" spacing="10.0" stylesheets="@../css/style.css">
+         <VBox alignment="CENTER" spacing="12.0">
+            <children>
+               <HBox alignment="CENTER" spacing="12.0">
+                  <children>
+                     <Label text="Username:" />
+                     <TextField fx:id="usernameField" />
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER" spacing="12.0">
+                  <children>
+                     <Label text="Password:" />
+                     <PasswordField fx:id="passwordField" />
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         <Label fx:id="errorLabel" textFill="red" />
+         <HBox alignment="CENTER" spacing="12.0">
+            <children>
+               <Button fx:id="signUpButton" onAction="#signUpHandler" prefHeight="32.0"
+                  text="Sign Up">
+                  <graphic>
+                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                        preserveRatio="true">
+                        <image>
+                           <Image url="@../images/add.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+               <Button fx:id="logInButton" onAction="#loginHandler" prefHeight="32.0" text="Log In">
+                  <graphic>
+                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                        preserveRatio="true">
+                        <image>
+                           <Image url="@../images/login.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+            </children>
+         </HBox>
+         <CheckBox fx:id="autoLoginCheckBox" text="Remember me" />
+      </VBox>
+   </center>
+   <top>
+      <VBox alignment="CENTER" prefHeight="64.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Log In">
+               <font>
+                  <Font name="PP Eiko Regular" size="28.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>
