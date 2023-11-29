@@ -10,6 +10,13 @@ public class Recipe {
     public Recipe() {
     }
 
+    public Recipe(String name, String mealType, String ingredients, String steps) {
+        this.name = name;
+        this.mealType = mealType;
+        this.ingredients = ingredients;
+        this.steps = steps;
+    }
+
     public Recipe(String name, String mealType, String ingredients, String steps, String imageURL) {
         this.name = name;
         this.mealType = mealType;
