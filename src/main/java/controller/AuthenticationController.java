@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import java.util.prefs.Preferences;
 import model.RecipeData;
+import utilites.MongoDB;
 import utilites.SceneHelper;
 
 import com.mongodb.client.MongoClient;
@@ -44,6 +45,12 @@ public class AuthenticationController {
     private void signUpHandler() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            setError("Please enter a username and password.");
+            return;
+        }
+
         boolean autoLogin = autoLoginCheckBox.isSelected();
 
         if (isSignUpSuccessful(username)) {
@@ -55,23 +62,23 @@ public class AuthenticationController {
     }
 
     public void addUserToDB(String username, String password) {
-        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
+        MongoClient mongoClient = MongoDB.getMongoClient();
 
-            MongoDatabase userDB = mongoClient.getDatabase("users");
-            userCollection = userDB.getCollection("usernames_passwords");
-            insertUser(userCollection, username, password);
-        }
+        MongoDatabase userDB = mongoClient.getDatabase("users");
+        userCollection = userDB.getCollection("usernames_passwords");
+        insertUser(userCollection, username, password);
+
     }
 
     public Boolean isUsernameTaken(String username) {
-        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
-            MongoDatabase userDB = mongoClient.getDatabase("users");
-            userCollection = userDB.getCollection("usernames_passwords");
+        MongoClient mongoClient = MongoDB.getMongoClient();
 
-            // Query the database to see if a user with the given username already exists
-            Document found = userCollection.find(new Document("username", username)).first();
-            return found != null; // If found is not null, the username is taken
-        }
+        MongoDatabase userDB = mongoClient.getDatabase("users");
+        userCollection = userDB.getCollection("usernames_passwords");
+
+        // Query the database to see if a user with the given username already exists
+        Document found = userCollection.find(new Document("username", username)).first();
+        return found != null; // If found is not null, the username is taken
     }
 
     public void insertUser(MongoCollection<Document> userCollection, String username, String password) {
@@ -94,6 +101,12 @@ public class AuthenticationController {
     private void loginHandler() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            setError("Please enter a username and password.");
+            return;
+        }
+
         boolean autoLogin = autoLoginCheckBox.isSelected();
 
         if (isUsernameTaken(username)) {
@@ -130,19 +143,20 @@ public class AuthenticationController {
     }
 
     public Boolean isPasswordCorrect(String username, String password) {
-        try (MongoClient mongoClient = MongoClients.create(Config.getMongoDBUri())) {
-            MongoDatabase userDB = mongoClient.getDatabase("users");
-            userCollection = userDB.getCollection("usernames_passwords");
+        MongoClient mongoClient = MongoDB.getMongoClient();
 
-            // Query the database for the user with the given username
-            Document user = userCollection.find(Filters.eq("username", username)).first();
+        MongoDatabase userDB = mongoClient.getDatabase("users");
+        userCollection = userDB.getCollection("usernames_passwords");
 
-            if (user != null) {
-                String storedPassword = user.getString("password");
-                return storedPassword.equals(password);
-            }
+        // Query the database for the user with the given username
+        Document user = userCollection.find(Filters.eq("username", username)).first();
 
-            return false; // User not found or password doesn't match
+        if (user != null) {
+            String storedPassword = user.getString("password");
+            return storedPassword.equals(password);
         }
+
+        return false; // User not found or password doesn't match
+
     }
 }
