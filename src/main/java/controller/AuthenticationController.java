@@ -112,7 +112,9 @@ public class AuthenticationController {
 
         // Load recipes after showing the primary stage
         MainController controller = loader.getController();
-        Platform.runLater(controller::loadRecipes);
+        Platform.runLater(() -> {
+            RecipeData.getInstance().loadRecipes();
+        });
     }
 
     @FXML
@@ -138,7 +140,7 @@ public class AuthenticationController {
     private void saveLoginCredentials(String username, String password) {
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         prefs.put("username", username);
-        prefs.put("password", password); 
+        prefs.put("password", password);
     }
 
     private void setError(String message) {
@@ -149,8 +151,7 @@ public class AuthenticationController {
     private boolean isLogInSuccessful(String username, String password) {
         if (isPasswordCorrect(username, password)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
