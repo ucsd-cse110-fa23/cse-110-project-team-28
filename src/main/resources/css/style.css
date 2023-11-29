@@ -4,7 +4,8 @@
 #main .footer,
 #newRecipe,
 #newRecipe .header,
-#newRecipe .footer {
+#newRecipe .footer,
+#auth {
   -fx-background-color: #fefefe;
 }
 
@@ -50,9 +51,11 @@
   -fx-border-style: solid none none none;
 }
 
-.recipe {
+.recipePane {
   -fx-background-color: #f0f0f0;
-  -fx-background-radius: 4;
+  -fx-background-size: 100%;
+  -fx-background-position: center center;
+  -fx-background-repeat: no-repeat;
 }
 
 /**
@@ -75,3 +78,7 @@
   -fx-background-color: #ffa726;
   -fx-background-radius: 8;
 }
+
+/**
+ * auth
+*/

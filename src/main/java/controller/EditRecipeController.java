@@ -5,15 +5,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 import model.Recipe;
 import model.RecipeData;
+import utilites.SceneHelper;
 
 public class EditRecipeController implements Initializable {
 
@@ -39,13 +36,7 @@ public class EditRecipeController implements Initializable {
     }
 
     private void goHome() throws IOException {
-        Scene scene = editRecipeTextArea.getScene();
-        Stage stage = (Stage) scene.getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
+        SceneHelper.switchToMainScene(editRecipeTextArea.getScene());
     }
 
     public void saveRecipeButtonHandler() throws IOException {
@@ -58,6 +49,9 @@ public class EditRecipeController implements Initializable {
      */
     private void saveRecipe() {
         recipe.setSteps(editRecipeTextArea.getText());
+
+        // save change to file
+        RecipeData.getInstance().saveRecipes();
     }
 
     public void deleteRecipeButtonHandler() throws IOException {
@@ -69,7 +63,7 @@ public class EditRecipeController implements Initializable {
      * Deletes recipe from main app list
      */
     private void deleteRecipe() {
-        RecipeData.getInstance().getRecipes().remove(recipe);
-        MainController.saveAllRecipesToFile();    }
+        RecipeData.getInstance().deleteRecipe(recipe);
+    }
 
 }

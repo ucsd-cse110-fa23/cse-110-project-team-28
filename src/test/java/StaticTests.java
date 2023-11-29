@@ -1,15 +1,10 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.io.FileWriter;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import controller.MainController;
+import com.google.gson.Gson;
+
 import model.Recipe;
 
 public class StaticTests {
@@ -31,10 +26,10 @@ public class StaticTests {
     @Test
     public void testRecipeToJson() {
         // Setup
-        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps");
+        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps", null);
 
         // Execute
-        String json = recipe.toJson();
+        String json = new Gson().toJson(recipe);
 
         // Verify
         assertNotNull("The serialized JSON should not be null", json);
@@ -47,7 +42,7 @@ public class StaticTests {
         String json = "{\"name\":\"Test Recipe\",\"mealType\":\"Dinner\",\"ingredients\":\"Ingredients\",\"steps\":\"Steps\"}";
 
         // Execute
-        Recipe recipe = Recipe.fromJson(json);
+        Recipe recipe = new Gson().fromJson(json, Recipe.class);
 
         // Verify
         assertNotNull("The deserialized recipe should not be null", recipe);
