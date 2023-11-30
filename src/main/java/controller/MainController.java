@@ -30,23 +30,23 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(() -> {
-            this.reloadRecipeList();
-        });
+        // Platform.runLater(() -> {
+        // this.reloadRecipeList();
+        // });
     }
 
     public VBox getRecipeList() {
         return recipeList;
     }
 
-    private void reloadRecipeList() {
-        // clear recipeList
-        recipeList.getChildren().clear();
+    // private void reloadRecipeList() {
+    // // clear recipeList
+    // recipeList.getChildren().clear();
 
-        for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
-            addRecipe(recipe);
-        }
-    }
+    // for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+    // addRecipe(recipe);
+    // }
+    // }
 
     /**
      * Adds a recipe to the recipeList
@@ -111,7 +111,7 @@ public class MainController implements Initializable {
         // todo: implement this
         // RecipeData.getInstance().addRecipe(recipe);
 
-        reloadRecipeList();
+        // reloadRecipeList();
     }
 
     @FXML
