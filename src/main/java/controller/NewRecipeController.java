@@ -165,6 +165,7 @@ public class NewRecipeController implements Initializable {
         recipe.setIngredients(ingredients);
         recipe.setSteps(steps);
 
-        RecipeData.getInstance().addRecipe(recipe);
+        // todo: implement this
+        // RecipeData.getInstance().addRecipe(recipe);
     }
 }

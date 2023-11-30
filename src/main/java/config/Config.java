@@ -3,17 +3,17 @@ package config;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.InputStream;
 
 public class Config {
     // Path: src/main/resources/config.json
     private static final String CONFIG_FILE = "config.json";
 
-    private static boolean isLoaded = false;
-
     private static String MONGODB_URI;
+    private static String DATABASE;
+    private static String USER_COLLECTION;
+    private static String SERVER_HOSTNAME;
+    private static int SERVER_PORT;
 
     /**
      * Loads the config file
@@ -31,15 +31,32 @@ public class Config {
         JSONObject config = new JSONObject(configString);
 
         // set config variables
-        MONGODB_URI = config.getString("MONGODB_URI");
+        MONGODB_URI = config.getString("mongodb_uri");
+        DATABASE = config.getString("database");
+        USER_COLLECTION = config.getString("user_collection");
+        SERVER_HOSTNAME = config.getString("server_hostname");
+        SERVER_PORT = config.getInt("server_port");
 
-        // set isLoaded to true
-        isLoaded = true;
+        System.out.println("Config initialized");
     }
 
     public static String getMongoDBUri() {
-        if (!isLoaded)
-            throw new RuntimeException("Config not loaded");
         return MONGODB_URI;
+    }
+
+    public static String getDatabaseName() {
+        return DATABASE;
+    }
+
+    public static String getUserCollectionName() {
+        return USER_COLLECTION;
+    }
+
+    public static String getServerHostname() {
+        return SERVER_HOSTNAME;
+    }
+
+    public static int getServerPort() {
+        return SERVER_PORT;
     }
 }
