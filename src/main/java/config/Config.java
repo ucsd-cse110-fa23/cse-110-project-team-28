@@ -3,8 +3,6 @@ package config;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.InputStream;
 
 public class Config {
@@ -14,6 +12,8 @@ public class Config {
     private static boolean isLoaded = false;
 
     private static String MONGODB_URI;
+    private static String DATABASE_NAME;
+    private static String USER_COLLECTION_NAME;
 
     /**
      * Loads the config file
@@ -32,6 +32,8 @@ public class Config {
 
         // set config variables
         MONGODB_URI = config.getString("MONGODB_URI");
+        DATABASE_NAME = config.getString("DATABASE_NAME");
+        USER_COLLECTION_NAME = config.getString("USER_COLLECTION_NAME");
 
         // set isLoaded to true
         isLoaded = true;
@@ -41,5 +43,17 @@ public class Config {
         if (!isLoaded)
             throw new RuntimeException("Config not loaded");
         return MONGODB_URI;
+    }
+
+    public static String getDatabaseName() {
+        if (!isLoaded)
+            throw new RuntimeException("Config not loaded");
+        return DATABASE_NAME;
+    }
+
+    public static String getUserCollectionName() {
+        if (!isLoaded)
+            throw new RuntimeException("Config not loaded");
+        return USER_COLLECTION_NAME;
     }
 }
