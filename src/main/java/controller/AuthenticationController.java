@@ -6,11 +6,16 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.UserData;
 import javafx.scene.control.Label;
+import utilites.AuthHelper;
+import utilites.AuthResponse;
 import utilites.MongoDBHelper;
 import utilites.SceneHelper;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
+
+import com.google.gson.JsonObject;
 
 public class AuthenticationController {
 
@@ -41,21 +46,19 @@ public class AuthenticationController {
             return;
         }
 
-        // todo: add functionality
-        // boolean autoLogin = autoLoginCheckBox.isSelected();
+        AuthResponse authResponse = AuthHelper.signup(username, password);
 
-        if (MongoDBHelper.doesUsernameExist(username)) {
-            setError("That username is taken.");
+        if (authResponse.getSuccess()) {
+            UserData.setInstance(authResponse.getUserData());
+
+            // todo: add functionality
+            // boolean autoLogin = autoLoginCheckBox.isSelected();
+
+            SceneHelper.switchToMainScene(usernameField.getScene());
+        } else {
+            setError(authResponse.getMessage());
             return;
         }
-
-        ObjectId objectId = MongoDBHelper.insertUser(username, password);
-
-        UserData.getInstance().setObjectId(objectId);
-
-        // todo: auto login
-
-        SceneHelper.switchToMainScene(usernameField.getScene());
     }
 
     @FXML
@@ -68,18 +71,18 @@ public class AuthenticationController {
             return;
         }
 
-        // todo: add functionality
-        // boolean autoLogin = autoLoginCheckBox.isSelected();
+        AuthResponse authResponse = AuthHelper.login(username, password);
 
-        Document userDocument = MongoDBHelper.findUser(username, password);
+        if (authResponse.getSuccess()) {
+            UserData.setInstance(authResponse.getUserData());
 
-        if (userDocument != null) {
-            ObjectId objectId = userDocument.getObjectId("_id");
-            UserData.getInstance().setObjectId(objectId);
+            // todo: add functionality
+            // boolean autoLogin = autoLoginCheckBox.isSelected();
 
             SceneHelper.switchToMainScene(usernameField.getScene());
         } else {
-            setError("Incorrect username or password.");
+            setError(authResponse.getMessage());
+            return;
         }
     }
 }

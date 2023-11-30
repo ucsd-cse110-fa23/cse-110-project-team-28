@@ -1,5 +1,7 @@
 {
   "mongodb_uri": "mongodb+srv://devadmin:devpassword@pantrypal.a63fftt.mongodb.net/?retryWrites=true&w=majority",
   "database": "pantrypal",
-  "user_collection": "users"
+  "user_collection": "users",
+  "server_hostname": "localhost",
+  "server_port": 8000
 }

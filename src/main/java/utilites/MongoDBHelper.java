@@ -1,12 +1,15 @@
 package utilites;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
+
+import java.util.ArrayList;
 
 import config.Config;
 
@@ -37,8 +40,11 @@ public class MongoDBHelper {
      * @return
      */
     public static Boolean doesUsernameExist(String username) {
-        return mongoClient.getDatabase(Config.getDatabaseName()).getCollection(Config.getUserCollectionName())
-                .find().filter(Filters.eq("username", username)).first() != null;
+        Bson filter = Filters.eq("username", username);
+        return mongoClient
+                .getDatabase(Config.getDatabaseName())
+                .getCollection(Config.getUserCollectionName())
+                .find(filter).first() != null;
     }
 
     /**
@@ -50,12 +56,20 @@ public class MongoDBHelper {
      * @param password
      * @return ObjectId of the inserted user
      */
-    public static ObjectId insertUser(String username, String password) {
-        InsertOneResult result = mongoClient.getDatabase(Config.getDatabaseName())
+    public static String insertUser(String username, String password) {
+        InsertOneResult result = mongoClient
+                .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getUserCollectionName())
-                .insertOne(new Document("username", username).append("password", password));
+                .insertOne(new Document("username", username)
+                        .append("password", password));
 
-        return result.getInsertedId().asObjectId().getValue();
+        String userId = result
+                .getInsertedId()
+                .toString();
+
+        System.out.println("Inserted user with id: " + userId);
+
+        return userId;
     }
 
     /**
@@ -66,8 +80,11 @@ public class MongoDBHelper {
      * @return
      */
     public static Document findUser(String username, String password) {
-        return mongoClient.getDatabase(Config.getDatabaseName()).getCollection(Config.getUserCollectionName())
-                .find().filter(Filters.and(Filters.eq("username", username), Filters.eq("password", password)))
+        return mongoClient
+                .getDatabase(Config.getDatabaseName())
+                .getCollection(Config.getUserCollectionName())
+                .find()
+                .filter(Filters.and(Filters.eq("username", username), Filters.eq("password", password)))
                 .first();
     }
 }
