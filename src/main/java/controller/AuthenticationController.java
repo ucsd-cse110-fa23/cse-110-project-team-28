@@ -6,14 +6,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.UserData;
 import javafx.scene.control.Label;
-import java.util.prefs.Preferences;
-import utilites.MongoDB;
+import utilites.MongoDBHelper;
 import utilites.SceneHelper;
-
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -50,12 +44,12 @@ public class AuthenticationController {
         // todo: add functionality
         // boolean autoLogin = autoLoginCheckBox.isSelected();
 
-        if (MongoDB.doesUsernameExist(username)) {
+        if (MongoDBHelper.doesUsernameExist(username)) {
             setError("That username is taken.");
             return;
         }
 
-        ObjectId objectId = MongoDB.insertUser(username, password);
+        ObjectId objectId = MongoDBHelper.insertUser(username, password);
 
         UserData.getInstance().setObjectId(objectId);
 
@@ -77,7 +71,7 @@ public class AuthenticationController {
         // todo: add functionality
         // boolean autoLogin = autoLoginCheckBox.isSelected();
 
-        Document userDocument = MongoDB.findUser(username, password);
+        Document userDocument = MongoDBHelper.findUser(username, password);
 
         if (userDocument != null) {
             ObjectId objectId = userDocument.getObjectId("_id");

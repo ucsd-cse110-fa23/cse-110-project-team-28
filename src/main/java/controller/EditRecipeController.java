@@ -51,7 +51,8 @@ public class EditRecipeController implements Initializable {
         recipe.setSteps(editRecipeTextArea.getText());
 
         // save change to file
-        RecipeData.getInstance().saveRecipes();
+        // todo: implement this
+        // RecipeData.getInstance().saveRecipes();
     }
 
     public void deleteRecipeButtonHandler() throws IOException {
@@ -63,7 +64,8 @@ public class EditRecipeController implements Initializable {
      * Deletes recipe from main app list
      */
     private void deleteRecipe() {
-        RecipeData.getInstance().deleteRecipe(recipe);
+        // todo: implement this
+        // RecipeData.getInstance().deleteRecipe(recipe);
     }
 
 }

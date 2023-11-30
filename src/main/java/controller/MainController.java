@@ -108,7 +108,8 @@ public class MainController implements Initializable {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "https://picsum.photos/600/200");
 
-        RecipeData.getInstance().addRecipe(recipe);
+        // todo: implement this
+        // RecipeData.getInstance().addRecipe(recipe);
 
         reloadRecipeList();
     }

@@ -64,11 +64,11 @@ public class APIHandler implements HttpHandler {
         Recipe recipe = gson.fromJson(buffer.toString(), Recipe.class);
 
         // update the recipe in RecipeData
-        int status = RecipeData.getInstance().updateRecipe(recipe);
+        // int status = RecipeData.getInstance().updateRecipe(recipe);
 
-        if (status == -1) {
-            return "Recipe not found";
-        }
+        // if (status == -1) {
+        // return "Recipe not found";
+        // }
 
         return "Recipe successfully updated";
     }
@@ -89,11 +89,11 @@ public class APIHandler implements HttpHandler {
         inputStreamReader.close();
 
         // delete recipe with matching name from RecipeData
-        int status = RecipeData.getInstance().deleteRecipe(buffer.toString());
+        // int status = RecipeData.getInstance().deleteRecipe(buffer.toString());
 
-        if (status == -1) {
-            return "Recipe not found";
-        }
+        // if (status == -1) {
+        // return "Recipe not found";
+        // }
 
         return "Recipe successfully deleted";
     }
@@ -129,7 +129,7 @@ public class APIHandler implements HttpHandler {
         Recipe recipe = gson.fromJson(buffer.toString(), Recipe.class);
 
         // add the recipe to RecipeData
-        RecipeData.getInstance().addRecipe(recipe);
+        // RecipeData.getInstance().addRecipe(recipe);
 
         return "Recipe successfully added";
     }

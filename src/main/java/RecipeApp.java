@@ -3,10 +3,9 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utilites.InitializeHelper;
 import javafx.fxml.FXMLLoader;
 import java.util.prefs.Preferences;
-
-import config.Config;
 
 public class RecipeApp extends Application {
 
@@ -15,7 +14,7 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Config.init();
+        InitializeHelper.init();
 
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         String username = prefs.get("username", null);
