@@ -1,3 +1,7 @@
 {
-  "MONGODB_URI": "mongodb+srv://kazbijar:8DpFkd65TNEzaNv7@cluster0.34t1sqc.mongodb.net/?retryWrites=true&w=majority"
+  "mongodb_uri": "mongodb+srv://kazbijar:8DpFkd65TNEzaNv7@cluster0.34t1sqc.mongodb.net/?retryWrites=true&w=majority",
+  "database": "pantrypal",
+  "user_collection": "users",
+  "server_hostname": "localhost",
+  "server_port": 8000
 }

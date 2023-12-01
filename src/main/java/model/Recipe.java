@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 public class Recipe {
     private String name; // name of the recipe
     private String ingredients; // ingredients that user provides
@@ -75,6 +77,17 @@ public class Recipe {
 
     public String getImageURL() {
         return this.imageURL;
+    }
+
+    public static Recipe fromJSON(JSONObject responseJSON) {
+        String name = responseJSON.getString("name");
+        String mealType = responseJSON.getString("mealType");
+        String ingredients = responseJSON.getString("ingredients");
+        String steps = responseJSON.getString("steps");
+        String imageURL = responseJSON.getString("imageURL");
+        String username = responseJSON.getString("username");
+
+        return new Recipe(name, mealType, ingredients, steps, imageURL, username);
     }
 
 }
