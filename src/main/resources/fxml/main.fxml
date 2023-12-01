@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ToggleButton?>
 
 <BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0"
    prefWidth="900.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21"
@@ -107,6 +108,9 @@
                   <Font name="PP Neue Machina Regular" size="12.0" />
                </font>
             </Button>
+            <ToggleButton fx:id="toggleBreakfast" text="Breakfast" onAction="#handleFilterAction"/>
+            <ToggleButton fx:id="toggleLunch" text="Lunch" onAction="#handleFilterAction"/>
+            <ToggleButton fx:id="toggleDinner" text="Dinner" onAction="#handleFilterAction"/>
             <Button fx:id="debugAddRecipeButton" mnemonicParsing="false"
                onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
                <HBox.margin>

@@ -13,14 +13,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.prefs.Preferences;
 import model.Recipe;
 import model.RecipeData;
 import utilites.SceneHelper;
+import java.util.stream.Collectors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainController implements Initializable {
 
@@ -30,8 +33,20 @@ public class MainController implements Initializable {
     @FXML
     private Button addRecipeButton;
 
+    @FXML
+    private ToggleButton toggleBreakfast;
+
+    @FXML
+    private ToggleButton toggleLunch;
+
+    @FXML
+    private ToggleButton toggleDinner;
+
+    private ArrayList<Recipe> filteredRecipes;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        filteredRecipes = new ArrayList<>();
         Platform.runLater(() -> {
             this.reloadRecipeList();
         });
@@ -127,4 +142,27 @@ public class MainController implements Initializable {
         prefs.remove("password");
     }
 
+    @FXML
+    private void handleFilterAction() {
+        filteredRecipes.clear();
+
+        boolean filterBreakfast = toggleBreakfast.isSelected();
+        boolean filterLunch = toggleLunch.isSelected();
+        boolean filterDinner = toggleDinner.isSelected();
+        // Check if none are selected
+        if (!filterBreakfast && !filterLunch && !filterDinner) {
+            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes()); // Show all recipes
+        } else {
+            filteredRecipes.clear(); // Clear and filter based on selection
+            for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+                if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
+                        (filterLunch && recipe.getMealType().equals("Lunch")) ||
+                        (filterDinner && recipe.getMealType().equals("Dinner"))) {
+                    filteredRecipes.add(recipe);
+                }
+            }
+        }
+
+        setRecipes(filteredRecipes);
+    }
 }
