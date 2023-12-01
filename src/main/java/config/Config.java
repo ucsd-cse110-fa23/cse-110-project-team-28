@@ -37,7 +37,8 @@ public class Config {
         isLoaded = true;
     }
 
-    public static String getMongoDBUri() {
+    public static String getMongoDBUri() throws IOException{
+        init();
         if (!isLoaded)
             throw new RuntimeException("Config not loaded");
         return MONGODB_URI;

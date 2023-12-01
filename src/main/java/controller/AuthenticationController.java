@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import java.io.IOException;
 import java.util.prefs.Preferences;
 import model.RecipeData;
 import utilites.MongoDB;
@@ -61,7 +62,7 @@ public class AuthenticationController {
         }
     }
 
-    public void addUserToDB(String username, String password) {
+    public void addUserToDB(String username, String password) throws IOException{
         MongoClient mongoClient = MongoDB.getMongoClient();
 
         MongoDatabase userDB = mongoClient.getDatabase("users");
@@ -70,7 +71,7 @@ public class AuthenticationController {
 
     }
 
-    public Boolean isUsernameTaken(String username) {
+    public Boolean isUsernameTaken(String username) throws IOException{
         MongoClient mongoClient = MongoDB.getMongoClient();
 
         MongoDatabase userDB = mongoClient.getDatabase("users");
@@ -88,7 +89,7 @@ public class AuthenticationController {
         System.out.println("User " + username + " inserted.");
     }
 
-    private boolean isSignUpSuccessful(String username) {
+    private boolean isSignUpSuccessful(String username) throws IOException{
         // Return true if sign-up is successful
         if (!isUsernameTaken(username)) {
             return true;
@@ -115,6 +116,7 @@ public class AuthenticationController {
                     saveLoginCredentials(username, password);
                 }
                 SceneHelper.switchToMainScene(usernameField.getScene());
+                RecipeData.getInstance().loadRecipes(username); //load recipes from db
             } else {
                 setError("Incorrect password.");
             }
@@ -134,7 +136,7 @@ public class AuthenticationController {
         errorLabel.setVisible(true);
     }
 
-    private boolean isLogInSuccessful(String username, String password) {
+    private boolean isLogInSuccessful(String username, String password) throws IOException{
         if (isPasswordCorrect(username, password)) {
             return true;
         } else {
@@ -142,7 +144,7 @@ public class AuthenticationController {
         }
     }
 
-    public Boolean isPasswordCorrect(String username, String password) {
+    public Boolean isPasswordCorrect(String username, String password) throws IOException{
         MongoClient mongoClient = MongoDB.getMongoClient();
 
         MongoDatabase userDB = mongoClient.getDatabase("users");

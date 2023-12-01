@@ -108,7 +108,7 @@ public class MainController implements Initializable {
         Recipe recipe = new Recipe(generator.generate(10), "Dinner",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "https://picsum.photos/600/200");
+                "https://picsum.photos/600/200", "firsttime");
 
         RecipeData.getInstance().addRecipe(recipe);
 

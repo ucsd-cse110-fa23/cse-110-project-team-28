@@ -1,7 +1,7 @@
 package model;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -9,6 +9,10 @@ import java.io.BufferedReader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class RecipeData {
     private final static String DEFAULT_FILE = "recipes.json";
@@ -16,6 +20,7 @@ public class RecipeData {
 
     private String fileLocation;
     private ArrayList<Recipe> recipes;
+    private String username;
 
     public static RecipeData getInstance() {
         if (instance == null) {
@@ -48,7 +53,7 @@ public class RecipeData {
 
     public void addRecipe(Recipe recipe) {
         recipes.add(recipe);
-        saveRecipes();
+        saveRecipes(recipe);
     }
 
     public void clear() {
@@ -58,99 +63,84 @@ public class RecipeData {
     /**
      * Deletes a recipe from the RecipeData
      * 
-     * @param recipe the recipe to delete
-     * @return 0 if successful, -1 if not
-     */
-    public int deleteRecipe(Recipe recipe) {
-        for (int i = 0; i < recipes.size(); i++) {
-            if (recipes.get(i).equals(recipe)) {
-                recipes.remove(i);
-                saveRecipes();
-                return 0;
-            }
-        }
-
-        return -1;
-    }
-
-    /**
-     * Deletes a recipe from the RecipeData
-     * 
      * @param recipeName the name of the recipe to delete
      * @return 0 if successful, -1 if not
      */
-    public int deleteRecipe(String recipeName) {
-        for (int i = 0; i < recipes.size(); i++) {
-            if (recipes.get(i).getName().equals(recipeName)) {
-                recipes.remove(i);
-                saveRecipes();
-                return 0;
-            }
-        }
+    public void deleteRecipe(String recipeName, String username) {
+        // Create an HTTP DELETE request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(
+                        "http://localhost:8000/api/deleteRecipe?recipeName=" + recipeName + "&username=" + username)) 
+                .DELETE()
+                .build();
 
-        return -1;
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(response -> {
+                    if (recipes != null) {
+                        setRecipes(recipes);
+                        for (int i = 0; i < recipes.size(); i++) {
+                            if (recipes.get(i).getName().equals(recipeName)) {
+                                recipes.remove(i);
+                            }
+                        }
+                    }
+                })
+                .join();
     }
 
-    /**
-     * Updates a recipe in the RecipeData
-     * 
-     * @param recipe the recipe to update
-     * @return 0 if successful, -1 if not
-     */
-    public int updateRecipe(Recipe recipe) {
-        for (int i = 0; i < recipes.size(); i++) {
-            if (recipes.get(i).getName().equals(recipe.getName())) {
-                recipes.set(i, recipe);
-                saveRecipes();
-                return 0;
-            }
-        }
+    // Call this method when the user saves their changes
+    public void saveRecipeChanges(Recipe recipe) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/api/?username=" + username)) 
+                .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(recipe)))
+                .header("Content-Type", "application/json")
+                .build();
 
-        return -1;
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(response -> {
+                    System.out.println("Server response: " + response);
+                })
+                .join();
     }
 
     /**
      * Method to load recipes from a file
      */
-    public void loadRecipes() {
-        // use Gson to convert recipes to JSON
-        Gson gson = new Gson();
+    public void loadRecipes(String username) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/api/?username=" + username))
+                .GET()
+                .build();
 
-        // read JSON from file
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileLocation));
-
-            // convert JSON to Recipe array
-            Type recipeListType = new TypeToken<ArrayList<Recipe>>() {
-            }.getType();
-
-            ArrayList<Recipe> recipes = gson.fromJson(bufferedReader, recipeListType);
-
-            if (recipes != null)
-                // add recipes to RecipeData
-                setRecipes(recipes);
-
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(jsonResponse -> {
+                    ArrayList<Recipe> recipes = new Gson().fromJson(jsonResponse, new TypeToken<List<Recipe>>() {
+                    }.getType());
+                    if (recipes != null) {
+                        setRecipes(recipes);
+                    }
+                })
+                .join();
     }
 
-    /**
-     * Method to save recipes to a file
-     */
-    public void saveRecipes() {
-        // use Gson to convert recipes to JSON
-        Gson gson = new Gson();
+    public void saveRecipes(Recipe recipe) {
+        username = recipe.getUsername();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8000/api/?username=" + username))
+                .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(recipe)))
+                .header("Content-Type", "application/json")
+                .build();
 
-        try {
-            FileWriter fileWriter = new FileWriter(fileLocation);
-
-            gson.toJson(getRecipes(), fileWriter);
-
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(System.out::println)
+                .join();
     }
 }

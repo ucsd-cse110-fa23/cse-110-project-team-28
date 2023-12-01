@@ -1,5 +1,7 @@
 package utilites;
 
+import java.io.IOException;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
@@ -14,12 +16,13 @@ public class MongoDB {
 
     private static boolean isLoaded = false;
 
-    public static void init() {
+    public static void init() throws IOException{
         mongoClient = MongoClients.create(Config.getMongoDBUri());
         isLoaded = true;
     }
 
-    public static MongoClient getMongoClient() {
+    public static MongoClient getMongoClient() throws IOException{
+        init();
         if (!isLoaded)
             throw new RuntimeException("MongoDB not loaded");
         return mongoClient;
