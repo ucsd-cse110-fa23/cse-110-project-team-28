@@ -32,6 +32,9 @@ public class RecipePaneControllerV2 implements Initializable {
     @FXML
     private StackPane recipePane;
 
+    @FXML
+    private Label mealTypeLabel;
+
     private Recipe recipe;
 
     @Override
@@ -58,6 +61,7 @@ public class RecipePaneControllerV2 implements Initializable {
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
         setRecipeName(recipe.getName());
+        mealTypeLabel.setText(recipe.getMealType());
     }
 
     private void setRecipeName(String recipeName) {

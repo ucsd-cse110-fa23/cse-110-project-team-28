@@ -23,6 +23,12 @@
                         <Font name="PP Eiko Medium" size="18.0" />
                      </font>
                   </Label>
+                  <Region HBox.hgrow="ALWAYS"/>
+                  <Label fx:id="mealTypeLabel" alignment="CENTER" text="Meal Type" styleClass="meal-type-tag">
+                     <font>
+                        <Font name="PP Eiko Medium" size="10.0" />
+                     </font>
+                  </Label>
                   <Region HBox.hgrow="ALWAYS" />
                   <Button fx:id="detailsButton" alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" onAction="#detailsButtonHandler" text="Details">
                      <font>

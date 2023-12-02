@@ -58,6 +58,11 @@
   -fx-background-repeat: no-repeat;
 }
 
+.meal-type-tag {
+  -fx-background-color: #7dec79;
+  -fx-background-radius: 50;
+}
+
 /**
  * newRecipe
 */
