@@ -84,9 +84,9 @@ public class APIHandler implements HttpHandler {
     }
 
     private int updateRecipeInMongoDB(Recipe recipe) {
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) { 
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase"); 
-            MongoCollection<Document> collection = database.getCollection("recipes"); 
+        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
+            MongoCollection<Document> collection = database.getCollection("recipes");
 
             // Building the update document
             Document updateDoc = new Document()
@@ -160,14 +160,27 @@ public class APIHandler implements HttpHandler {
     }
 
     private String handleGet(HttpExchange httpExchange) {
-        // Extract username from query parameters
-        String username = extractUsernameFromQuery(httpExchange);
+        Map<String, String> params = queryToMap(httpExchange.getRequestURI().getQuery());
 
-        // Fetch recipes from MongoDB for the given username
-        List<Recipe> userRecipes = fetchRecipesFromMongoDB(username);
+        String recipeName = params.get("name");
+        String username = params.get("username");
 
-        Gson gson = new Gson();
-        return gson.toJson(userRecipes);
+        if (recipeName != null && username != null) {
+            // Fetch single recipe
+            Recipe recipe = fetchRecipeFromMongoDB(recipeName, username);
+            if (recipe != null) {
+                Gson gson = new Gson();
+                return gson.toJson(recipe);
+            } else {
+                return "Recipe not found";
+            }
+        } else {
+            // Fetch all recipes from MongoDB for the given username
+            List<Recipe> userRecipes = fetchRecipesFromMongoDB(username);
+
+            Gson gson = new Gson();
+            return gson.toJson(userRecipes);
+        }
     }
 
     private List<Recipe> fetchRecipesFromMongoDB(String username) {
@@ -186,6 +199,23 @@ public class APIHandler implements HttpHandler {
             // Handle exceptions
         }
         return recipes;
+    }
+
+    private Recipe fetchRecipeFromMongoDB(String recipeName, String username) {
+        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
+            MongoCollection<Document> collection = database.getCollection("recipes");
+
+            Document doc = collection
+                    .find(Filters.and(Filters.eq("name", recipeName), Filters.eq("username", username))).first();
+            if (doc != null) {
+                return convertDocumentToRecipe(doc);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
+        }
+        return null;
     }
 
     private String extractUsernameFromQuery(HttpExchange httpExchange) {
@@ -215,7 +245,7 @@ public class APIHandler implements HttpHandler {
         recipe.setMealType(mealType);
         recipe.setIngredients(ingredients);
         recipe.setSteps(steps);
-        recipe.setUsername(username); 
+        recipe.setUsername(username);
 
         return recipe;
     }
