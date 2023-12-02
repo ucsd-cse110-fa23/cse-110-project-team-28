@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -21,6 +22,8 @@ import model.Recipe;
 import model.RecipeData;
 import utilites.SceneHelper;
 import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +45,15 @@ public class MainController implements Initializable {
     @FXML
     private ToggleButton toggleDinner;
 
+    @FXML
+    private ComboBox<String> sortComboBox;
+
     private ArrayList<Recipe> filteredRecipes;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         filteredRecipes = new ArrayList<>();
+        sortComboBox.setValue("Newest to Oldest");
         Platform.runLater(() -> {
             this.reloadRecipeList();
         });
@@ -165,4 +172,27 @@ public class MainController implements Initializable {
 
         setRecipes(filteredRecipes);
     }
+
+    @FXML
+    private void handleSortAction() {
+        String selectedSort = sortComboBox.getValue();
+
+        switch (selectedSort) {
+            case "A-Z":
+                filteredRecipes.sort(Comparator.comparing(Recipe::getName));
+                break;
+            case "Z-A":
+                filteredRecipes.sort(Comparator.comparing(Recipe::getName).reversed());
+                break;
+            case "Oldest to Newest":
+                Collections.reverse(filteredRecipes);
+                break;
+            case "Newest to Oldest":
+                filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+                break;
+        }
+
+        setRecipes(filteredRecipes);
+    }
+
 }
