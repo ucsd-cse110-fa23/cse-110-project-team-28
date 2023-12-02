@@ -50,12 +50,16 @@ public class MainController implements Initializable {
 
     private ArrayList<Recipe> filteredRecipes;
 
+    private ArrayList<Recipe> displayedRecipes;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        filteredRecipes = new ArrayList<>();
-        sortComboBox.setValue("Newest to Oldest");
+        //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+        //sortComboBox.setValue("Newest to Oldest");
         Platform.runLater(() -> {
             this.reloadRecipeList();
+            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+            sortComboBox.setValue("Newest to Oldest");
         });
     }
 
@@ -169,7 +173,7 @@ public class MainController implements Initializable {
                 }
             }
         }
-
+        displayedRecipes = filteredRecipes;
         setRecipes(filteredRecipes);
     }
 
@@ -188,7 +192,8 @@ public class MainController implements Initializable {
                 Collections.reverse(filteredRecipes);
                 break;
             case "Newest to Oldest":
-                filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+                //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+                filteredRecipes = displayedRecipes;
                 break;
         }
 
