@@ -3,329 +3,276 @@ package server;
 import com.sun.net.httpserver.*;
 
 import model.Recipe;
-import model.RecipeData;
-
 import java.io.*;
 import java.util.*;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import utilites.MongoDBHelper;
 
 import com.google.gson.Gson;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 
 import org.bson.Document;
+import org.json.JSONObject;
 
 public class APIHandler implements HttpHandler {
 
-    public APIHandler() {
-    }
-
     public void handle(HttpExchange httpExchange) throws IOException {
-        String response = "Request Received";
-        String method = httpExchange.getRequestMethod();
 
-        try {
-            if (method.equals("GET")) {
-                response = handleGet(httpExchange);
-            } else if (method.equals("POST")) {
-                response = handlePost(httpExchange);
-            } else if (method.equals("PUT")) {
-                response = handlePut(httpExchange);
-            } else if (method.equals("DELETE")) {
-                response = handleDelete(httpExchange);
-            } else {
-                throw new Exception("Not Valid Request Method");
-            }
-        } catch (Exception e) {
-            System.out.println("An erroneous request");
-            response = e.toString();
-            e.printStackTrace();
+        String requestPath = httpExchange.getRequestURI().getPath();
+        String httpContext = httpExchange.getHttpContext().getPath();
+        String path = requestPath.substring(httpContext.length());
+
+        System.out.println("Processing request for URI: " + httpExchange.getRequestURI().toString());
+
+        switch (path) {
+            case "recipes":
+                recipesHandler(httpExchange);
+                break;
+            default:
+                break;
         }
 
-        // Sending back response to the client
-        httpExchange.sendResponseHeaders(200, response.length());
-        OutputStream outStream = httpExchange.getResponseBody();
-        outStream.write(response.getBytes());
-        outStream.close();
+        // todo: re-implement
+        // String response = "Request Received";
+        // String method = httpExchange.getRequestMethod();
+
+        // try {
+        // if (method.equals("GET")) {
+        // response = handleGet(httpExchange);
+        // } else if (method.equals("POST")) {
+        // response = handlePost(httpExchange);
+        // } else if (method.equals("PUT")) {
+        // response = handlePut(httpExchange);
+        // } else if (method.equals("DELETE")) {
+        // response = handleDelete(httpExchange);
+        // } else {
+        // throw new Exception("Not Valid Request Method");
+        // }
+        // } catch (Exception e) {
+        // System.out.println("An erroneous request");
+        // response = e.toString();
+        // e.printStackTrace();
+        // }
+
+        // // Sending back response to the client
+        // httpExchange.sendResponseHeaders(200, response.length());
+        // OutputStream outStream = httpExchange.getResponseBody();
+        // outStream.write(response.getBytes());
+        // outStream.close();
     }
 
-    private String handlePut(HttpExchange httpExchange) throws IOException {
-        // get the request body as an InputStream
-        InputStreamReader inputStreamReader = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        // read the request body
-        int buff;
-        StringBuilder buffer = new StringBuilder(512);
-        while ((buff = bufferedReader.read()) != -1) {
-            buffer.append((char) buff);
-        }
-
-        bufferedReader.close();
-        inputStreamReader.close();
-
-        // convert the request body to a Recipe object
-        Gson gson = new Gson();
-        Recipe recipe = gson.fromJson(buffer.toString(), Recipe.class);
-
-        // Update the recipe in MongoDB
-        int status = updateRecipeInMongoDB(recipe);
-
-        if (status == -1) {
-            return "Recipe not found or error in updating";
-        }
-
-        return "Recipe successfully updated";
+    private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
+        exchange.sendResponseHeaders(statusCode, responseBody.length());
+        exchange.getResponseBody().write(responseBody.getBytes());
+        exchange.close();
     }
 
-    private int updateRecipeInMongoDB(Recipe recipe) {
-        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
-            MongoCollection<Document> collection = database.getCollection("recipes");
-
-            // Building the update document
-            Document updateDoc = new Document()
-                    .append("name", recipe.getName())
-                    .append("mealType", recipe.getMealType())
-                    .append("ingredients", recipe.getIngredients())
-                    .append("steps", recipe.getSteps());
-
-            long updatedCount = collection
-                    .updateOne(Filters.eq("name", recipe.getName()), new Document("$set", updateDoc))
-                    .getModifiedCount();
-
-            if (updatedCount == 0) {
-                System.out.println("No recipe found with name: " + recipe.getName());
-                return -1; // Recipe not found or no update made
-            }
-
-            return 0; // Success
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1; // Error occurred
-        }
+    private void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
+        exchange.sendResponseHeaders(statusCode, 0);
+        exchange.getResponseBody().write("".getBytes());
+        exchange.close();
     }
 
-    private String handleDelete(HttpExchange httpExchange) throws IOException {
-        // Parse the query to get recipeId and username
-        Map<String, String> params = queryToMap(httpExchange.getRequestURI().getQuery());
-        String recipeName = params.get("recipeName");
-        String username = params.get("username");
-
-        // Perform the deletion
-        if (deleteRecipeFromMongoDB(recipeName, username)) {
-            return "Recipe successfully deleted";
-        } else {
-            return "Failed to delete recipe";
+    private HashMap<String, String> extractQueryParameters(String query) {
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            return null;
         }
+
+        String[] queryParams = query.split("&");
+
+        System.out.println("Query parameters: " + Arrays.toString(queryParams));
+
+        HashMap<String, String> params = new HashMap<>();
+
+        for (String param : queryParams) {
+            params.put(param.split("=")[0], param.split("=")[1]);
+        }
+
+        return params;
     }
 
-    private Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<>();
-        if (query != null && !query.isEmpty()) {
-            for (String param : query.split("&")) {
-                String[] pair = param.split("=");
-                if (pair.length > 1) {
-                    result.put(pair[0], pair[1]);
-                } else {
-                    result.put(pair[0], "");
-                }
-            }
-        }
-        return result;
-    }
+    private void recipesHandler(HttpExchange httpExchange) throws IOException {
+        String requestMethod = httpExchange.getRequestMethod();
 
-    private boolean deleteRecipeFromMongoDB(String recipeName, String username) {
-        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
-            MongoCollection<Document> collection = database.getCollection("recipes");
+        System.out.println("Request method: " + requestMethod);
 
-            // Check if the recipe belongs to the user
-            Document foundRecipe = collection.find(Filters.eq("name", recipeName)).first();
-            if (foundRecipe != null && foundRecipe.getString("username").equals(username)) {
-                // Delete the recipe
-                collection.deleteOne(foundRecipe);
-                System.out.println("Deleted recipe: " + recipeName);
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private String handleGet(HttpExchange httpExchange) {
-        Map<String, String> params = queryToMap(httpExchange.getRequestURI().getQuery());
-
-        String recipeName = params.get("name");
-        String username = params.get("username");
-
-        if (recipeName != null && username != null) {
-            // Fetch single recipe
-            Recipe recipe = fetchRecipeFromMongoDB(recipeName, username);
-            if (recipe != null) {
-                Gson gson = new Gson();
-                return gson.toJson(recipe);
-            } else {
-                return "Recipe not found";
-            }
-        } else {
-            // Fetch all recipes from MongoDB for the given username
-            List<Recipe> userRecipes = fetchRecipesFromMongoDB(username);
-
-            Gson gson = new Gson();
-            return gson.toJson(userRecipes);
+        switch (requestMethod) {
+            case "GET":
+                recipesGetHandler(httpExchange);
+                break;
+            case "POST":
+                recipesPostHandler(httpExchange);
+                break;
+            case "PUT":
+                recipesPutHandler(httpExchange);
+                break;
+            case "DELETE":
+                recipeDeleteHandler(httpExchange);
+                break;
+            default:
+                break;
         }
     }
 
-    private List<Recipe> fetchRecipesFromMongoDB(String username) {
-        List<Recipe> recipes = new ArrayList<>();
-        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
-            MongoCollection<Document> collection = database.getCollection("recipes");
-
-            FindIterable<Document> docs = collection.find(Filters.eq("username", username));
-            for (Document doc : docs) {
-                Recipe recipe = convertDocumentToRecipe(doc);
-                recipes.add(recipe);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle exceptions
-        }
-        return recipes;
-    }
-
-    private Recipe fetchRecipeFromMongoDB(String recipeName, String username) {
-        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
-            MongoCollection<Document> collection = database.getCollection("recipes");
-
-            Document doc = collection
-                    .find(Filters.and(Filters.eq("name", recipeName), Filters.eq("username", username))).first();
-            if (doc != null) {
-                return convertDocumentToRecipe(doc);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle exceptions
-        }
-        return null;
-    }
-
-    private String extractUsernameFromQuery(HttpExchange httpExchange) {
+    private void recipesGetHandler(HttpExchange httpExchange) throws IOException {
         // Parse the query string
         String query = httpExchange.getRequestURI().getQuery();
-        if (query != null) {
-            String[] queryParams = query.split("&");
-            for (String param : queryParams) {
-                String[] pair = param.split("=");
-                if (pair.length > 1 && "username".equals(pair[0])) {
-                    return pair[1];
-                }
-            }
-        }
-        return null;
-    }
 
-    private Recipe convertDocumentToRecipe(Document doc) {
-        String name = doc.getString("name");
-        String mealType = doc.getString("mealType");
-        String ingredients = doc.getString("ingredients");
-        String steps = doc.getString("steps");
-        String username = doc.getString("username");
-
-        Recipe recipe = new Recipe();
-        recipe.setName(name);
-        recipe.setMealType(mealType);
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
-        recipe.setUsername(username);
-
-        return recipe;
-    }
-
-    private String handlePost(HttpExchange httpExchange) throws IOException {
-        // get the request body as an InputStream
-        InputStreamReader inputStreamReader = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        System.out.println("Request URI: " + httpExchange.getRequestURI().toString());
-
-        // read the request body
-        int buff;
-        StringBuilder buffer = new StringBuilder(512);
-        while ((buff = bufferedReader.read()) != -1) {
-            buffer.append((char) buff);
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            sendResponse(httpExchange, 400, "No query parameters provided");
+            return;
         }
 
-        bufferedReader.close();
-        inputStreamReader.close();
+        HashMap<String, String> params = extractQueryParameters(query);
 
-        // convert the request body to a Recipe object
+        if (!params.containsKey("userId")) {
+            System.err.println("No userId parameter provided");
+            sendResponse(httpExchange, 400, "No userId parameter provided");
+            return;
+        }
+
+        String userId = params.get("userId");
+
+        if (userId == null) {
+            System.err.println("No userId parameter provided");
+            sendResponse(httpExchange, 400, "No userId parameter provided");
+            return;
+        }
+
+        System.out.println("Fetching recipes for user: " + userId);
+
+        List<Recipe> userRecipes = MongoDBHelper.findRecipesByUserId(userId);
+
+        System.out.println("Found " + userRecipes.size() + " recipes");
+
         Gson gson = new Gson();
-        Recipe recipe = gson.fromJson(buffer.toString(), Recipe.class);
+        String responseBody = gson.toJson(userRecipes);
 
-        // Add username from query parameters or request body
-        String username = extractUsername(httpExchange);
-        recipe.setUsername(username);
+        System.out.println("Sending response: " + responseBody);
 
-        // Save recipe to MongoDB
-        saveRecipeToMongoDB(recipe);
-
-        return "Recipe successfully added";
+        // Sending back response to the client
+        sendResponse(httpExchange, 200, responseBody);
     }
 
-    private String extractUsername(HttpExchange httpExchange) {
-        try {
-            String query = httpExchange.getRequestURI().getQuery();
-            System.out.println("Query string: " + query); // Log the query string
+    private void recipesPostHandler(HttpExchange httpExchange) throws IOException {
+        // read request body
+        InputStream inputStream = httpExchange.getRequestBody();
+        String requestBody = new String(inputStream.readAllBytes());
 
-            if (query != null) {
-                for (String param : query.split("&")) {
-                    System.out.println("Parameter: " + param); // Log each parameter
+        System.out.println("Request body: " + requestBody);
 
-                    String[] pair = param.split("=");
-                    if (pair.length > 1) {
-                        String key = URLDecoder.decode(pair[0], StandardCharsets.UTF_8.name());
-                        String value = URLDecoder.decode(pair[1], StandardCharsets.UTF_8.name());
+        // get query parameters
+        String query = httpExchange.getRequestURI().getQuery();
 
-                        System.out.println("Key: " + key + ", Value: " + value); // Log key-value pairs
-
-                        if (key.equals("username")) {
-                            return value; // Return the decoded username
-                        }
-                    }
-                }
-            }
-            return "defaultUsername"; // Default username if not found
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "errorUsername"; // Username in case of error
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            sendResponse(httpExchange, 400, "No query parameters provided");
+            return;
         }
-    }
 
-    private void saveRecipeToMongoDB(Recipe recipe) {
-        // MongoDB interaction logic
-        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
-            MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
-            MongoCollection<Document> collection = database.getCollection("recipes");
+        HashMap<String, String> params = extractQueryParameters(query);
+        String userId = params.get("userId");
 
-            Document recipeDoc = new Document("name", recipe.getName())
-                    .append("mealType", recipe.getMealType())
-                    .append("ingredients", recipe.getIngredients())
-                    .append("steps", recipe.getSteps())
-                    .append("username", recipe.getUsername());
-
-            collection.insertOne(recipeDoc);
-            System.out.println("Recipe saved to MongoDB");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (userId == null) {
+            System.err.println("No userId parameter provided");
+            sendResponse(httpExchange, 400, "No userId parameter provided");
+            return;
         }
+
+        System.out.println("userId: " + userId);
+
+        // parse request body
+        JSONObject requestJsonObject = new JSONObject(requestBody);
+
+        System.out.println("Request JSON object: " + requestJsonObject.toString());
+
+        InsertOneResult result = MongoDBHelper.insertRecipe(requestJsonObject);
+
+        if (result == null) {
+            System.err.println("Error inserting recipe");
+            sendResponse(httpExchange, 500, "Error inserting recipe");
+            return;
+        }
+
+        String recipeId = result.getInsertedId().asObjectId().getValue().toString();
+
+        System.out.println("Inserted recipe with id: " + recipeId);
+
+        Document user = MongoDBHelper.insertUserRecipeId(userId, recipeId);
+
+        if (user == null) {
+            System.err.println("Error adding recipe to user");
+            sendResponse(httpExchange, 500, "Error adding recipe to user");
+            return;
+        }
+
+        System.out.println("Added recipe to user: " + user.toString());
+
+        // send recipeId back to client
+        sendResponse(httpExchange, 200, recipeId);
     }
 
+    private void recipesPutHandler(HttpExchange httpExchange) throws IOException {
+        // read request body
+        InputStream inputStream = httpExchange.getRequestBody();
+        String requestBody = new String(inputStream.readAllBytes());
+
+        System.out.println("Request body: " + requestBody);
+
+        // parse request body
+        JSONObject requestJsonObject = new JSONObject(requestBody);
+
+        System.out.println("Request JSON object: " + requestJsonObject.toString());
+
+        UpdateResult result = MongoDBHelper.updateRecipe(requestJsonObject);
+
+        if (result == null || result.getModifiedCount() == 0) {
+            System.err.println("Error updating recipe");
+            sendResponse(httpExchange, 500, "Error updating recipe");
+            return;
+        }
+
+        System.out.println("Updated recipe");
+
+        // send recipeId back to client
+        sendResponse(httpExchange, 200);
+    }
+
+    private void recipeDeleteHandler(HttpExchange httpExchange) throws IOException {
+        // Parse the query string
+        String query = httpExchange.getRequestURI().getQuery();
+
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            sendResponse(httpExchange, 400, "No query parameters provided");
+            return;
+        }
+
+        HashMap<String, String> params = extractQueryParameters(query);
+
+        if (!params.containsKey("recipeId")) {
+            System.err.println("No recipeId parameter provided");
+            sendResponse(httpExchange, 400, "No recipeId parameter provided");
+            return;
+        }
+
+        String recipeId = params.get("recipeId");
+
+        DeleteResult result = MongoDBHelper.deleteRecipe(recipeId);
+
+        if (result == null || result.getDeletedCount() == 0) {
+            System.err.println("Error deleting recipe");
+            sendResponse(httpExchange, 500, "Error deleting recipe");
+            return;
+        }
+
+        System.out.println("Deleted recipe");
+        // todo: delete recipe from user
+
+        // send recipeId back to client
+        sendResponse(httpExchange, 200);
+    }
 }

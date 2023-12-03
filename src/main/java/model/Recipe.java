@@ -1,40 +1,20 @@
 package model;
 
+import org.bson.Document;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 public class Recipe {
     private String name; // name of the recipe
+    private String mealType;
     private String ingredients; // ingredients that user provides
     private String steps; // the gpt generated recipe (maybe needs a better name)
-    private String mealType;
     private String imageURL;
-    private String username;
 
-    public Recipe() {
-    }
-
-    public Recipe(String name, String mealType, String ingredients, String steps) {
-        this.name = name;
-        this.mealType = mealType;
-        this.ingredients = ingredients;
-        this.steps = steps;
-    }
-
-    public Recipe(String name, String mealType, String ingredients, String steps, String imageURL, String username) {
-        this.name = name;
-        this.mealType = mealType;
-        this.ingredients = ingredients;
-        this.steps = steps;
-        this.imageURL = imageURL;
-        this.username = username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    public String getUsername() {
-        return username;
-    }
+    // provided by the server
+    private Date creationDate;
+    private String id; // referenced as _id in the database
 
     public String getName() {
         return name;
@@ -52,42 +32,104 @@ public class Recipe {
         return steps;
     }
 
-    public void setName(String name) {
+    public String getImageURL() {
+        return this.imageURL;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Recipe setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setMealType(String mealType) {
+    public Recipe setMealType(String mealType) {
         this.mealType = mealType;
+        return this;
     }
 
-    public void setIngredients(String ingredients) {
+    public Recipe setIngredients(String ingredients) {
         this.ingredients = ingredients;
+        return this;
     }
 
-    public void setSteps(String steps) {
+    public Recipe setSteps(String steps) {
         this.steps = steps;
+        return this;
+    }
+
+    public Recipe setImageUrl(String imageURL) {
+        this.imageURL = imageURL;
+        return this;
+    }
+
+    public Recipe setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+        return this;
+    }
+
+    public Recipe setId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override
     public String toString() {
         return "Recipe [name=" + name + ", mealType=" + mealType + ", ingredients=" + ingredients + ", steps=" + steps
                 + ", imageURL=" + imageURL
-                + ", username= " + username + "]";
+                + ", id=" + id
+                + ", creationDate=" + (creationDate == null ? "null" : creationDate.toString())
+                + "]";
     }
 
-    public String getImageURL() {
-        return this.imageURL;
+    public static Recipe fromJSON(JSONObject jsonObject) {
+        String name = jsonObject.getString("name");
+        String mealType = jsonObject.getString("mealType");
+        String ingredients = jsonObject.getString("ingredients");
+        String steps = jsonObject.getString("steps");
+        String imageURL = jsonObject.getString("imageURL");
+        Date creationDate = new Date(jsonObject.getLong("creationDate"));
+        String id = jsonObject.getString("_id");
+
+        return new Recipe()
+                .setName(name)
+                .setMealType(mealType)
+                .setIngredients(ingredients)
+                .setSteps(steps)
+                .setImageUrl(imageURL)
+                .setCreationDate(creationDate)
+                .setId(id);
     }
 
-    public static Recipe fromJSON(JSONObject responseJSON) {
-        String name = responseJSON.getString("name");
-        String mealType = responseJSON.getString("mealType");
-        String ingredients = responseJSON.getString("ingredients");
-        String steps = responseJSON.getString("steps");
-        String imageURL = responseJSON.getString("imageURL");
-        String username = responseJSON.getString("username");
+    /**
+     * Converts a Recipe object to a MongoDB Document. If Document is null, returns
+     * null.
+     * 
+     * @param document
+     * @return
+     */
+    public static Recipe fromDocument(Document document) {
+        if (document == null)
+            return null;
 
-        return new Recipe(name, mealType, ingredients, steps, imageURL, username);
+        String name = document.getString("name");
+        String mealType = document.getString("mealType");
+        String ingredients = document.getString("ingredients");
+        String steps = document.getString("steps");
+        Date creationDate = document.getDate("creationDate");
+        String id = document.getObjectId("_id").toString();
+
+        Recipe recipe = new Recipe()
+                .setName(name)
+                .setMealType(mealType)
+                .setIngredients(ingredients)
+                .setSteps(steps)
+                .setCreationDate(creationDate)
+                .setId(id);
+
+        return recipe;
     }
 
 }

@@ -5,14 +5,10 @@ import java.io.InputStream;
 
 import org.bson.Document;
 
-import org.bson.types.ObjectId;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
-import model.Recipe;
 
 import utilites.MongoDBHelper;
 
@@ -45,6 +41,12 @@ public class AuthHandler implements HttpHandler {
         }
     }
 
+    private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
+        exchange.sendResponseHeaders(statusCode, responseBody.length());
+        exchange.getResponseBody().write(responseBody.getBytes());
+        exchange.close();
+    }
+
     public void loginHandler(HttpExchange exchange) throws IOException {
         // read request body
         InputStream inputStream = exchange.getRequestBody();
@@ -58,32 +60,25 @@ public class AuthHandler implements HttpHandler {
 
         // check not null in case frontend validation fails
         if (username == null || password == null) {
-            exchange.sendResponseHeaders(400, 0);
-            exchange.getResponseBody().write("Invalid username or password.".getBytes());
-            exchange.close();
+            sendResponse(exchange, 400, "Invalid username or password.");
             return;
         }
 
         // find user
-        Document userDocument = MongoDBHelper.findUser(username, password);
+        Document userDocument = MongoDBHelper.findUserByUsernamePassword(username, password);
 
         // if user does not exist
         if (userDocument == null) {
-            exchange.sendResponseHeaders(401, 0);
-            exchange.getResponseBody().write("Invalid username or password.".getBytes());
-            exchange.close();
+            sendResponse(exchange, 401, "Invalid username or password.");
             return;
         }
 
-        JSONObject response = new JSONObject();
-        response.put("_id", userDocument.getObjectId("_id").toString());
-        response.put("username", userDocument.getString("username"));
-        response.put("recipes", new JSONArray(userDocument.getList("recipes", String.class)));
+        JSONObject responseBody = new JSONObject();
+        responseBody.put("userId", userDocument.getObjectId("_id").toString());
+        responseBody.put("username", userDocument.getString("username"));
 
         // send user's ObjectId as response
-        exchange.sendResponseHeaders(200, 0);
-        exchange.getResponseBody().write(response.toString().getBytes());
-        exchange.close();
+        sendResponse(exchange, 200, responseBody.toString());
     }
 
     public void signupHandler(HttpExchange exchange) throws IOException {
@@ -99,35 +94,25 @@ public class AuthHandler implements HttpHandler {
 
         // check not null
         if (username == null || password == null) {
-            exchange.sendResponseHeaders(400, 0);
-            exchange.getResponseBody().write("Invalid username or password.".getBytes());
-            exchange.close();
+            sendResponse(exchange, 400, "Invalid username or password.");
             return;
         }
 
-        System.out.println("username: " + username);
-        System.out.println("password: " + password);
-
         // if username already exists
         if (MongoDBHelper.doesUsernameExist(username)) {
-            exchange.sendResponseHeaders(409, 0);
-            exchange.getResponseBody().write("Username already exists.".getBytes());
-            exchange.close();
+            sendResponse(exchange, 409, "Username already exists.");
             return;
         }
 
         // create user
         String userId = MongoDBHelper.insertUser(username, password);
 
-        JSONObject response = new JSONObject();
-        response.put("_id", userId);
-        response.put("username", username);
-        response.put("recipes", new JSONArray());
+        JSONObject responseBody = new JSONObject();
+        responseBody.put("userId", userId);
+        responseBody.put("username", username);
 
         // send userObjectId as response
-        exchange.sendResponseHeaders(200, 0);
-        exchange.getResponseBody().write(response.toString().getBytes());
-        exchange.close();
+        sendResponse(exchange, 200, responseBody.toString());
     }
 
 }

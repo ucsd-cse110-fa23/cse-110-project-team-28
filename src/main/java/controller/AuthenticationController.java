@@ -2,26 +2,21 @@ package controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
-import model.RecipeData;
 import model.UserData;
+import server.AuthResponse;
 import utilites.AuthHelper;
-import utilites.AuthResponse;
+import utilites.ErrorPopupHelper;
 import utilites.SceneHelper;
 
 public class AuthenticationController implements Initializable {
@@ -57,18 +52,24 @@ public class AuthenticationController implements Initializable {
             AuthResponse authResponse = AuthHelper.signup(username, password);
 
             if (authResponse.getSuccess()) {
+
                 if (autoLoginCheckBox.isSelected()) {
                     saveLogInCredentials(username, password);
                 }
+
                 UserData.setInstance(authResponse.getUserData());
-                SceneHelper.switchToMainScene(usernameField.getScene());
+
+                SceneHelper.switchToMainScene();
             } else {
+                System.out.println("Signup failed. Server response: " + authResponse.toString());
                 setError(authResponse.getMessage());
             }
         } catch (IOException e) {
-            showErrorPopup("Error connecting to the server. Please try again later.");
+            e.printStackTrace();
+            ErrorPopupHelper.showErrorPopup("Error connecting to the server. Please try again later.");
         } catch (Exception e) {
-            showErrorPopup("An unexpected error occurred");
+            e.printStackTrace();
+            ErrorPopupHelper.showErrorPopup("An unexpected error occurred");
         }
     }
 
@@ -82,40 +83,32 @@ public class AuthenticationController implements Initializable {
                 return;
             }
 
+            System.out.println("Logging in with username: " + username + " and password: " + password);
+
             AuthResponse authResponse = AuthHelper.login(username, password);
 
             if (authResponse.getSuccess()) {
+                System.out.println("Login successful");
+
                 if (autoLoginCheckBox.isSelected()) {
                     saveLogInCredentials(username, password);
                 }
+
+                System.out.println("User data: " + authResponse.getUserData().toString());
+
                 UserData.setInstance(authResponse.getUserData());
-                RecipeData.getInstance().loadRecipes(username);
-                SceneHelper.switchToMainScene(usernameField.getScene());
+
+                SceneHelper.switchToMainScene();
             } else {
+                System.out.println("Login failed. Server response: " + authResponse.toString());
                 setError(authResponse.getMessage());
             }
         } catch (IOException e) {
-            showErrorPopup("Error connecting to the server. Please try again later.");
-        } catch (Exception e) {
-            showErrorPopup("An unexpected error occurred");
-        }
-    }
-
-    public void showErrorPopup(String error) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/errorPopup.fxml"));
-            Parent root = loader.load();
-
-            ErrorController controller = loader.getController();
-            controller.setErrorMessage(error);
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (IOException e) {
             e.printStackTrace();
-            // handle exception
+            ErrorPopupHelper.showErrorPopup("Error connecting to the server. Please try again later.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorPopupHelper.showErrorPopup("An unexpected error occurred");
         }
     }
 

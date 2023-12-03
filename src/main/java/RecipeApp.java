@@ -7,6 +7,8 @@ import utilites.InitializeHelper;
 import javafx.fxml.FXMLLoader;
 import java.util.prefs.Preferences;
 
+import utilites.SceneHelper;
+
 public class RecipeApp extends Application {
 
     final static int WIDTH = 800;
@@ -15,6 +17,12 @@ public class RecipeApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         InitializeHelper.init();
+        SceneHelper.setPrimaryStage(primaryStage);
+
+        primaryStage.setTitle("PantryPal 2");
+        primaryStage.setWidth(WIDTH);
+        primaryStage.setHeight(HEIGHT);
+        primaryStage.setResizable(true);
 
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         String username = prefs.get("username", null);
@@ -28,23 +36,17 @@ public class RecipeApp extends Application {
             scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
             primaryStage.setScene(scene);
-            primaryStage.setWidth(WIDTH);
-            primaryStage.setHeight(HEIGHT);
-            primaryStage.setResizable(true);
-            primaryStage.show();
         } else {
             Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
-            primaryStage.setTitle("Sign Up");
+            primaryStage.setTitle("PantryPal 2");
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
 
             primaryStage.setScene(scene);
-            primaryStage.setWidth(WIDTH);
-            primaryStage.setHeight(HEIGHT);
-            primaryStage.setResizable(true);
-            primaryStage.show();
         }
+
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

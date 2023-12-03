@@ -14,7 +14,6 @@ public class RecipeData {
     private static RecipeData instance = null;
 
     private ArrayList<Recipe> recipes;
-    private String username;
 
     public static RecipeData getInstance() {
         if (instance == null) {
@@ -87,7 +86,7 @@ public class RecipeData {
     public void saveRecipeChanges(Recipe recipe) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8000/api/?username=" + username))
+                .uri(URI.create("http://localhost:8000/api/?_id=" + recipe.getId()))
                 .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(recipe)))
                 .header("Content-Type", "application/json")
                 .build();
@@ -123,10 +122,9 @@ public class RecipeData {
     }
 
     public void saveRecipes(Recipe recipe) {
-        username = recipe.getUsername();
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8000/api/?username=" + username))
+                .uri(URI.create("http://localhost:8000/api/?_id=" + recipe.getId()))
                 .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(recipe)))
                 .header("Content-Type", "application/json")
                 .build();

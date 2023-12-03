@@ -1,4 +1,4 @@
-package utilites;
+package server;
 
 import model.UserData;
 
