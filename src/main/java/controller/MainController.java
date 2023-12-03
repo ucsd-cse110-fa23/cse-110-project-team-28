@@ -11,22 +11,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import java.util.prefs.Preferences;
 import model.Recipe;
 import model.RecipeData;
 import utilites.SceneHelper;
-import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.Comparator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainController implements Initializable {
 
@@ -54,8 +50,8 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-        //sortComboBox.setValue("Newest to Oldest");
+        // filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+        // sortComboBox.setValue("Newest to Oldest");
         Platform.runLater(() -> {
             this.reloadRecipeList();
             filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
@@ -192,7 +188,7 @@ public class MainController implements Initializable {
                 Collections.reverse(filteredRecipes);
                 break;
             case "Newest to Oldest":
-                //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+                // filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
                 filteredRecipes = displayedRecipes;
                 break;
         }

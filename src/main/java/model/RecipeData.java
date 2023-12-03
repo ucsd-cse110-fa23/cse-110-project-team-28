@@ -2,13 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,7 +13,6 @@ public class RecipeData {
     private final static String DEFAULT_FILE = "recipes.json";
     private static RecipeData instance = null;
 
-    private String fileLocation;
     private ArrayList<Recipe> recipes;
     private String username;
 
@@ -40,7 +34,6 @@ public class RecipeData {
     }
 
     public void setFileLocation(String fileLocation) {
-        this.fileLocation = fileLocation;
     }
 
     public ArrayList<Recipe> getRecipes() {
@@ -71,7 +64,7 @@ public class RecipeData {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(
-                        "http://localhost:8000/api/deleteRecipe?recipeName=" + recipeName + "&username=" + username)) 
+                        "http://localhost:8000/api/deleteRecipe?recipeName=" + recipeName + "&username=" + username))
                 .DELETE()
                 .build();
 
@@ -94,7 +87,7 @@ public class RecipeData {
     public void saveRecipeChanges(Recipe recipe) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8000/api/?username=" + username)) 
+                .uri(URI.create("http://localhost:8000/api/?username=" + username))
                 .PUT(HttpRequest.BodyPublishers.ofString(new Gson().toJson(recipe)))
                 .header("Content-Type", "application/json")
                 .build();
