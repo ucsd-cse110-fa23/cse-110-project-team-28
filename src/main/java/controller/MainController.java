@@ -193,7 +193,7 @@ public class MainController implements Initializable {
                 break;
             case "Newest to Oldest":
                 //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-                filteredRecipes = displayedRecipes;
+                filteredRecipes = displayedRecipes; //bug here
                 break;
         }
 

@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import utilites.MongoDB;
+import utilites.MongoDBHelper;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
@@ -84,7 +84,7 @@ public class APIHandler implements HttpHandler {
     }
 
     private int updateRecipeInMongoDB(Recipe recipe) {
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
             MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
             MongoCollection<Document> collection = database.getCollection("recipes");
 
@@ -141,7 +141,7 @@ public class APIHandler implements HttpHandler {
     }
 
     private boolean deleteRecipeFromMongoDB(String recipeName, String username) {
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
             MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
             MongoCollection<Document> collection = database.getCollection("recipes");
 
@@ -185,7 +185,7 @@ public class APIHandler implements HttpHandler {
 
     private List<Recipe> fetchRecipesFromMongoDB(String username) {
         List<Recipe> recipes = new ArrayList<>();
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
             MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
             MongoCollection<Document> collection = database.getCollection("recipes");
 
@@ -202,7 +202,7 @@ public class APIHandler implements HttpHandler {
     }
 
     private Recipe fetchRecipeFromMongoDB(String recipeName, String username) {
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
             MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
             MongoCollection<Document> collection = database.getCollection("recipes");
 
@@ -311,7 +311,7 @@ public class APIHandler implements HttpHandler {
 
     private void saveRecipeToMongoDB(Recipe recipe) {
         // MongoDB interaction logic
-        try (MongoClient mongoClient = MongoDB.getMongoClient();) {
+        try (MongoClient mongoClient = MongoDBHelper.getMongoClient();) {
             MongoDatabase database = mongoClient.getDatabase("recipeDatabase");
             MongoCollection<Document> collection = database.getCollection("recipes");
 

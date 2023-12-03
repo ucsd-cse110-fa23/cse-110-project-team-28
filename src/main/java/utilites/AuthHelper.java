@@ -21,7 +21,6 @@ public class AuthHelper {
     }
 
     public static AuthResponse login(String username, String password) throws IOException, URISyntaxException {
-        System.out.println("GOT HERE 4");
         return auth(username, password, LOGIN_PATH);
     }
 
@@ -29,23 +28,19 @@ public class AuthHelper {
             throws IOException, URISyntaxException {
 
         URIBuilder uriBuilder = new URIBuilder();
-        System.out.println("GOT HERE 5");
 
         String URL = uriBuilder.setHost(Config.getServerHostname())
                 .setPort(Config.getServerPort())
                 .setPath(path)
                 .build();
 
-        System.out.println("GOT HERE 6");
         System.out.println(URL);
-        System.out.println("GOT HERE 7");
 
         URL url = new URL(URL);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
-        System.out.println("GOT HERE 8");
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
@@ -55,19 +50,16 @@ public class AuthHelper {
         connection.getOutputStream().close();
 
         int responseCode = connection.getResponseCode();
-        System.out.println("GOT HERE 9");
 
         if (responseCode != 200) {
             InputStream errorStream = connection.getErrorStream();
             String response = new String(errorStream.readAllBytes());
             connection.getErrorStream().close();
-            System.out.println("response: " + response);
 
             return new AuthResponse()
                     .setSuccess(false)
                     .setMessage(response);
         }
-        System.out.println("GOT HERE 11");
 
         InputStream inputStream = connection.getInputStream();
         String response = new String(inputStream.readAllBytes());
