@@ -15,7 +15,7 @@ public class RecipeApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         InitializeHelper.init();
-        
+
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         String username = prefs.get("username", null);
         String password = prefs.get("password", null);
