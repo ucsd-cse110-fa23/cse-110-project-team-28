@@ -54,6 +54,7 @@ public class MainController implements Initializable {
         // sortComboBox.setValue("Newest to Oldest");
         Platform.runLater(() -> {
             this.reloadRecipeList();
+            displayedRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
             filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
             sortComboBox.setValue("Newest to Oldest");
         });
@@ -189,8 +190,7 @@ public class MainController implements Initializable {
                 Collections.reverse(filteredRecipes);
                 break;
             case "Newest to Oldest":
-                //filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-                filteredRecipes = displayedRecipes; //bug here
+                filteredRecipes = displayedRecipes; 
                 break;
         }
 
