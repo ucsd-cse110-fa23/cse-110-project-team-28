@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,18 +13,10 @@ import javafx.scene.control.Label;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 import model.RecipeData;
-import utilites.MongoDB;
+import model.UserData;
+import utilites.AuthHelper;
+import utilites.AuthResponse;
 import utilites.SceneHelper;
-
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-
-import config.Config;
-
-import org.bson.Document;
 
 public class AuthenticationController {
 
@@ -41,7 +32,10 @@ public class AuthenticationController {
     @FXML
     private Label errorLabel;
 
-    private MongoCollection<Document> userCollection;
+    private void setError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+    }
 
     @FXML
     private void signUpHandler() throws Exception {
@@ -54,52 +48,21 @@ public class AuthenticationController {
                 return;
             }
 
-            if (isSignUpSuccessful(username)) {
-                addUserToDB(username, password);
-                SceneHelper.switchToMainScene(usernameField.getScene()); // Navigate to main only if sign up is successful
+            AuthResponse authResponse = AuthHelper.signup(username, password);
+
+            if (authResponse.getSuccess()) {
+                if (autoLoginCheckBox.isSelected()) {
+                    saveLogInCredentials(username, password);
+                }
+                UserData.setInstance(authResponse.getUserData());
+                SceneHelper.switchToMainScene(usernameField.getScene());
             } else {
-                setError("That username is taken.");
+                setError(authResponse.getMessage());
             }
         } catch (IOException e) {
             showErrorPopup("Error connecting to the server. Please try again later.");
         } catch (Exception e) {
-            showErrorPopup("An unexpected error occurred.");
-        }
-    }
-
-    public void addUserToDB(String username, String password) throws IOException{
-        MongoClient mongoClient = MongoDB.getMongoClient();
-
-        MongoDatabase userDB = mongoClient.getDatabase("users");
-        userCollection = userDB.getCollection("usernames_passwords");
-        insertUser(userCollection, username, password);
-
-    }
-
-    public Boolean isUsernameTaken(String username) throws IOException{
-        MongoClient mongoClient = MongoDB.getMongoClient();
-
-        MongoDatabase userDB = mongoClient.getDatabase("users");
-        userCollection = userDB.getCollection("usernames_passwords");
-
-        // Query the database to see if a user with the given username already exists
-        Document found = userCollection.find(new Document("username", username)).first();
-        return found != null; // If found is not null, the username is taken
-    }
-
-    public void insertUser(MongoCollection<Document> userCollection, String username, String password) {
-        Document newUser = new Document("username", username)
-                .append("password", password);
-        userCollection.insertOne(newUser);
-        System.out.println("User " + username + " inserted.");
-    }
-
-    private boolean isSignUpSuccessful(String username) throws IOException{
-        // Return true if sign-up is successful
-        if (!isUsernameTaken(username)) {
-            return true;
-        } else {
-            return false;
+            showErrorPopup("An unexpected error occurred");
         }
     }
 
@@ -107,65 +70,29 @@ public class AuthenticationController {
     private void loginHandler() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
-
         try {
             if (username.isEmpty() || password.isEmpty()) {
                 setError("Please enter a username and password.");
                 return;
             }
 
-            if (isLogInSuccessful(username, password)) {
+            AuthResponse authResponse = AuthHelper.login(username, password);
+
+            if (authResponse.getSuccess()) {
                 if (autoLoginCheckBox.isSelected()) {
-                    saveLoginCredentials(username, password);
+                    saveLogInCredentials(username, password);
                 }
-                SceneHelper.switchToMainScene(usernameField.getScene()); // Navigate to main only if login is successful
-                RecipeData.getInstance().loadRecipes(username); // load recipes from db
+                UserData.setInstance(authResponse.getUserData());
+                RecipeData.getInstance().loadRecipes(username);
+                SceneHelper.switchToMainScene(usernameField.getScene());
             } else {
-                setError("Incorrect username or password.");
+                setError(authResponse.getMessage());
             }
         } catch (IOException e) {
             showErrorPopup("Error connecting to the server. Please try again later.");
         } catch (Exception e) {
-            showErrorPopup("An unexpected error occurred.");
+            showErrorPopup("An unexpected error occurred");
         }
-    }
-    
-
-    private void saveLoginCredentials(String username, String password) {
-        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
-        prefs.put("username", username);
-        prefs.put("password", password);
-    }
-
-    private void setError(String message) {
-        errorLabel.setText(message);
-        errorLabel.setVisible(true);
-    }
-
-    private boolean isLogInSuccessful(String username, String password) throws IOException{
-        if (isPasswordCorrect(username, password)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public Boolean isPasswordCorrect(String username, String password) throws IOException{
-        MongoClient mongoClient = MongoDB.getMongoClient();
-
-        MongoDatabase userDB = mongoClient.getDatabase("users");
-        userCollection = userDB.getCollection("usernames_passwords");
-
-        // Query the database for the user with the given username
-        Document user = userCollection.find(Filters.eq("username", username)).first();
-
-        if (user != null) {
-            String storedPassword = user.getString("password");
-            return storedPassword.equals(password);
-        }
-
-        return false; // User not found or password doesn't match
-
     }
 
     public void showErrorPopup(String error) {
@@ -184,5 +111,11 @@ public class AuthenticationController {
             e.printStackTrace();
             // handle exception
         }
+    }
+
+    private void saveLogInCredentials(String username, String password) {
+        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
+        prefs.put("username", username);
+        prefs.put("password", password);
     }
 }

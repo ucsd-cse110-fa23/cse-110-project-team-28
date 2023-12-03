@@ -54,6 +54,8 @@ public class AuthHandler implements HttpHandler {
         String username = requestBodyJSON.getString("username");
         String password = requestBodyJSON.getString("password");
 
+        System.out.println("Username: " + username);
+
         // check not null in case frontend validation fails
         if (username == null || password == null) {
             exchange.sendResponseHeaders(400, 0);
