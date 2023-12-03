@@ -59,4 +59,5 @@ public class Config {
     public static int getServerPort() {
         return SERVER_PORT;
     }
+
 }
