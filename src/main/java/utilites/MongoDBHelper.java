@@ -2,14 +2,10 @@ package utilites;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
-
-import java.util.ArrayList;
 
 import config.Config;
 
