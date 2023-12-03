@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import java.io.IOException;
@@ -47,18 +48,22 @@ public class AuthenticationController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            setError("Please enter a username and password.");
-            return;
-        }
+        try {
+            if (username.isEmpty() || password.isEmpty()) {
+                setError("Please enter a username and password.");
+                return;
+            }
 
-        boolean autoLogin = autoLoginCheckBox.isSelected();
-
-        if (isSignUpSuccessful(username)) {
-            addUserToDB(username, password);
-            SceneHelper.switchToMainScene(usernameField.getScene());
-        } else {
-            setError("That username is taken.");
+            if (isSignUpSuccessful(username)) {
+                addUserToDB(username, password);
+                SceneHelper.switchToMainScene(usernameField.getScene()); // Navigate to main only if sign up is successful
+            } else {
+                setError("That username is taken.");
+            }
+        } catch (IOException e) {
+            showErrorPopup("Error connecting to the server. Please try again later.");
+        } catch (Exception e) {
+            showErrorPopup("An unexpected error occurred.");
         }
     }
 
@@ -103,27 +108,28 @@ public class AuthenticationController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            setError("Please enter a username and password.");
-            return;
-        }
+        try {
+            if (username.isEmpty() || password.isEmpty()) {
+                setError("Please enter a username and password.");
+                return;
+            }
 
-        boolean autoLogin = autoLoginCheckBox.isSelected();
-
-        if (isUsernameTaken(username)) {
-            if (isPasswordCorrect(username, password)) {
+            if (isLogInSuccessful(username, password)) {
                 if (autoLoginCheckBox.isSelected()) {
                     saveLoginCredentials(username, password);
                 }
-                SceneHelper.switchToMainScene(usernameField.getScene());
-                RecipeData.getInstance().loadRecipes(username); //load recipes from db
+                SceneHelper.switchToMainScene(usernameField.getScene()); // Navigate to main only if login is successful
+                RecipeData.getInstance().loadRecipes(username); // load recipes from db
             } else {
-                setError("Incorrect password.");
+                setError("Incorrect username or password.");
             }
-        } else {
-            setError("Username does not exist.");
+        } catch (IOException e) {
+            showErrorPopup("Error connecting to the server. Please try again later.");
+        } catch (Exception e) {
+            showErrorPopup("An unexpected error occurred.");
         }
     }
+    
 
     private void saveLoginCredentials(String username, String password) {
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
@@ -160,5 +166,23 @@ public class AuthenticationController {
 
         return false; // User not found or password doesn't match
 
+    }
+
+    public void showErrorPopup(String error) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/errorPopup.fxml"));
+            Parent root = loader.load();
+
+            ErrorController controller = loader.getController();
+            controller.setErrorMessage(error);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // handle exception
+        }
     }
 }
