@@ -63,14 +63,14 @@ public class MainController implements Initializable {
         return recipeList;
     }
 
-    // private void reloadRecipeList() {
-    // // clear recipeList
-    // recipeList.getChildren().clear();
+    private void reloadRecipeList() {
+        //clear recipeList
+        recipeList.getChildren().clear();
 
-    // for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
-    // addRecipe(recipe);
-    // }
-    // }
+        for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+            addRecipe(recipe);
+         }
+     }
 
     /**
      * Adds a recipe to the recipeList
