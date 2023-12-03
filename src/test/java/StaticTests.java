@@ -26,7 +26,7 @@ public class StaticTests {
     @Test
     public void testRecipeToJson() {
         // Setup
-        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps", null);
+        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps", null, "testuser");
 
         // Execute
         String json = new Gson().toJson(recipe);

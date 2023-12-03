@@ -12,11 +12,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import java.util.prefs.Preferences;
 import model.Recipe;
 import model.RecipeData;
 import utilites.SceneHelper;
+import java.util.Collections;
+import java.util.Comparator;
 
 import java.util.ArrayList;
 
@@ -28,25 +32,46 @@ public class MainController implements Initializable {
     @FXML
     private Button addRecipeButton;
 
+    @FXML
+    private ToggleButton toggleBreakfast;
+
+    @FXML
+    private ToggleButton toggleLunch;
+
+    @FXML
+    private ToggleButton toggleDinner;
+
+    @FXML
+    private ComboBox<String> sortComboBox;
+
+    private ArrayList<Recipe> filteredRecipes;
+
+    private ArrayList<Recipe> displayedRecipes;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Platform.runLater(() -> {
-        // this.reloadRecipeList();
-        // });
+        // filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+        // sortComboBox.setValue("Newest to Oldest");
+        Platform.runLater(() -> {
+            this.reloadRecipeList();
+            displayedRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+            sortComboBox.setValue("Newest to Oldest");
+        });
     }
 
     public VBox getRecipeList() {
         return recipeList;
     }
 
-    // private void reloadRecipeList() {
-    // // clear recipeList
-    // recipeList.getChildren().clear();
+    private void reloadRecipeList() {
+        //clear recipeList
+        recipeList.getChildren().clear();
 
-    // for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
-    // addRecipe(recipe);
-    // }
-    // }
+        for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+            addRecipe(recipe);
+         }
+     }
 
     /**
      * Adds a recipe to the recipeList
@@ -106,7 +131,7 @@ public class MainController implements Initializable {
         Recipe recipe = new Recipe(generator.generate(10), "Dinner",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "https://picsum.photos/600/200");
+                "https://picsum.photos/600/200", "firsttime");
 
         // todo: implement this
         // RecipeData.getInstance().addRecipe(recipe);
@@ -124,6 +149,52 @@ public class MainController implements Initializable {
         Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
         prefs.remove("username");
         prefs.remove("password");
+    }
+
+    @FXML
+    private void handleFilterAction() {
+        filteredRecipes.clear();
+
+        boolean filterBreakfast = toggleBreakfast.isSelected();
+        boolean filterLunch = toggleLunch.isSelected();
+        boolean filterDinner = toggleDinner.isSelected();
+        // Check if none are selected
+        if (!filterBreakfast && !filterLunch && !filterDinner) {
+            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes()); // Show all recipes
+        } else {
+            filteredRecipes.clear(); // Clear and filter based on selection
+            for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+                if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
+                        (filterLunch && recipe.getMealType().equals("Lunch")) ||
+                        (filterDinner && recipe.getMealType().equals("Dinner"))) {
+                    filteredRecipes.add(recipe);
+                }
+            }
+        }
+        displayedRecipes = filteredRecipes;
+        setRecipes(filteredRecipes);
+    }
+
+    @FXML
+    private void handleSortAction() {
+        String selectedSort = sortComboBox.getValue();
+
+        switch (selectedSort) {
+            case "A-Z":
+                filteredRecipes.sort(Comparator.comparing(Recipe::getName));
+                break;
+            case "Z-A":
+                filteredRecipes.sort(Comparator.comparing(Recipe::getName).reversed());
+                break;
+            case "Oldest to Newest":
+                Collections.reverse(filteredRecipes);
+                break;
+            case "Newest to Oldest":
+                filteredRecipes = displayedRecipes; 
+                break;
+        }
+
+        setRecipes(filteredRecipes);
     }
 
 }

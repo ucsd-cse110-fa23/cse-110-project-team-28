@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: white; -fx-padding: 10;" fx:controller="controller.ErrorController">
+    <VBox spacing="10" alignment="CENTER">
+        <Text fx:id="errorMessage" text="Error message goes here" wrappingWidth="280" />
+        <Button text="OK" onAction="#handleClose"/>
+    </VBox>
+</StackPane>

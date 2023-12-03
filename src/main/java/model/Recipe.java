@@ -8,6 +8,7 @@ public class Recipe {
     private String steps; // the gpt generated recipe (maybe needs a better name)
     private String mealType;
     private String imageURL;
+    private String username;
 
     public Recipe() {
     }
@@ -19,12 +20,20 @@ public class Recipe {
         this.steps = steps;
     }
 
-    public Recipe(String name, String mealType, String ingredients, String steps, String imageURL) {
+    public Recipe(String name, String mealType, String ingredients, String steps, String imageURL, String username) {
         this.name = name;
         this.mealType = mealType;
         this.ingredients = ingredients;
         this.steps = steps;
         this.imageURL = imageURL;
+        this.username = username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getUsername() {
+        return username;
     }
 
     public String getName() {
@@ -63,7 +72,7 @@ public class Recipe {
     public String toString() {
         return "Recipe [name=" + name + ", mealType=" + mealType + ", ingredients=" + ingredients + ", steps=" + steps
                 + ", imageURL=" + imageURL
-                + "]";
+                + ", username= " + username + "]";
     }
 
     public String getImageURL() {
@@ -76,8 +85,9 @@ public class Recipe {
         String ingredients = responseJSON.getString("ingredients");
         String steps = responseJSON.getString("steps");
         String imageURL = responseJSON.getString("imageURL");
+        String username = responseJSON.getString("username");
 
-        return new Recipe(name, mealType, ingredients, steps, imageURL);
+        return new Recipe(name, mealType, ingredients, steps, imageURL, username);
     }
 
 }

@@ -25,9 +25,9 @@ public class RecipeAppServer {
 
     // create contexts
     server.createContext("/api/", new APIHandler());
-    server.createContext("/auth/", new AuthHandler()); // todo: eventually will be merged into api
+    server.createContext("/auth/", new AuthHandler());
 
-    // set executor
+    //set executor
     server.setExecutor(threadPoolExecutor);
     server.start();
 

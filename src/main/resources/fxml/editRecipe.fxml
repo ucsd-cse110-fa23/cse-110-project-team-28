@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane id="editRecipe" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="defaultBackground" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditRecipeController">
     <top>
@@ -77,6 +78,12 @@
                         </ImageView>
                     </graphic>
                 </Button>
+                <Button fx:id="shareRecipeButton" mnemonicParsing="false" text="Share Recipe" onAction="#shareRecipeButtonHandler">
+                    <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                    </font>
+                </Button>
+                <Label fx:id="recipeURLLabel" text="Recipe URL will appear here"/>
                 <Button id="deleteRecipeButton" mnemonicParsing="false" onAction="#deleteRecipeButtonHandler" text="Delete Recipe">
                     <font>
                         <Font name="PP Neue Machina Regular" size="12.0" />
