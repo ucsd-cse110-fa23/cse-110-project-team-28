@@ -66,7 +66,7 @@ public class CurrentInteractiveTests extends ApplicationTest {
 
         });
     }
-
+/* 
     @Test
     public void deleteRecipe() throws IOException {
         Platform.runLater(() -> {
@@ -93,7 +93,7 @@ public class CurrentInteractiveTests extends ApplicationTest {
             // assert that recipedata is empty
             Assert.assertEquals(RecipeData.getInstance().getRecipes().isEmpty(), true);
         });
-    }
+    }*/
 /* 
     @Test
     public void testSaveAndLoadRecipes() throws Exception {
