@@ -31,6 +31,28 @@
   -fx-background-color: #cecece;
 }
 
+.toggleButton {
+  -fx-background-color: transparent;
+  -fx-background-radius: 0;
+}
+
+.toggleButton#breakfastToggleButton {
+  -fx-background-radius: 6px 0 0 6px;
+}
+
+.toggleButton#dinnerToggleButton {
+  -fx-background-radius: 0 6px 6px 0;
+}
+
+.toggleButton:hover {
+  -fx-background-color: #dedede;
+}
+
+.toggleButton:selected {
+  -fx-background-color: #1b1b1b;
+  -fx-text-fill: #fefefe;
+}
+
 .scrollPane {
   /* remove border */
   -fx-background-insets: 0;

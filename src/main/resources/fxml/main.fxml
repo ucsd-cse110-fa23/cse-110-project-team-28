@@ -17,10 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0"
-   prefWidth="900.0" style="-fx-background-color: #fefefe;" stylesheets="@../css/style.css"
-   xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-   fx:controller="controller.MainController">
+<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #fefefe;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="340.0" styleClass="scrollPane">
          <content>
@@ -33,8 +30,7 @@
       </ScrollPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0"
-         styleClass="footer" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0" styleClass="footer" BorderPane.alignment="CENTER">
          <children>
             <!-- <Button mnemonicParsing="false" text="Save Recipes" onAction="#saveRecipesHandler"
                textAlignment="CENTER">
@@ -53,11 +49,9 @@
                   <Font name="PP Neue Machina Regular" size="12.0" />
                </font>
             </Button> -->
-            <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler"
-               text="Add Recipe" textAlignment="CENTER">
+            <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" text="Add Recipe" textAlignment="CENTER">
                <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
-                     preserveRatio="true">
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/add.png" />
                      </image>
@@ -67,14 +61,12 @@
                   <Font name="PP Neue Machina Regular" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false"
-               onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
+            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
                <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
-                     preserveRatio="true">
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/add.png" />
                      </image>
@@ -88,9 +80,7 @@
       </HBox>
    </bottom>
    <top>
-      <VBox id="header"
-         style="-fx-border-color: #cecece; -fx-border-style: hidden hidden solid hidden;"
-         BorderPane.alignment="CENTER">
+      <VBox id="header" style="-fx-border-color: #cecece; -fx-border-style: hidden hidden solid hidden;" BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0">
                <children>
@@ -100,14 +90,12 @@
                      </font>
                   </Label>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="logoutButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false"
-                     onAction="#handleLogout" text="Logout">
+                  <Button fx:id="logoutButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#handleLogout" text="Logout">
                      <font>
                         <Font name="PP Neue Machina Regular" size="12.0" />
                      </font>
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
-                           preserveRatio="true">
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/logout.png" />
                            </image>
@@ -126,10 +114,7 @@
                <children>
                   <StackPane alignment="CENTER_LEFT">
                      <children>
-                        <ComboBox fx:id="sortComboBox" onAction="#sortHandler"
-                           prefHeight="36.0" prefWidth="200.0" promptText="Select sort "
-                           style="-fx-background-color: transparent; -fx-border-color: #cecece; -fx-background-radius: 6px; -fx-border-radius: 6px; -fx-font: 12px &quot;PP Neue Machina&quot;;"
-                           value="Newest to Oldest">
+                        <ComboBox fx:id="sortComboBox" onAction="#sortHandler" prefHeight="36.0" prefWidth="200.0" promptText="Select sort " style="-fx-background-color: transparent; -fx-border-color: #cecece; -fx-background-radius: 6px; -fx-border-radius: 6px; -fx-font: 12px &quot;PP Neue Machina&quot;;" value="Newest to Oldest">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="Newest to Oldest" />
@@ -139,8 +124,7 @@
                               </FXCollections>
                            </items>
                         </ComboBox>
-                        <Label style="-fx-background-color: #fefefe;" text="Sort" translateX="12.0"
-                           translateY="-18.0">
+                        <Label style="-fx-background-color: #fefefe;" text="Sort" translateX="12.0" translateY="-18.0">
                            <font>
                               <Font name="PP Neue Machina Regular" size="12.0" />
                            </font>
@@ -149,40 +133,26 @@
                   </StackPane>
                   <StackPane alignment="CENTER_LEFT">
                      <children>
-                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-                           prefHeight="36.0" prefWidth="240.0"
-                           style="-fx-border-color: #cecece; -fx-border-radius: 6px;"
-                           StackPane.alignment="CENTER">
+                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="240.0" style="-fx-border-color: #cecece; -fx-border-radius: 6px;" StackPane.alignment="CENTER">
                            <children>
-                              <ToggleButton fx:id="toggleBreakfast"
-                                 maxHeight="1.7976931348623157E308"
-                                 maxWidth="1.7976931348623157E308" onAction="#filterHandler"
-                                 style="-fx-background-color: transparent; -fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;"
-                                 text="Breakfast" HBox.hgrow="ALWAYS">
+                              <ToggleButton fx:id="toggleBreakfast" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Breakfast" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleLunch" maxHeight="1.7976931348623157E308"
-                                 maxWidth="1.7976931348623157E308" onAction="#filterHandler"
-                                 style="-fx-background-color: transparent; -fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;"
-                                 text="Lunch" HBox.hgrow="ALWAYS">
+                              <ToggleButton fx:id="toggleLunch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Lunch" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleDinner" maxHeight="1.7976931348623157E308"
-                                 maxWidth="1.7976931348623157E308" onAction="#filterHandler"
-                                 style="-fx-background-color: transparent;" text="Dinner"
-                                 HBox.hgrow="ALWAYS">
+                              <ToggleButton fx:id="toggleDinner" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" styleClass="toggleButton" text="Dinner" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
                            </children>
                         </HBox>
-                        <Label style="-fx-background-color: #fefefe;" text="Filter"
-                           translateX="12.0" translateY="-18.0">
+                        <Label style="-fx-background-color: #fefefe;" text="Filter" translateX="12.0" translateY="-18.0">
                            <font>
                               <Font name="PP Neue Machina Regular" size="12.0" />
                            </font>
