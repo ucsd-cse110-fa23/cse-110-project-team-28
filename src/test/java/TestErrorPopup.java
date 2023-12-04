@@ -34,7 +34,7 @@ public class TestErrorPopup extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("fxml/errorPopUp.fxml"));
         primaryStage.setTitle("Sign Up");
 
         Scene scene = new Scene(root);
