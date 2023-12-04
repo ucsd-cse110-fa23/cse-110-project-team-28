@@ -15,8 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
-import utilites.ChatGPT;
-import utilites.RecipeHelper;
 import utilites.SceneHelper;
 
 public class NewRecipeController implements Initializable {
@@ -25,27 +23,16 @@ public class NewRecipeController implements Initializable {
     private Button backButton;
 
     @FXML
-    private Button saveRecipeButton;
+    private Button generateRecipeButton;
 
     @FXML
     private VBox newRecipeCenter;
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "" + //
-            "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. " + //
-            "Please include list of ingredients, preparation instructions, and numbered cooking steps. " + //
-            "Place title of recipe on first line of your response. \n" + //
-            "\n" + //
-            "Meal Type: [mealType]\n" + //
-            "Ingredients: [listOfIngredients]\n" + //
-            "\n" + //
-            "Recipe:";
 
     // meal type stuff added by dominic
-    private String recipeName;
     private String mealType;
     private String ingredients;
-    private String steps;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -92,15 +79,6 @@ public class NewRecipeController implements Initializable {
                         System.out.println("An error occurred while getting ingredients");
                     } else {
                         ingredients = transcript;
-                        // String response = getRecipeSteps();
-                        // if (response.equals(ERROR_FLAG)) {
-                        //     System.out.println("An error occurred while getting steps");
-                        // } else {
-                        //     recipeName = getRecipeName(response);
-                        //     steps = response;
-
-                        //     //saveRecipeButton.setDisable(false);
-                        // }
                     }
                 }
             });
@@ -112,73 +90,34 @@ public class NewRecipeController implements Initializable {
         }
     }
 
-    private String getRecipeSteps() {
-        try {
-            return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
-                    mealType)
-                    .replace("[listOfIngredients]", ingredients));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
-            return ERROR_FLAG;
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
-            return ERROR_FLAG;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("InterruptedException");
-            return ERROR_FLAG;
-        }
-    }
 
     public void backButtonHandler() throws IOException {
         SceneHelper.switchToMainScene();
     }
 
-    private String getRecipeName(String steps) {
-        String[] lines = steps.split("\n");
-        return lines[0].trim();
-    }
 
-    //TODO: change so that switches to preview scene instead of home. refactor(rename)
-    public void saveRecipeButtonHandler() throws IOException {
-        //saveRecipe();
-        //goHome();
+    
+    public void generateRecipeButtonHandler() throws IOException {
         goToPreview();
     }
 
+    
+
+    //TODO: maybe refactor and include in SceneHelper
     /*
-     * Saves recipe to main app list
+     * switch to preview window
      */
-    private void saveRecipe() {
-        Recipe recipe = new Recipe();
-        recipe.setName(recipeName);
-        recipe.setMealType(mealType);
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
-
-        // todo: implement this
-        // RecipeData.getInstance().addRecipe(recipe);
-    }
-
-    //TODO: go to preview window and provide it with important parameters. maybe refactor and include in SceneHelper
     private void goToPreview() throws IOException{
-        Scene scene = saveRecipeButton.getScene();
+        Scene scene = generateRecipeButton.getScene();
         Stage stage = (Stage) scene.getWindow();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/previewRecipe.fxml"));
         Parent root = loader.load();
         PreviewRecipeController previewRecipeController = loader.getController();
 
-        //TODO: remove
-        //testing
         Recipe newRecipe = new Recipe();
-        //newRecipe.setName("recipe");
-        newRecipe.setIngredients("Eggs, bread, butter, milk, flour, sugar");
-        newRecipe.setMealType("breakfast");
-        //newRecipe.setSteps("lorem ipsum");
-
+        newRecipe.setIngredients(ingredients);
+        newRecipe.setMealType(mealType);
         previewRecipeController.setRecipe(newRecipe);
 
         Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());

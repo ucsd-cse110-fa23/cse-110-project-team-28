@@ -87,7 +87,7 @@ public class RecipeHelper {
         requestBody.put("mealType", recipe.getMealType());
         requestBody.put("ingredients", recipe.getIngredients());
         requestBody.put("steps", recipe.getSteps());
-        requestBody.put("imageURL", recipe.getImageURL());
+        //requestBody.put("imageURL", recipe.getImageURL());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(

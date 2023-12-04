@@ -59,7 +59,10 @@ public class PreviewRecipeController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
-    //sets recipe and gets recipe steps
+    /*
+     * Sets the recipe and asks gpt for steps
+     * @TODO refactor
+     */
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
         String response = getRecipeSteps(false);
@@ -89,9 +92,8 @@ public class PreviewRecipeController implements Initializable {
     public void saveRecipeButtonHandler() throws IOException {
         recipe.setSteps(editRecipeTextArea.getText());
 
-        // save change to database
-        System.out.println("Saving changes to recipe: " + recipe.getId());
-        RecipeHelper.editRecipe(recipe);
+        System.out.println("Adding new recipe: ");
+        RecipeHelper.addRecipe(recipe);
 
         goHome();
     }
@@ -99,7 +101,7 @@ public class PreviewRecipeController implements Initializable {
     public void regenerateRecipeButtonHandler() throws IOException {
         String response = getRecipeSteps(true);
         if(response.equals(ERROR_FLAG)){
-            System.out.println("An error occurred while getting steps");
+            System.out.println("An error occurred while regenerating steps");
         } else{
             recipeName = getRecipeName(response);
             steps = response;
