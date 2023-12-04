@@ -15,9 +15,9 @@
    <center>
       <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="600.0" style="-fx-background-color: transparent; -fx-background-insets: 0;">
          <content>
-            <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                <children>
-                  <VBox fillWidth="false" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
                      <children>
                         <VBox spacing="6.0">
                            <children>
@@ -33,21 +33,21 @@
                               </Label>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
+                        <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
                            <children>
                               <Label text="Ingredients">
                                  <font>
                                     <Font name="PP Eiko Medium" size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="ingredientsLabel">
+                              <Label fx:id="ingredientsLabel" wrapText="true">
                                  <font>
                                     <Font name="PP Eiko Regular" size="18.0" />
                                  </font>
                               </Label>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
+                        <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
                            <children>
                               <Label text="Steps">
                                  <font>
@@ -151,7 +151,7 @@
                   </HBox>
                   <VBox alignment="CENTER_LEFT" spacing="6.0">
                      <children>
-                        <Label fx:id="recipeNameLabel" text="vggvgvggvg" wrapText="true">
+                        <Label fx:id="recipeNameLabel" wrapText="true">
                            <font>
                               <Font name="PP Eiko Medium" size="28.0" />
                            </font>

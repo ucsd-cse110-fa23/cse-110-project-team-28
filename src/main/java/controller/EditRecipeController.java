@@ -9,8 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import model.Recipe;
 import utilites.Logger;
 import utilites.RecipeHelper;
@@ -19,16 +17,19 @@ import utilites.SceneHelper;
 public class EditRecipeController implements Initializable {
 
     @FXML
-    private TextArea editRecipeTextArea;
+    private Label recipeNameLabel;
+
+    @FXML
+    private Label mealTypeLabel;
+
+    @FXML
+    private Label ingredientsLabel;
+
+    @FXML
+    private TextArea stepsTextArea;
 
     @FXML
     private Button saveRecipeButton;
-
-    @FXML
-    private Button shareRecipeButton;
-
-    @FXML
-    private Label recipeURLLabel;
 
     private Recipe recipe;
 
@@ -38,51 +39,30 @@ public class EditRecipeController implements Initializable {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
-        editRecipeTextArea.setText(recipe.getSteps());
-        String recipeURL = constructRecipeURL(recipe);
-        Logger.log("RECIPE URL: " + recipeURL);
-        // Set the URL in the label or text field
-        recipeURLLabel.setText(recipeURL);
-    }
 
-    public void backButtonHandler() throws IOException {
-        goHome();
-    }
-
-    private void goHome() throws IOException {
-        SceneHelper.switchToMainScene();
-    }
-
-    public void saveRecipeButtonHandler() throws IOException {
-        recipe.setSteps(editRecipeTextArea.getText());
-
-        // save change to database
-        Logger.log("Saving changes to recipe: " + recipe.getId());
-        RecipeHelper.editRecipe(recipe);
-
-        goHome();
-    }
-
-    public void deleteRecipeButtonHandler() throws IOException {
-        RecipeHelper.deleteRecipe(recipe);
-        goHome();
+        recipeNameLabel.setText(recipe.getName());
+        mealTypeLabel.setText(recipe.getMealType());
+        ingredientsLabel.setText(recipe.getIngredients());
+        stepsTextArea.setText(recipe.getSteps());
     }
 
     @FXML
-    private void shareRecipeButtonHandler() {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(recipeURLLabel.getText());
-        clipboard.setContent(content);
-        Logger.log("Recipe URL copied to clipboard!");
+    private void backButtonHandler() throws IOException {
+        SceneHelper.switchToRecipeDetailsScene(recipe);
     }
 
-    private String constructRecipeURL(Recipe recipe) {
-        try {
-            return "http://localhost:8000/api/recipes?_id=" + recipe.getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error constructing URL";
-        }
+    @FXML
+    private void saveRecipeButtonHandler() throws IOException {
+        recipe.setSteps(stepsTextArea.getText());
+
+        // save change to database
+        Logger.log("Saving changes to recipe: " + recipe.getId());
+
+        RecipeHelper.editRecipe(recipe);
+
+        // get updated recipe and switch to details scene
+        Recipe editedRecipe = RecipeHelper.getRecipe(recipe.getId());
+
+        SceneHelper.switchToRecipeDetailsScene(editedRecipe);
     }
 }

@@ -71,6 +71,8 @@ public class MongoDBHelper {
 
         String userId = result
                 .getInsertedId()
+                .asObjectId()
+                .getValue()
                 .toString();
 
         Logger.log("Inserted user with id: " + userId);
@@ -195,12 +197,22 @@ public class MongoDBHelper {
                 .updateOne(Filters.eq("_id", recipeId), updates);
     }
 
-    public static DeleteResult deleteRecipe(String recipeId) {
+    public static DeleteResult deleteRecipeFromCollection(String recipeId) {
         Logger.log("Deleting recipe with id: " + recipeId);
 
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getRecipeCollectionName())
                 .deleteOne(Filters.eq("_id", new ObjectId(recipeId)));
+    }
+
+    public static UpdateResult deleteRecipeFromUser(String userId, String recipeId) {
+        Logger.log("Deleting recipe with id: " + recipeId + " from user with id: " + userId);
+
+        return mongoClient
+                .getDatabase(Config.getDatabaseName())
+                .getCollection(Config.getUserCollectionName())
+                .updateOne(Filters.eq("_id", new ObjectId(userId)),
+                        new Document("$pull", new Document("recipes", recipeId)));
     }
 }

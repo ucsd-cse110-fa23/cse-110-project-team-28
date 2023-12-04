@@ -13,7 +13,6 @@ public class Recipe {
     private String imageURL;
 
     // provided by the server
-    private Date creationDate;
     private String id; // referenced as _id in the database
 
     public String getName() {
@@ -65,11 +64,6 @@ public class Recipe {
         return this;
     }
 
-    public Recipe setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-        return this;
-    }
-
     public Recipe setId(String id) {
         this.id = id;
         return this;
@@ -79,9 +73,7 @@ public class Recipe {
     public String toString() {
         return "Recipe [name=" + name + ", mealType=" + mealType + ", ingredients=" + ingredients + ", steps=" + steps
                 + ", imageURL=" + imageURL
-                + ", id=" + id
-                + ", creationDate=" + (creationDate == null ? "null" : creationDate.toString())
-                + "]";
+                + ", id=" + id + "]";
     }
 
     public static Recipe fromJSON(JSONObject jsonObject) {
@@ -90,7 +82,6 @@ public class Recipe {
         String ingredients = jsonObject.getString("ingredients");
         String steps = jsonObject.getString("steps");
         String imageURL = jsonObject.getString("imageURL");
-        Date creationDate = new Date(jsonObject.getLong("creationDate"));
         String id = jsonObject.getString("_id");
 
         return new Recipe()
@@ -99,7 +90,6 @@ public class Recipe {
                 .setIngredients(ingredients)
                 .setSteps(steps)
                 .setImageUrl(imageURL)
-                .setCreationDate(creationDate)
                 .setId(id);
     }
 
@@ -118,7 +108,7 @@ public class Recipe {
         String mealType = document.getString("mealType");
         String ingredients = document.getString("ingredients");
         String steps = document.getString("steps");
-        Date creationDate = document.getDate("creationDate");
+        String imageURL = document.getString("imageURL");
         String id = document.getObjectId("_id").toString();
 
         Recipe recipe = new Recipe()
@@ -126,7 +116,7 @@ public class Recipe {
                 .setMealType(mealType)
                 .setIngredients(ingredients)
                 .setSteps(steps)
-                .setCreationDate(creationDate)
+                .setImageUrl(imageURL)
                 .setId(id);
 
         return recipe;

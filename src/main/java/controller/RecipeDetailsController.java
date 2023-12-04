@@ -32,9 +32,6 @@ public class RecipeDetailsController implements Initializable {
     private Label stepsLabel;
 
     @FXML
-    private Button saveRecipeButton;
-
-    @FXML
     private Button shareRecipeButton;
 
     @FXML
@@ -55,39 +52,18 @@ public class RecipeDetailsController implements Initializable {
         stepsLabel.setText(recipe.getSteps());
 
         String recipeURL = constructRecipeURL(recipe);
-        Logger.log("RECIPE URL: " + recipeURL);
+        Logger.log("Recipe URL: " + recipeURL);
         // Set the URL in the label or text field
         recipeURLLabel.setText(recipeURL);
     }
 
-    public void backButtonHandler() throws IOException {
+    @FXML
+    private void backButtonHandler() throws IOException {
         goHome();
     }
 
     private void goHome() throws IOException {
         SceneHelper.switchToMainScene();
-    }
-
-    @FXML
-    private void editRecipeButtonHandler() throws IOException {
-        // todo: implement navigation
-        Logger.log("Edit recipe button clicked!");
-    }
-
-    public void deleteRecipeButtonHandler() throws IOException {
-        RecipeHelper.deleteRecipe(recipe);
-        goHome();
-    }
-
-    @FXML
-    private void shareRecipeButtonHandler() {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-
-        content.putString(recipeURLLabel.getText());
-        clipboard.setContent(content);
-
-        Logger.log("Recipe URL copied to clipboard!");
     }
 
     private String constructRecipeURL(Recipe recipe) {
@@ -101,5 +77,27 @@ public class RecipeDetailsController implements Initializable {
             e.printStackTrace();
             return "Error constructing URL";
         }
+    }
+
+    @FXML
+    private void editRecipeButtonHandler() throws IOException {
+        SceneHelper.switchToEditRecipeScene(recipe);
+    }
+
+    @FXML
+    private void deleteRecipeButtonHandler() throws IOException {
+        RecipeHelper.deleteRecipe(recipe);
+        goHome();
+    }
+
+    @FXML
+    private void shareRecipeButtonHandler() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+
+        content.putString(recipeURLLabel.getText());
+        clipboard.setContent(content);
+
+        Logger.log("Recipe URL copied to clipboard!");
     }
 }

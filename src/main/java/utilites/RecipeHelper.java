@@ -16,6 +16,12 @@ import java.net.http.HttpResponse;
 
 import java.util.List;
 
+/**
+ * todo:
+ * 
+ * - add error popup on critical errors
+ */
+
 public class RecipeHelper {
         public static Recipe getRecipe(String recipeId) {
 
@@ -25,15 +31,24 @@ public class RecipeHelper {
                                                 new URIBuilder()
                                                                 .setHost(Config.getServerHostname())
                                                                 .setPort(Config.getServerPort())
-                                                                .setPath("api")
-                                                                .addParameter("_id", recipeId)
+                                                                .setPath("api/recipe")
+                                                                .addParameter("recipeId", recipeId)
                                                                 .build()))
                                 .GET()
                                 .build();
 
                 return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                                 .thenApply(response -> {
-                                        Recipe recipe = new Gson().fromJson(response.body(), Recipe.class);
+                                        if (response.statusCode() != 200) {
+                                                Logger.log("Received non-200 status code from server: "
+                                                                + response.statusCode() + " "
+                                                                + response.body());
+                                                throw new RuntimeException("Error getting recipe");
+                                        }
+
+                                        Gson gson = new Gson();
+                                        Recipe recipe = gson.fromJson(response.body(), Recipe.class);
+
                                         return recipe;
                                 })
                                 .join();
@@ -58,9 +73,7 @@ public class RecipeHelper {
                                                 Logger.log("Received non-200 status code from server: "
                                                                 + response.statusCode() + " "
                                                                 + response.body());
-                                                throw new RuntimeException("Error getting recipes"); // todo: implement
-                                                                                                     // safer error
-                                                                                                     // handling
+                                                throw new RuntimeException("Error getting recipes");
                                         }
 
                                         Gson gson = new Gson();
@@ -101,9 +114,7 @@ public class RecipeHelper {
                                                 Logger.log("Received non-200 status code from server: "
                                                                 + response.statusCode() + " "
                                                                 + response.body());
-                                                throw new RuntimeException("Error adding recipe"); // todo: implement
-                                                                                                   // safer error
-                                                                                                   // handling
+                                                throw new RuntimeException("Error adding recipe");
                                         }
 
                                         return response;
@@ -134,9 +145,7 @@ public class RecipeHelper {
                                                 Logger.log("Received non-200 status code from server: "
                                                                 + response.statusCode() + " "
                                                                 + response.body());
-                                                throw new RuntimeException("Error editing recipe"); // todo: implement
-                                                                                                    // safer error
-                                                                                                    // handling
+                                                throw new RuntimeException("Error editing recipe");
                                         }
 
                                         return response;
@@ -154,9 +163,13 @@ public class RecipeHelper {
                                                                 .setPort(Config.getServerPort())
                                                                 .setPath("api/recipes")
                                                                 .addParameter("recipeId", recipe.getId())
+                                                                .addParameter("userId",
+                                                                                UserData.getInstance().getUserId())
                                                                 .build()))
                                 .DELETE()
                                 .build();
+
+                Logger.log("Delete request URL: " + request.uri().toString());
 
                 client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                                 .thenApply(response -> {

@@ -31,6 +31,9 @@ public class APIHandler implements HttpHandler {
             case "recipes":
                 recipesHandler(httpExchange);
                 break;
+            case "recipe":
+                recipeHandler(httpExchange);
+                break;
             default:
                 break;
         }
@@ -116,6 +119,67 @@ public class APIHandler implements HttpHandler {
             default:
                 break;
         }
+    }
+
+    private void recipeHandler(HttpExchange httpExchange) throws IOException {
+        String requestMethod = httpExchange.getRequestMethod();
+
+        Logger.log("Request method: " + requestMethod);
+
+        switch (requestMethod) {
+            case "GET":
+                recipeGetHandler(httpExchange);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void recipeGetHandler(HttpExchange httpExchange) throws IOException {
+        // Parse the query string
+        String query = httpExchange.getRequestURI().getQuery();
+
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            sendResponse(httpExchange, 400, "No query parameters provided");
+            return;
+        }
+
+        HashMap<String, String> params = extractQueryParameters(query);
+
+        if (!params.containsKey("recipeId")) {
+            System.err.println("No recipeId parameter provided");
+            sendResponse(httpExchange, 400, "No recipeId parameter provided");
+            return;
+        }
+
+        String recipeId = params.get("recipeId");
+
+        if (recipeId == null) {
+            System.err.println("No recipeId parameter provided");
+            sendResponse(httpExchange, 400, "No recipeId parameter provided");
+            return;
+        }
+
+        Logger.log("Fetching recipe: " + recipeId);
+
+        Recipe recipe = MongoDBHelper.findRecipeById(recipeId);
+
+        if (recipe == null) {
+            System.err.println("Error finding recipe");
+            sendResponse(httpExchange, 500, "Error finding recipe");
+            return;
+        }
+
+        Logger.log("Found recipe (" + recipe.getId() + ")");
+
+        Gson gson = new Gson();
+        String responseBody = gson.toJson(recipe);
+
+        Logger.log("Sending response (length: " + responseBody.length() + ")");
+
+        // Sending back response to the client
+        sendResponse(httpExchange, 200, responseBody);
     }
 
     private void recipesGetHandler(HttpExchange httpExchange) throws IOException {
@@ -255,24 +319,32 @@ public class APIHandler implements HttpHandler {
 
         HashMap<String, String> params = extractQueryParameters(query);
 
-        if (!params.containsKey("recipeId")) {
+        if (!params.containsKey("recipeId") || !params.containsKey("userId")) {
             System.err.println("No recipeId parameter provided");
             sendResponse(httpExchange, 400, "No recipeId parameter provided");
             return;
         }
 
         String recipeId = params.get("recipeId");
+        String userId = params.get("userId");
 
-        DeleteResult result = MongoDBHelper.deleteRecipe(recipeId);
+        DeleteResult deleteResult = MongoDBHelper.deleteRecipeFromCollection(recipeId);
 
-        if (result == null || result.getDeletedCount() == 0) {
-            System.err.println("Error deleting recipe");
-            sendResponse(httpExchange, 500, "Error deleting recipe");
+        if (deleteResult == null || deleteResult.getDeletedCount() == 0) {
+            System.err.println("Error deleting recipe from collection");
+            sendResponse(httpExchange, 500, "Error deleting recipe from collection");
             return;
         }
 
-        Logger.log("Deleted recipe");
-        // todo: delete recipe from user
+        UpdateResult updateResult = MongoDBHelper.deleteRecipeFromUser(userId, recipeId);
+
+        if (updateResult == null || updateResult.getModifiedCount() == 0) {
+            System.err.println("Error deleting recipe from user");
+            sendResponse(httpExchange, 500, "Error deleting recipe from user");
+            return;
+        }
+
+        Logger.log("Deleted recipe (" + recipeId + ") from collection and user (" + userId + ")");
 
         // send recipeId back to client
         sendResponse(httpExchange, 200);
