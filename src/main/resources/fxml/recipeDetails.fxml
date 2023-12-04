@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane id="recipeDetails" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="defaultBackground" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipeDetailsController">
+<BorderPane id="recipeDetails" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="defaultBackground" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipeDetailsController">
    <center>
       <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="600.0" style="-fx-background-color: transparent; -fx-background-insets: 0;">
          <content>
@@ -26,7 +26,7 @@
                                     <Font name="PP Eiko Medium" size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="mealTypeLabel" text="Placeholder Meal Type">
+                              <Label fx:id="mealTypeLabel">
                                  <font>
                                     <Font name="PP Eiko Regular" size="18.0" />
                                  </font>
@@ -40,7 +40,7 @@
                                     <Font name="PP Eiko Medium" size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="ingredientsLabel" text="Placeholder Ingredients">
+                              <Label fx:id="ingredientsLabel">
                                  <font>
                                     <Font name="PP Eiko Regular" size="18.0" />
                                  </font>
@@ -54,7 +54,7 @@
                                     <Font name="PP Eiko Medium" size="12.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="stepsLabel" text="Placeholder Steps" wrapText="true">
+                              <Label fx:id="stepsLabel" wrapText="true">
                                  <font>
                                     <Font name="PP Eiko Regular" size="18.0" />
                                  </font>
@@ -151,10 +151,13 @@
                   </HBox>
                   <VBox alignment="CENTER_LEFT" spacing="6.0">
                      <children>
-                        <Label fx:id="recipeNameLabel" text="Placeholder Title" wrapText="true">
+                        <Label fx:id="recipeNameLabel" text="vggvgvggvg" wrapText="true">
                            <font>
                               <Font name="PP Eiko Medium" size="28.0" />
                            </font>
+                           <padding>
+                              <Insets bottom="12.0" />
+                           </padding>
                         </Label>
                      </children>
                      <VBox.margin>
@@ -165,7 +168,7 @@
             </VBox>
          </children>
          <padding>
-            <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+            <Insets bottom="12.0" left="24.0" right="24.0" top="24.0" />
          </padding>
       </VBox>
    </top>
