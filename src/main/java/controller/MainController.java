@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import java.util.prefs.Preferences;
@@ -43,6 +44,12 @@ public class MainController implements Initializable {
     private ToggleButton toggleDinner;
 
     @FXML
+    private Label usernameLabel;
+
+    @FXML
+    private Label recipeCountLabel;
+
+    @FXML
     private ComboBox<String> sortComboBox;
 
     private List<Recipe> recipes;
@@ -53,6 +60,9 @@ public class MainController implements Initializable {
             System.out.println("Loading user recipes");
 
             loadRecipes();
+
+            usernameLabel.setText(UserData.getInstance().getUsername());
+            recipeCountLabel.setText(recipes.size() + " recipes");
 
             System.out.println(recipes.size() + " recipes loaded");
 
