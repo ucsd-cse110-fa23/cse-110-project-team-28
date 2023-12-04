@@ -21,6 +21,7 @@ public class RecipeApp extends Application {
         SceneHelper.setPrimaryStage(primaryStage);
 
         Font.loadFont(getClass().getResourceAsStream("fonts/PPEiko-Regular.ttf"), 12);
+        Font.loadFont(getClass().getResourceAsStream("fonts/PPEiko-Medium.ttf"), 12);
         Font.loadFont(getClass().getResourceAsStream("fonts/PPNeueMachina-Regular.ttf"), 12);
 
         primaryStage.setTitle("PantryPal 2");

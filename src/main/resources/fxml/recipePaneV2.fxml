@@ -25,7 +25,7 @@
                   </Label>
                   <Label fx:id="mealTypeLabel" alignment="CENTER" style="-fx-background-color: #cecece; -fx-background-radius: 4px;" styleClass="meal-type-tag" text="Meal Type">
                      <font>
-                        <Font name="PP Eiko Medium" size="10.0" />
+                        <Font name="PP Eiko Regular" size="10.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="12.0" />
