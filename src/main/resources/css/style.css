@@ -1,3 +1,7 @@
+@font-face {
+  src: url("fonts/PPEiko-Regular.ttf");
+}
+
 .defaultBackground,
 #recipeList,
 #main .header,
