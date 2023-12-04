@@ -133,7 +133,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void handleLogout() throws IOException {
+    private void logoutHandler() throws IOException {
         clearStoredCredentials();
         SceneHelper.switchToAuthenticationScene();
     }
