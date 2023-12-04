@@ -63,8 +63,8 @@ public class NewRecipeDebugController implements Initializable {
                 .setName(nameTextField.getText())
                 .setMealType(mealTypeTextField.getText())
                 .setIngredients(ingredientsTextField.getText())
-                .setSteps(stepsTextField.getText())
-                .setImageUrl(imageURLTextField.getText());
+                .setSteps(stepsTextField.getText());
+                //.setImageUrl(imageURLTextField.getText());
 
         RecipeHelper.addRecipe(recipe);
     }
