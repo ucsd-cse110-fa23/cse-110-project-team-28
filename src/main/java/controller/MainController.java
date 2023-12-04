@@ -34,13 +34,13 @@ public class MainController implements Initializable {
     private Button addRecipeButton;
 
     @FXML
-    private ToggleButton toggleBreakfast;
+    public ToggleButton toggleBreakfast;
 
     @FXML
-    private ToggleButton toggleLunch;
+    public ToggleButton toggleLunch;
 
     @FXML
-    private ToggleButton toggleDinner;
+    public ToggleButton toggleDinner;
 
     @FXML
     private Label usernameLabel;
@@ -49,9 +49,9 @@ public class MainController implements Initializable {
     private Label recipeCountLabel;
 
     @FXML
-    private ComboBox<String> sortComboBox;
+    public ComboBox<String> sortComboBox;
 
-    private List<Recipe> recipes;
+    public List<Recipe> recipes;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -144,7 +144,7 @@ public class MainController implements Initializable {
         prefs.remove("password");
     }
 
-    private void applySortAndFilter() {
+    public List<Recipe> applySortAndFilter() {
         List<Recipe> filteredRecipes = new ArrayList<>();
 
         boolean filterBreakfast = toggleBreakfast.isSelected();
@@ -190,6 +190,8 @@ public class MainController implements Initializable {
         recipeCountLabel.setText(recipes.size() + " recipes (" + filteredRecipes.size() + " shown)");
 
         setRecipes(filteredRecipes);
+
+        return filteredRecipes;
     }
 
     @FXML
