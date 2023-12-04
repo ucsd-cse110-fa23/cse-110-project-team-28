@@ -29,6 +29,23 @@ import utilites.RecipeHelper;
 import utilites.SceneHelper;
 
 public class TestErrorPopup extends ApplicationTest {
+    final int WIDTH = 800;
+    final int HEIGHT = 500;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
+        primaryStage.setTitle("Sign Up");
+
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+        primaryStage.setWidth(WIDTH);
+        primaryStage.setHeight(HEIGHT);
+        primaryStage.setResizable(true);
+        primaryStage.show();
+    }
+
     @Test
     public void testLoginErrorPopupWhenServerDown() {
         // Mock the server response to simulate server down
@@ -47,9 +64,8 @@ public class TestErrorPopup extends ApplicationTest {
     private void mockServerResponseForLogin() {
         try (MockedStatic<AuthHelper> mockedAuthHelper = Mockito.mockStatic(AuthHelper.class)) {
             mockedAuthHelper.when(() -> AuthHelper.login(anyString(), anyString()))
-                .thenThrow(new IOException("Server is down"));
+                    .thenThrow(new IOException("Server is down"));
         }
     }
-    
 
 }
