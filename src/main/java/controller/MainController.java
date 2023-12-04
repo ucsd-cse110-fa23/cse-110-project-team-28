@@ -120,23 +120,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void debugAddRecipeHandler() throws IOException {
-        RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
-        Recipe recipe = new Recipe()
-                .setName(generator.generate(10))
-                .setMealType("Dinner")
-                .setIngredients(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-                .setSteps(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-                .setImageUrl("https://picsum.photos/600/200");
-
-        RecipeHelper.addRecipe(recipe);
-
-        // todo: implement this
-        // RecipeData.getInstance().addRecipe(recipe);
-
-        // re-load recipes
-        loadRecipes();
+        SceneHelper.switchToNewRecipeDebugScene();
     }
 
     @FXML

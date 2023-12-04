@@ -42,6 +42,15 @@ public class SceneHelper {
         primaryStage.show();
     }
 
+    public static void switchToNewRecipeDebugScene() throws IOException {
+        URL sceneUrl = SceneHelper.class.getResource("/fxml/newRecipeDebug.fxml");
+        Parent root = FXMLLoader.load(sceneUrl);
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+    }
+
     public static void switchToAuthenticationScene() throws IOException {
         URL sceneUrl = SceneHelper.class.getResource("/fxml/authentication.fxml");
         Parent root = FXMLLoader.load(sceneUrl);

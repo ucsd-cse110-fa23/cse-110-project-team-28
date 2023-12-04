@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import utilites.ChatGPT;
+import utilites.RecipeHelper;
+import utilites.SceneHelper;
 
 public class NewRecipeController implements Initializable {
 
@@ -110,20 +112,6 @@ public class NewRecipeController implements Initializable {
         }
     }
 
-    public void backButtonHandler() throws IOException {
-        goHome();
-    }
-
-    private void goHome() throws IOException {
-        Scene scene = backButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
-    }
-
     private String getRecipeSteps() {
         try {
             return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
@@ -142,6 +130,10 @@ public class NewRecipeController implements Initializable {
             System.out.println("InterruptedException");
             return ERROR_FLAG;
         }
+    }
+
+    public void backButtonHandler() throws IOException {
+        SceneHelper.switchToMainScene();
     }
 
     private String getRecipeName(String steps) {
