@@ -12,6 +12,7 @@ public class Config {
     private static String MONGODB_URI;
     private static String DATABASE;
     private static String USER_COLLECTION;
+    private static String RECIPE_COLLECTION;
     private static String SERVER_HOSTNAME;
     private static int SERVER_PORT;
 
@@ -34,6 +35,7 @@ public class Config {
         MONGODB_URI = config.getString("mongodb_uri");
         DATABASE = config.getString("database");
         USER_COLLECTION = config.getString("user_collection");
+        RECIPE_COLLECTION = config.getString("recipe_collection");
         SERVER_HOSTNAME = config.getString("server_hostname");
         SERVER_PORT = config.getInt("server_port");
 
@@ -50,6 +52,10 @@ public class Config {
 
     public static String getUserCollectionName() {
         return USER_COLLECTION;
+    }
+
+    public static String getRecipeCollectionName() {
+        return RECIPE_COLLECTION;
     }
 
     public static String getServerHostname() {

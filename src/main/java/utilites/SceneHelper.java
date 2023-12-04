@@ -9,43 +9,45 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class SceneHelper {
-    public static void switchToMainScene(Scene scene) throws IOException {
-        Stage stage = (Stage) scene.getWindow();
+    private static Stage primaryStage;
+
+    public static void setPrimaryStage(Stage primaryStage) {
+        SceneHelper.primaryStage = primaryStage;
+    }
+
+    public static void switchToMainScene() throws IOException {
         URL sceneUrl = SceneHelper.class.getResource("/fxml/main.fxml");
         Parent root = FXMLLoader.load(sceneUrl);
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
 
-        stage.setScene(newScene);
-        stage.show();
+        primaryStage.setScene(newScene);
+        primaryStage.show();
     }
 
-    public static void switchToEditRecipeScene(Scene scene) throws IOException {
-        Stage stage = (Stage) scene.getWindow();
+    public static void switchToEditRecipeScene() throws IOException {
         URL sceneUrl = SceneHelper.class.getResource("/fxml/editRecipe.fxml");
         Parent root = FXMLLoader.load(sceneUrl);
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
 
-        stage.setScene(newScene);
-        stage.show();
+        primaryStage.setScene(newScene);
+        primaryStage.show();
     }
 
-    public static void switchToNewRecipeScene(Scene scene) throws IOException {
-        Stage stage = (Stage) scene.getWindow();
+    public static void switchToNewRecipeScene() throws IOException {
         URL sceneUrl = SceneHelper.class.getResource("/fxml/newRecipe.fxml");
         Parent root = FXMLLoader.load(sceneUrl);
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
 
-        stage.setScene(newScene);
-        stage.show();
+        primaryStage.setScene(newScene);
+        primaryStage.show();
     }
 
-    public static void switchToAuthenticationScene(Scene scene) throws IOException {
-        Stage stage = (Stage) scene.getWindow();
+    public static void switchToAuthenticationScene() throws IOException {
         URL sceneUrl = SceneHelper.class.getResource("/fxml/authentication.fxml");
         Parent root = FXMLLoader.load(sceneUrl);
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
 
-        stage.setScene(newScene);
-        stage.show();
+        primaryStage.setScene(newScene);
+        primaryStage.show();
     }
 }

@@ -12,7 +12,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import model.Recipe;
-import model.RecipeData;
+import utilites.RecipeHelper;
 import utilites.SceneHelper;
 
 public class EditRecipeController implements Initializable {
@@ -49,35 +49,22 @@ public class EditRecipeController implements Initializable {
     }
 
     private void goHome() throws IOException {
-        SceneHelper.switchToMainScene(editRecipeTextArea.getScene());
+        SceneHelper.switchToMainScene();
     }
 
     public void saveRecipeButtonHandler() throws IOException {
-        saveRecipe();
-        goHome();
-    }
-
-    /*
-     * Saves recipe to main app list
-     */
-    private void saveRecipe() {
         recipe.setSteps(editRecipeTextArea.getText());
 
         // save change to database
-        System.out.println("Recipe to edit: " + recipe.getName());
-        RecipeData.getInstance().saveRecipeChanges(recipe);
-    }
+        System.out.println("Saving changes to recipe: " + recipe.getId());
+        RecipeHelper.editRecipe(recipe);
 
-    public void deleteRecipeButtonHandler() throws IOException {
-        deleteRecipe();
         goHome();
     }
 
-    /*
-     * Deletes recipe from main app list
-     */
-    private void deleteRecipe() {
-        RecipeData.getInstance().deleteRecipe(recipe.getName(), recipe.getUsername());
+    public void deleteRecipeButtonHandler() throws IOException {
+        RecipeHelper.deleteRecipe(recipe);
+        goHome();
     }
 
     @FXML
@@ -91,7 +78,7 @@ public class EditRecipeController implements Initializable {
 
     private String constructRecipeURL(Recipe recipe) {
         try {
-            return "http://localhost:8000/api/recipes?name=" + recipe.getName() + "&username=" + recipe.getUsername();
+            return "http://localhost:8000/api/recipes?_id=" + recipe.getId();
         } catch (Exception e) {
             e.printStackTrace();
             return "Error constructing URL";

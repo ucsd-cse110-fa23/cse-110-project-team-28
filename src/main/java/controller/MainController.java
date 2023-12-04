@@ -17,12 +17,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import java.util.prefs.Preferences;
 import model.Recipe;
-import model.RecipeData;
+import model.UserData;
+import utilites.RecipeHelper;
 import utilites.SceneHelper;
 import java.util.Collections;
 import java.util.Comparator;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainController implements Initializable {
 
@@ -44,34 +45,47 @@ public class MainController implements Initializable {
     @FXML
     private ComboBox<String> sortComboBox;
 
-    private ArrayList<Recipe> filteredRecipes;
-
-    private ArrayList<Recipe> displayedRecipes;
+    private List<Recipe> recipes;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-        // sortComboBox.setValue("Newest to Oldest");
         Platform.runLater(() -> {
-            this.reloadRecipeList();
-            displayedRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
+            System.out.println("Loading user recipes");
+
+            loadRecipes();
+
+            System.out.println(recipes.size() + " recipes loaded");
+
             sortComboBox.setValue("Newest to Oldest");
         });
     }
 
-    public VBox getRecipeList() {
-        return recipeList;
+    private void loadRecipes() {
+        recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
+        setRecipes(recipes);
     }
 
-    private void reloadRecipeList() {
-        //clear recipeList
+    /**
+     * Clears the recipeList and adds the given recipes
+     * 
+     * @param recipes the recipes to add
+     */
+    private void setRecipes(List<Recipe> recipes) {
         recipeList.getChildren().clear();
+        addRecipes(recipes);
+    }
 
-        for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+    /**
+     * Adds recipes to the recipeList
+     * 
+     * @param recipeNames the names of the recipes to add
+     * @throws IOException
+     */
+    private void addRecipes(List<Recipe> recipes) {
+        for (Recipe recipe : recipes) {
             addRecipe(recipe);
-         }
-     }
+        }
+    }
 
     /**
      * Adds a recipe to the recipeList
@@ -99,50 +113,36 @@ public class MainController implements Initializable {
         }
     }
 
-    /**
-     * Adds recipes to the recipeList
-     * 
-     * @param recipeNames the names of the recipes to add
-     * @throws IOException
-     */
-    public void addRecipes(ArrayList<Recipe> recipes) {
-        for (Recipe recipe : recipes) {
-            addRecipe(recipe);
-        }
+    @FXML
+    private void addRecipeHandler() throws IOException {
+        SceneHelper.switchToNewRecipeScene();
     }
 
-    /**
-     * Clears the recipeList and adds the given recipes
-     * 
-     * @param recipes the recipes to add
-     */
-    public void setRecipes(ArrayList<Recipe> recipes) {
-        recipeList.getChildren().clear();
-
-        addRecipes(recipes);
-    }
-
-    public void addRecipeHandler() throws IOException {
-        SceneHelper.switchToNewRecipeScene(addRecipeButton.getScene());
-    }
-
-    public void debugAddRecipeHandler() throws IOException {
+    @FXML
+    private void debugAddRecipeHandler() throws IOException {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
-        Recipe recipe = new Recipe(generator.generate(10), "Dinner",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "https://picsum.photos/600/200", "firsttime");
+        Recipe recipe = new Recipe()
+                .setName(generator.generate(10))
+                .setMealType("Dinner")
+                .setIngredients(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                .setSteps(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                .setImageUrl("https://picsum.photos/600/200");
+
+        RecipeHelper.addRecipe(recipe);
 
         // todo: implement this
         // RecipeData.getInstance().addRecipe(recipe);
 
-        // reloadRecipeList();
+        // re-load recipes
+        loadRecipes();
     }
 
     @FXML
     private void handleLogout() throws IOException {
         clearStoredCredentials();
-        SceneHelper.switchToAuthenticationScene(recipeList.getScene());
+        SceneHelper.switchToAuthenticationScene();
     }
 
     private void clearStoredCredentials() {
@@ -151,19 +151,22 @@ public class MainController implements Initializable {
         prefs.remove("password");
     }
 
-    @FXML
-    private void handleFilterAction() {
-        filteredRecipes.clear();
+    private void applySortAndFilter() {
+        List<Recipe> filteredRecipes = new ArrayList<>();
 
         boolean filterBreakfast = toggleBreakfast.isSelected();
         boolean filterLunch = toggleLunch.isSelected();
         boolean filterDinner = toggleDinner.isSelected();
+
+        System.out.println("Filter breakfast: " + filterBreakfast);
+        System.out.println("Filter lunch: " + filterLunch);
+        System.out.println("Filter dinner: " + filterDinner);
+
         // Check if none are selected
         if (!filterBreakfast && !filterLunch && !filterDinner) {
-            filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes()); // Show all recipes
+            filteredRecipes = recipes;
         } else {
-            filteredRecipes.clear(); // Clear and filter based on selection
-            for (Recipe recipe : RecipeData.getInstance().getRecipes()) {
+            for (Recipe recipe : recipes) {
                 if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
                         (filterLunch && recipe.getMealType().equals("Lunch")) ||
                         (filterDinner && recipe.getMealType().equals("Dinner"))) {
@@ -171,13 +174,10 @@ public class MainController implements Initializable {
                 }
             }
         }
-        displayedRecipes = filteredRecipes;
-        setRecipes(filteredRecipes);
-    }
 
-    @FXML
-    private void handleSortAction() {
         String selectedSort = sortComboBox.getValue();
+
+        System.out.println("Selected sort: " + selectedSort);
 
         switch (selectedSort) {
             case "A-Z":
@@ -190,11 +190,23 @@ public class MainController implements Initializable {
                 Collections.reverse(filteredRecipes);
                 break;
             case "Newest to Oldest":
-                filteredRecipes = displayedRecipes; 
+                // do nothing
                 break;
         }
 
+        System.out.println("Filtered recipes: " + filteredRecipes);
+
         setRecipes(filteredRecipes);
+    }
+
+    @FXML
+    private void filterHandler() {
+        applySortAndFilter();
+    }
+
+    @FXML
+    private void sortHandler() {
+        applySortAndFilter();
     }
 
 }
