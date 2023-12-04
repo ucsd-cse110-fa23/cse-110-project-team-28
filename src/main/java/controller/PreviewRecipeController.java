@@ -57,7 +57,6 @@ public class PreviewRecipeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
     }
 
     //sets recipe and gets recipe steps
@@ -97,7 +96,6 @@ public class PreviewRecipeController implements Initializable {
         goHome();
     }
 
-    //@TODO
     public void regenerateRecipeButtonHandler() throws IOException {
         String response = getRecipeSteps(true);
         if(response.equals(ERROR_FLAG)){
