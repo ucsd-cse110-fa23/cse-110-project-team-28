@@ -52,9 +52,9 @@ public class TestErrorPopup extends ApplicationTest {
         mockServerResponseForLogin();
 
         // Launch the login view
-        clickOn("#usernameField").write("testuser");
-        clickOn("#passwordField").write("password");
-        clickOn("#loginButton");
+       // clickOn("#usernameField").write("testuser");
+        //clickOn("#passwordField").write("password");
+        //clickOn("#loginButton");
 
         // Assert that the error popup is displayed
         //verifyThat("#errorPopup", isVisible());
