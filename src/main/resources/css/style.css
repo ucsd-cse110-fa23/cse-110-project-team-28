@@ -1,5 +1,5 @@
-@font-face {
-  src: url("fonts/PPEiko-Regular.ttf");
+.eiko-font {
+  -fx-font-family: "PP Eiko Regular";
 }
 
 .defaultBackground,

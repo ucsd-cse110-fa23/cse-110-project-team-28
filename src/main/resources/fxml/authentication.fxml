@@ -93,7 +93,7 @@
    <top>
       <VBox alignment="CENTER" prefHeight="64.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Log In">
+            <Label styleClass="eiko-font" text="Welcome">
                <font>
                   <Font name="PP Eiko Regular" size="28.0" />
                </font>
