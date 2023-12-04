@@ -48,9 +48,6 @@ public class MainController implements Initializable {
 
     private List<Recipe> recipes;
 
-    private List<Recipe> filteredRecipes;
-    private List<Recipe> displayedRecipes;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
@@ -155,20 +152,21 @@ public class MainController implements Initializable {
         prefs.remove("password");
     }
 
-    @FXML
-    private void filterHandler() {
-        filteredRecipes.clear();
+    private void applySortAndFilter() {
+        List<Recipe> filteredRecipes = new ArrayList<>();
 
         boolean filterBreakfast = toggleBreakfast.isSelected();
         boolean filterLunch = toggleLunch.isSelected();
         boolean filterDinner = toggleDinner.isSelected();
 
+        System.out.println("Filter breakfast: " + filterBreakfast);
+        System.out.println("Filter lunch: " + filterLunch);
+        System.out.println("Filter dinner: " + filterDinner);
+
         // Check if none are selected
         if (!filterBreakfast && !filterLunch && !filterDinner) {
-            filteredRecipes = recipes; // Show all recipes
+            filteredRecipes = recipes;
         } else {
-            filteredRecipes.clear(); // Clear and filter based on selection
-
             for (Recipe recipe : recipes) {
                 if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
                         (filterLunch && recipe.getMealType().equals("Lunch")) ||
@@ -178,13 +176,9 @@ public class MainController implements Initializable {
             }
         }
 
-        displayedRecipes = filteredRecipes;
-        setRecipes(filteredRecipes);
-    }
-
-    @FXML
-    private void sortHandler() {
         String selectedSort = sortComboBox.getValue();
+
+        System.out.println("Selected sort: " + selectedSort);
 
         switch (selectedSort) {
             case "A-Z":
@@ -197,12 +191,23 @@ public class MainController implements Initializable {
                 Collections.reverse(filteredRecipes);
                 break;
             case "Newest to Oldest":
-                // filteredRecipes = new ArrayList<>(RecipeData.getInstance().getRecipes());
-                filteredRecipes = displayedRecipes; // bug here
+                // do nothing
                 break;
         }
 
+        System.out.println("Filtered recipes: " + filteredRecipes);
+
         setRecipes(filteredRecipes);
+    }
+
+    @FXML
+    private void filterHandler() {
+        applySortAndFilter();
+    }
+
+    @FXML
+    private void sortHandler() {
+        applySortAndFilter();
     }
 
 }
