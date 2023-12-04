@@ -60,10 +60,11 @@
          <children>
             <VBox maxWidth="360.0" spacing="12.0">
                <children>
-                  <TextField fx:id="nameTextField" promptText="Meal Name" />
+                  <TextField fx:id="nameTextField" promptText="Recipe Name" />
                   <TextField fx:id="mealTypeTextField" promptText="Meal Type" />
                   <TextField fx:id="ingredientsTextField" promptText="Ingredients" />
-                  <TextField fx:id="stepsTextField" promptText="Meal Steps" />
+                  <TextField fx:id="stepsTextField" promptText="Recipe Steps" />
+                  <TextField fx:id="imageURLTextField" promptText="Recipe Image URL" />
                </children>
             </VBox>
          </children></VBox>

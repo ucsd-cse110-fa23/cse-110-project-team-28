@@ -31,6 +31,9 @@ public class NewRecipeDebugController implements Initializable {
     private TextField stepsTextField;
 
     @FXML
+    private TextField imageURLTextField;
+
+    @FXML
     private Button saveRecipeButton;
 
     @FXML
@@ -56,14 +59,13 @@ public class NewRecipeDebugController implements Initializable {
      * Saves recipe to main app list
      */
     private void saveRecipe() {
-        Recipe recipe = new Recipe();
-        recipe.setName(nameTextField.getText());
-        recipe.setMealType(mealTypeTextField.getText());
-        recipe.setIngredients(ingredientsTextField.getText());
-        recipe.setSteps(stepsTextField.getText());
+        Recipe recipe = new Recipe()
+                .setName(nameTextField.getText())
+                .setMealType(mealTypeTextField.getText())
+                .setIngredients(ingredientsTextField.getText())
+                .setSteps(stepsTextField.getText())
+                .setImageUrl(imageURLTextField.getText());
 
-        // todo: implement this
-        // RecipeData.getInstance().addRecipe(recipe);
         RecipeHelper.addRecipe(recipe);
     }
 }

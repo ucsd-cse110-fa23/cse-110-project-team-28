@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import model.Recipe;
 import utilites.ChatGPT;
 import utilites.RecipeHelper;
+import utilites.SceneHelper;
 
 public class NewRecipeController implements Initializable {
 
@@ -111,20 +112,6 @@ public class NewRecipeController implements Initializable {
         }
     }
 
-    public void backButtonHandler() throws IOException {
-        goHome();
-    }
-
-    private void goHome() throws IOException {
-        Scene scene = backButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
-    }
-
     private String getRecipeSteps() {
         try {
             return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
@@ -145,6 +132,10 @@ public class NewRecipeController implements Initializable {
         }
     }
 
+    public void backButtonHandler() throws IOException {
+        SceneHelper.switchToMainScene();
+    }
+
     private String getRecipeName(String steps) {
         String[] lines = steps.split("\n");
         return lines[0].trim();
@@ -152,21 +143,20 @@ public class NewRecipeController implements Initializable {
 
     public void saveRecipeButtonHandler() throws IOException {
         saveRecipe();
-        goHome();
+        SceneHelper.switchToMainScene();
     }
 
     /*
      * Saves recipe to main app list
      */
     private void saveRecipe() {
-        Recipe recipe = new Recipe();
-        recipe.setName(recipeName);
-        recipe.setMealType(mealType);
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
+        Recipe recipe = new Recipe()
+                .setName(recipeName)
+                .setMealType(mealType)
+                .setIngredients(ingredients)
+                .setSteps(steps)
+                .setImageUrl(""); // todo: implement this
 
-        // todo: implement this
-        // RecipeData.getInstance().addRecipe(recipe);
         RecipeHelper.addRecipe(recipe);
     }
 }
