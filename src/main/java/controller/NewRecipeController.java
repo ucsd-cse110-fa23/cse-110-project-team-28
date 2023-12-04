@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import utilites.ChatGPT;
+import utilites.RecipeHelper;
 
 public class NewRecipeController implements Initializable {
 
@@ -166,5 +167,6 @@ public class NewRecipeController implements Initializable {
 
         // todo: implement this
         // RecipeData.getInstance().addRecipe(recipe);
+        RecipeHelper.addRecipe(recipe);
     }
 }

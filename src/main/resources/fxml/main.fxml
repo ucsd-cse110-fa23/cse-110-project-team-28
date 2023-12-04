@@ -61,14 +61,14 @@
                   <Font name="PP Neue Machina Regular" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
+            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" text="Add Recipe (Debug)" textAlignment="CENTER">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/add.png" />
+                        <Image url="@../images/terminal.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -135,17 +135,17 @@
                      <children>
                         <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="240.0" style="-fx-border-color: #cecece; -fx-border-radius: 6px;" StackPane.alignment="CENTER">
                            <children>
-                              <ToggleButton fx:id="toggleBreakfast" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Breakfast" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="breakfastToggleButton" fx:id="toggleBreakfast" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Breakfast" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleLunch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Lunch" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="lunchToggleButton" fx:id="toggleLunch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Lunch" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleDinner" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" styleClass="toggleButton" text="Dinner" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="dinnerToggleButton" fx:id="toggleDinner" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" styleClass="toggleButton" text="Dinner" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>

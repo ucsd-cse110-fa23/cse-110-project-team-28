@@ -158,8 +158,9 @@ public class MongoDBHelper {
                 .append("name", requestJsonObject.getString("name"))
                 .append("mealType", requestJsonObject.getString("mealType"))
                 .append("ingredients", requestJsonObject.getString("ingredients"))
-                .append("steps", requestJsonObject.getString("steps"))
-                .append("imageURL", requestJsonObject.getString("imageURL"));
+                .append("steps", requestJsonObject.getString("steps"));
+        // todo: implement image uploading
+        // .append("imageURL", requestJsonObject.getString("imageURL"));
 
         System.out.println("Inserting recipe: " + recipeDocument.toString());
 
