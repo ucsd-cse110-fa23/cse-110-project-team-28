@@ -65,7 +65,7 @@ public class APIHandler implements HttpHandler {
     }
 
     private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
-        exchange.sendResponseHeaders(statusCode, responseBody.length());
+        exchange.sendResponseHeaders(statusCode, 0);
         exchange.getResponseBody().write(responseBody.getBytes());
         exchange.close();
     }
