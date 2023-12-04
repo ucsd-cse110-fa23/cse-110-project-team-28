@@ -32,7 +32,7 @@ public class NewRecipeController implements Initializable {
     private final String promptTemplate = "" + //
             "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. " + //
             "Please include list of ingredients, preparation instructions, and numbered cooking steps. " + //
-            "Place title of recipe on first line of your reponse. \n" + //
+            "Place title of recipe on first line of your response. \n" + //
             "\n" + //
             "Meal Type: [mealType]\n" + //
             "Ingredients: [listOfIngredients]\n" + //
@@ -47,7 +47,7 @@ public class NewRecipeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        saveRecipeButton.setDisable(true);
+        //saveRecipeButton.setDisable(true);
 
         Label mealTypePrompt = new Label();
         mealTypePrompt.setText("Meal Type");
@@ -90,15 +90,15 @@ public class NewRecipeController implements Initializable {
                         System.out.println("An error occurred while getting ingredients");
                     } else {
                         ingredients = transcript;
-                        String response = getRecipeSteps();
-                        if (response.equals(ERROR_FLAG)) {
-                            System.out.println("An error occurred while getting steps");
-                        } else {
-                            recipeName = getRecipeName(response);
-                            steps = response;
+                        // String response = getRecipeSteps();
+                        // if (response.equals(ERROR_FLAG)) {
+                        //     System.out.println("An error occurred while getting steps");
+                        // } else {
+                        //     recipeName = getRecipeName(response);
+                        //     steps = response;
 
-                            saveRecipeButton.setDisable(false);
-                        }
+                        //     //saveRecipeButton.setDisable(false);
+                        // }
                     }
                 }
             });
@@ -149,9 +149,11 @@ public class NewRecipeController implements Initializable {
         return lines[0].trim();
     }
 
+    //TODO: change so that switches to preview scene instead of home. refactor(rename)
     public void saveRecipeButtonHandler() throws IOException {
-        saveRecipe();
-        goHome();
+        //saveRecipe();
+        //goHome();
+        goToPreview();
     }
 
     /*
@@ -166,5 +168,30 @@ public class NewRecipeController implements Initializable {
 
         // todo: implement this
         // RecipeData.getInstance().addRecipe(recipe);
+    }
+
+    //TODO: go to preview window and provide it with important parameters. maybe refactor and include in SceneHelper
+    private void goToPreview() throws IOException{
+        Scene scene = saveRecipeButton.getScene();
+        Stage stage = (Stage) scene.getWindow();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/previewRecipe.fxml"));
+        Parent root = loader.load();
+        PreviewRecipeController previewRecipeController = loader.getController();
+
+        //TODO: remove
+        //testing
+        Recipe newRecipe = new Recipe();
+        //newRecipe.setName("recipe");
+        newRecipe.setIngredients("Eggs, bread, butter, milk, flour, sugar");
+        newRecipe.setMealType("breakfast");
+        //newRecipe.setSteps("lorem ipsum");
+
+        previewRecipeController.setRecipe(newRecipe);
+
+        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
+
+        stage.setScene(newScene);
+        stage.show();
     }
 }
