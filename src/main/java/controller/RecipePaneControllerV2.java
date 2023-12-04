@@ -6,17 +6,14 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import model.Recipe;
+import utilites.SceneHelper;
 
 public class RecipePaneControllerV2 implements Initializable {
 
@@ -69,19 +66,7 @@ public class RecipePaneControllerV2 implements Initializable {
     }
 
     public void detailsButtonHandler() throws IOException {
-        Scene scene = detailsButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editRecipe.fxml"));
-        Parent root = loader.load();
-        EditRecipeController editRecipeController = loader.getController();
-
-        editRecipeController.setRecipe(recipe);
-
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
+        SceneHelper.switchToRecipeDetailsScene(recipe);
     }
 
 }

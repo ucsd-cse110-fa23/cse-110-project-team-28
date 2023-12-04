@@ -17,6 +17,7 @@ import model.UserData;
 import server.AuthResponse;
 import utilites.AuthHelper;
 import utilites.ErrorPopupHelper;
+import utilites.Logger;
 import utilites.SceneHelper;
 
 public class AuthenticationController implements Initializable {
@@ -61,7 +62,7 @@ public class AuthenticationController implements Initializable {
 
                 SceneHelper.switchToMainScene();
             } else {
-                System.out.println("Signup failed. Server response: " + authResponse.toString());
+                Logger.log("Signup failed. Server response: " + authResponse.toString());
                 setError(authResponse.getMessage());
             }
         } catch (IOException e) {
@@ -83,24 +84,24 @@ public class AuthenticationController implements Initializable {
                 return;
             }
 
-            System.out.println("Logging in with username: " + username + " and password: " + password);
+            Logger.log("Logging in with username: " + username + " and password: " + password);
 
             AuthResponse authResponse = AuthHelper.login(username, password);
 
             if (authResponse.getSuccess()) {
-                System.out.println("Login successful");
+                Logger.log("Login successful");
 
                 if (autoLoginCheckBox.isSelected()) {
                     saveLogInCredentials(username, password);
                 }
 
-                System.out.println("User data: " + authResponse.getUserData().toString());
+                Logger.log("User data: " + authResponse.getUserData().toString());
 
                 UserData.setInstance(authResponse.getUserData());
 
                 SceneHelper.switchToMainScene();
             } else {
-                System.out.println("Login failed. Server response: " + authResponse.toString());
+                Logger.log("Login failed. Server response: " + authResponse.toString());
                 setError(authResponse.getMessage());
             }
         } catch (IOException e) {

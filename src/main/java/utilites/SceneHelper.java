@@ -3,10 +3,12 @@ package utilites;
 import java.io.IOException;
 import java.net.URL;
 
+import controller.RecipeDetailsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.Recipe;
 
 public class SceneHelper {
     private static Stage primaryStage;
@@ -58,5 +60,18 @@ public class SceneHelper {
 
         primaryStage.setScene(newScene);
         primaryStage.show();
+    }
+
+    public static void switchToRecipeDetailsScene(Recipe recipe) throws IOException {
+        URL sceneUrl = SceneHelper.class.getResource("/fxml/recipeDetails.fxml");
+        FXMLLoader loader = new FXMLLoader(sceneUrl);
+        Parent root = loader.load();
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+
+        RecipeDetailsController controller = loader.getController();
+        controller.setRecipe(recipe);
     }
 }

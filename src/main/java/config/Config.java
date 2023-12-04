@@ -2,6 +2,9 @@ package config;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import utilites.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,7 +42,7 @@ public class Config {
         SERVER_HOSTNAME = config.getString("server_hostname");
         SERVER_PORT = config.getInt("server_port");
 
-        System.out.println("Config initialized");
+        Logger.log("Config initialized");
     }
 
     public static String getMongoDBUri() {

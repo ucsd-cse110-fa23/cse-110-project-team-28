@@ -8,14 +8,12 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.Recipe;
 import utilites.ChatGPT;
+import utilites.Logger;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
 
@@ -74,7 +72,7 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting meal type");
+                        Logger.log("An error occurred while getting meal type");
                     } else {
                         mealType = transcript;
                     }
@@ -89,12 +87,12 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting ingredients");
+                        Logger.log("An error occurred while getting ingredients");
                     } else {
                         ingredients = transcript;
                         String response = getRecipeSteps();
                         if (response.equals(ERROR_FLAG)) {
-                            System.out.println("An error occurred while getting steps");
+                            Logger.log("An error occurred while getting steps");
                         } else {
                             recipeName = getRecipeName(response);
                             steps = response;
@@ -119,15 +117,15 @@ public class NewRecipeController implements Initializable {
                     .replace("[listOfIngredients]", ingredients));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
+            Logger.log("An I/O error occurred: " + e.getMessage());
             return ERROR_FLAG;
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
+            Logger.log("Invalid URI: Check file path.");
             return ERROR_FLAG;
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("InterruptedException");
+            Logger.log("InterruptedException");
             return ERROR_FLAG;
         }
     }

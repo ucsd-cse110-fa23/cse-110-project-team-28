@@ -5,6 +5,8 @@ import com.sun.net.httpserver.*;
 import model.Recipe;
 import java.io.*;
 import java.util.*;
+
+import utilites.Logger;
 import utilites.MongoDBHelper;
 
 import com.google.gson.Gson;
@@ -23,7 +25,7 @@ public class APIHandler implements HttpHandler {
         String httpContext = httpExchange.getHttpContext().getPath();
         String path = requestPath.substring(httpContext.length());
 
-        System.out.println("Processing request for URI: " + httpExchange.getRequestURI().toString());
+        Logger.log("Processing request for URI: " + httpExchange.getRequestURI().toString());
 
         switch (path) {
             case "recipes":
@@ -50,7 +52,7 @@ public class APIHandler implements HttpHandler {
         // throw new Exception("Not Valid Request Method");
         // }
         // } catch (Exception e) {
-        // System.out.println("An erroneous request");
+        // Logger.log("An erroneous request");
         // response = e.toString();
         // e.printStackTrace();
         // }
@@ -82,7 +84,7 @@ public class APIHandler implements HttpHandler {
 
         String[] queryParams = query.split("&");
 
-        System.out.println("Query parameters: " + Arrays.toString(queryParams));
+        Logger.log("Query parameters: " + Arrays.toString(queryParams));
 
         HashMap<String, String> params = new HashMap<>();
 
@@ -96,7 +98,7 @@ public class APIHandler implements HttpHandler {
     private void recipesHandler(HttpExchange httpExchange) throws IOException {
         String requestMethod = httpExchange.getRequestMethod();
 
-        System.out.println("Request method: " + requestMethod);
+        Logger.log("Request method: " + requestMethod);
 
         switch (requestMethod) {
             case "GET":
@@ -142,16 +144,16 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        System.out.println("Fetching recipes for user: " + userId);
+        Logger.log("Fetching recipes for user: " + userId);
 
         List<Recipe> userRecipes = MongoDBHelper.findRecipesByUserId(userId);
 
-        System.out.println("Found " + userRecipes.size() + " recipes");
+        Logger.log("Found " + userRecipes.size() + " recipes");
 
         Gson gson = new Gson();
         String responseBody = gson.toJson(userRecipes);
 
-        System.out.println("Sending response: " + responseBody);
+        Logger.log("Sending response (length: " + responseBody.length() + ")");
 
         // Sending back response to the client
         sendResponse(httpExchange, 200, responseBody);
@@ -162,7 +164,7 @@ public class APIHandler implements HttpHandler {
         InputStream inputStream = httpExchange.getRequestBody();
         String requestBody = new String(inputStream.readAllBytes());
 
-        System.out.println("Request body: " + requestBody);
+        Logger.log("Request body: " + requestBody);
 
         // get query parameters
         String query = httpExchange.getRequestURI().getQuery();
@@ -182,12 +184,12 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        System.out.println("userId: " + userId);
+        Logger.log("userId: " + userId);
 
         // parse request body
         JSONObject requestJsonObject = new JSONObject(requestBody);
 
-        System.out.println("Request JSON object: " + requestJsonObject.toString());
+        Logger.log("Request JSON object: " + requestJsonObject.toString());
 
         InsertOneResult result = MongoDBHelper.insertRecipe(requestJsonObject);
 
@@ -199,7 +201,7 @@ public class APIHandler implements HttpHandler {
 
         String recipeId = result.getInsertedId().asObjectId().getValue().toString();
 
-        System.out.println("Inserted recipe with id: " + recipeId);
+        Logger.log("Inserted recipe with id: " + recipeId);
 
         Document user = MongoDBHelper.insertUserRecipeId(userId, recipeId);
 
@@ -209,7 +211,7 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        System.out.println("Added recipe to user: " + user.toString());
+        Logger.log("Added recipe to user: " + user.toString());
 
         // send recipeId back to client
         sendResponse(httpExchange, 200, recipeId);
@@ -220,12 +222,12 @@ public class APIHandler implements HttpHandler {
         InputStream inputStream = httpExchange.getRequestBody();
         String requestBody = new String(inputStream.readAllBytes());
 
-        System.out.println("Request body: " + requestBody);
+        Logger.log("Request body: " + requestBody);
 
         // parse request body
         JSONObject requestJsonObject = new JSONObject(requestBody);
 
-        System.out.println("Request JSON object: " + requestJsonObject.toString());
+        Logger.log("Request JSON object: " + requestJsonObject.toString());
 
         UpdateResult result = MongoDBHelper.updateRecipe(requestJsonObject);
 
@@ -235,7 +237,7 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        System.out.println("Updated recipe");
+        Logger.log("Updated recipe");
 
         // send recipeId back to client
         sendResponse(httpExchange, 200);
@@ -269,7 +271,7 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        System.out.println("Deleted recipe");
+        Logger.log("Deleted recipe");
         // todo: delete recipe from user
 
         // send recipeId back to client

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import utilites.Logger;
 import utilites.Whisper;
 
 import java.io.*;
@@ -93,11 +94,11 @@ public class RecorderController implements Initializable {
             return Whisper.getWhisperTranscript(fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
+            Logger.log("An I/O error occurred: " + e.getMessage());
             return ERROR_FLAG;
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
+            Logger.log("Invalid URI: Check file path.");
             return ERROR_FLAG;
         }
     }
@@ -117,7 +118,7 @@ public class RecorderController implements Initializable {
                 targetDataLine.start();
 
                 AudioInputStream audioInputStream = new AudioInputStream(targetDataLine);
-                System.out.println("Recording started for file " + fileName);
+                Logger.log("Recording started for file " + fileName);
                 File audioFile = new File(fileName);
                 AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
 

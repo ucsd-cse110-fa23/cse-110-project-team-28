@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.apache.commons.text.RandomStringGenerator;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
+import utilites.Logger;
 
 public class MainController implements Initializable {
 
@@ -57,14 +56,14 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            System.out.println("Loading user recipes");
+            Logger.log("Loading user recipes");
 
             loadRecipes();
 
             usernameLabel.setText(UserData.getInstance().getUsername());
             recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
 
-            System.out.println(recipes.size() + " recipes loaded");
+            Logger.log(recipes.size() + " recipes loaded");
 
             sortComboBox.setValue("Newest to Oldest");
         });
@@ -152,9 +151,9 @@ public class MainController implements Initializable {
         boolean filterLunch = toggleLunch.isSelected();
         boolean filterDinner = toggleDinner.isSelected();
 
-        System.out.println("Filter breakfast: " + filterBreakfast);
-        System.out.println("Filter lunch: " + filterLunch);
-        System.out.println("Filter dinner: " + filterDinner);
+        Logger.log("Filter breakfast: " + filterBreakfast);
+        Logger.log("Filter lunch: " + filterLunch);
+        Logger.log("Filter dinner: " + filterDinner);
 
         // Check if none are selected
         if (!filterBreakfast && !filterLunch && !filterDinner) {
@@ -171,7 +170,7 @@ public class MainController implements Initializable {
 
         String selectedSort = sortComboBox.getValue();
 
-        System.out.println("Selected sort: " + selectedSort);
+        Logger.log("Selected sort: " + selectedSort);
 
         switch (selectedSort) {
             case "A-Z":
@@ -187,8 +186,6 @@ public class MainController implements Initializable {
                 // do nothing
                 break;
         }
-
-        System.out.println("Filtered recipes: " + filteredRecipes);
 
         recipeCountLabel.setText(recipes.size() + " recipes (" + filteredRecipes.size() + " shown)");
 
