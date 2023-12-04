@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
 import utilites.SceneHelper;
+import utilites.Logger;
 
 public class NewRecipeController implements Initializable {
 
@@ -30,7 +31,6 @@ public class NewRecipeController implements Initializable {
 
     public static final String ERROR_FLAG = "ERROR";
 
-    // meal type stuff added by dominic
     private String mealType;
     private String ingredients;
 
@@ -61,7 +61,7 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting meal type");
+                        Logger.log("An error occurred while getting meal type");
                     } else {
                         mealType = transcript;
                     }
@@ -76,7 +76,7 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting ingredients");
+                        Logger.log("An error occurred while getting ingredients");
                     } else {
                         ingredients = transcript;
                     }
@@ -115,10 +115,11 @@ public class NewRecipeController implements Initializable {
         Parent root = loader.load();
         PreviewRecipeController previewRecipeController = loader.getController();
 
+
         Recipe newRecipe = new Recipe();
         newRecipe.setIngredients(ingredients);
         newRecipe.setMealType(mealType);
-        previewRecipeController.setRecipe(newRecipe);
+        previewRecipeController.setRecipe(ingredients, mealType);
 
         Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
 

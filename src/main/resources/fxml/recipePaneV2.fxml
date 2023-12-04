@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="recipePane" minHeight="-Infinity" prefHeight="160.0" prefWidth="600.0" styleClass="recipePane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneControllerV2">
+<StackPane fx:id="recipePane" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="160.0" prefWidth="600.0" styleClass="recipePane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecipePaneControllerV2">
    <children>
       <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" prefHeight="80.0" StackPane.alignment="BOTTOM_CENTER">
          <children>

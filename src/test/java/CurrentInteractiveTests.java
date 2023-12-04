@@ -8,7 +8,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.testfx.api.FxAssert;

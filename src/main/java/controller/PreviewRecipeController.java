@@ -16,6 +16,7 @@ import model.Recipe;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
 import utilites.ChatGPT;
+import utilites.Logger;
 
 public class PreviewRecipeController implements Initializable {
 
@@ -48,8 +49,6 @@ public class PreviewRecipeController implements Initializable {
     @FXML
     private Button regenerateRecipeButton;
 
-    private Recipe recipe;
-
     private String recipeName;
     private String mealType;
     private String ingredients;
@@ -63,17 +62,18 @@ public class PreviewRecipeController implements Initializable {
      * Sets the recipe and asks gpt for steps
      * @TODO refactor
      */
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
+    public void setRecipe(String ingredients, String mealType) {
+        Logger.log("Creating a "+ mealType+ "recipe with the following ingredients" + ingredients);
+        this.ingredients = ingredients;
+        this.mealType = mealType;
         String response = getRecipeSteps(false);
         if(response.equals(ERROR_FLAG)){
-            System.out.println("An error occurred while getting steps");
+            Logger.log("An error occurred while getting steps");
         } else{
             recipeName = getRecipeName(response);
             steps = response;
-            recipe.setSteps(steps);//@TODO refactor maybe?
         }
-        editRecipeTextArea.setText(recipe.getSteps());
+        editRecipeTextArea.setText(steps);
     }
 
     public void backButtonHandler() throws IOException {
@@ -90,9 +90,15 @@ public class PreviewRecipeController implements Initializable {
 
     //@TODO figure out 
     public void saveRecipeButtonHandler() throws IOException {
-        recipe.setSteps(editRecipeTextArea.getText());
 
-        System.out.println("Adding new recipe: ");
+        Recipe recipe = new Recipe()
+        .setName(recipeName)
+        .setMealType(mealType)
+        .setIngredients(ingredients)
+        .setSteps(steps)
+        .setImageUrl("");
+
+        Logger.log("Adding new recipe:");
         RecipeHelper.addRecipe(recipe);
 
         goHome();
@@ -101,13 +107,12 @@ public class PreviewRecipeController implements Initializable {
     public void regenerateRecipeButtonHandler() throws IOException {
         String response = getRecipeSteps(true);
         if(response.equals(ERROR_FLAG)){
-            System.out.println("An error occurred while regenerating steps");
+            Logger.log("An error occurred while regenerating steps");
         } else{
             recipeName = getRecipeName(response);
             steps = response;
-            recipe.setSteps(steps);//@TODO refactor maybe?
         }
-        editRecipeTextArea.setText(recipe.getSteps());
+        editRecipeTextArea.setText(steps);
     }
     
     /*
@@ -117,25 +122,25 @@ public class PreviewRecipeController implements Initializable {
         try {
             if(regenerate){
                 return ChatGPT.getGPTResponse(500, promptRegenerateTemplate.replace("[mealType]",
-                        recipe.getMealType())
-                        .replace("[listOfIngredients]", recipe.getIngredients())
+                        mealType)
+                        .replace("[listOfIngredients]", ingredients)
                         .replace("[recipeName]", recipeName));
             }else{
                 return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
-                        recipe.getMealType())
-                        .replace("[listOfIngredients]", recipe.getIngredients()));
+                        mealType)
+                        .replace("[listOfIngredients]", ingredients));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
+            Logger.log("An I/O error occurred: " + e.getMessage());
             return ERROR_FLAG;
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
+            Logger.log("Invalid URI: Check file path.");
             return ERROR_FLAG;
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("InterruptedException");
+            Logger.log("InterruptedException");
             return ERROR_FLAG;
         }
     }

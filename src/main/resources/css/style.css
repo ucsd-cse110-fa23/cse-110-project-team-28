@@ -59,6 +59,10 @@
   -fx-padding: 0;
 }
 
+.scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
 #main .header {
   /* add bottom border */
   -fx-border-width: 1;
@@ -100,7 +104,3 @@
   -fx-background-color: #ffa726;
   -fx-background-radius: 8;
 }
-
-/**
- * auth
-*/

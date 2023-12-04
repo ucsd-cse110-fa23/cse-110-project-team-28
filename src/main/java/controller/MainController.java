@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.apache.commons.text.RandomStringGenerator;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import java.util.prefs.Preferences;
@@ -24,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
+import utilites.Logger;
 
 public class MainController implements Initializable {
 
@@ -43,6 +43,12 @@ public class MainController implements Initializable {
     private ToggleButton toggleDinner;
 
     @FXML
+    private Label usernameLabel;
+
+    @FXML
+    private Label recipeCountLabel;
+
+    @FXML
     private ComboBox<String> sortComboBox;
 
     private List<Recipe> recipes;
@@ -50,11 +56,14 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            System.out.println("Loading user recipes");
+            Logger.log("Loading user recipes");
 
             loadRecipes();
 
-            System.out.println(recipes.size() + " recipes loaded");
+            usernameLabel.setText(UserData.getInstance().getUsername());
+            recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
+
+            Logger.log(recipes.size() + " recipes loaded");
 
             sortComboBox.setValue("Newest to Oldest");
         });
@@ -142,9 +151,9 @@ public class MainController implements Initializable {
         boolean filterLunch = toggleLunch.isSelected();
         boolean filterDinner = toggleDinner.isSelected();
 
-        System.out.println("Filter breakfast: " + filterBreakfast);
-        System.out.println("Filter lunch: " + filterLunch);
-        System.out.println("Filter dinner: " + filterDinner);
+        Logger.log("Filter breakfast: " + filterBreakfast);
+        Logger.log("Filter lunch: " + filterLunch);
+        Logger.log("Filter dinner: " + filterDinner);
 
         // Check if none are selected
         if (!filterBreakfast && !filterLunch && !filterDinner) {
@@ -161,7 +170,7 @@ public class MainController implements Initializable {
 
         String selectedSort = sortComboBox.getValue();
 
-        System.out.println("Selected sort: " + selectedSort);
+        Logger.log("Selected sort: " + selectedSort);
 
         switch (selectedSort) {
             case "A-Z":
@@ -178,7 +187,7 @@ public class MainController implements Initializable {
                 break;
         }
 
-        System.out.println("Filtered recipes: " + filteredRecipes);
+        recipeCountLabel.setText(recipes.size() + " recipes (" + filteredRecipes.size() + " shown)");
 
         setRecipes(filteredRecipes);
     }
