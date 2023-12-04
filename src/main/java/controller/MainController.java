@@ -62,7 +62,7 @@ public class MainController implements Initializable {
             loadRecipes();
 
             usernameLabel.setText(UserData.getInstance().getUsername());
-            recipeCountLabel.setText(recipes.size() + " recipes");
+            recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
 
             System.out.println(recipes.size() + " recipes loaded");
 
@@ -189,6 +189,8 @@ public class MainController implements Initializable {
         }
 
         System.out.println("Filtered recipes: " + filteredRecipes);
+
+        recipeCountLabel.setText(recipes.size() + " recipes (" + filteredRecipes.size() + " shown)");
 
         setRecipes(filteredRecipes);
     }
