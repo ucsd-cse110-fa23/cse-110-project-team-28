@@ -15,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Recipe;
-import model.RecipeData;
 import utilites.ChatGPT;
 
 public class NewRecipeController implements Initializable {

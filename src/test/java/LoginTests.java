@@ -1,7 +1,11 @@
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.testfx.api.FxAssert;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
+
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,9 +38,9 @@ public class LoginTests extends ApplicationTest {
 
     @Test
     public void testEmptyLogin() {
+        clickOn("#passwordField");
         clickOn("#loginButton");
-        Assert.assertEquals("Please enter a username and password.",
-                lookup("#errorLabel").queryAs(Label.class).getText());
+        FxAssert.verifyThat("#errorLabel", LabeledMatchers.hasText("Please enter a username and password."));
     }
 
     @Test

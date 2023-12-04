@@ -3,16 +3,26 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import org.junit.Test;
+import org.mockito.MockedStatic;
 import org.testfx.framework.junit.ApplicationTest;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import model.RecipeData;
+import model.Recipe;
+import model.UserData;
+import utilites.RecipeHelper;
 
 public class InteractiveTests extends ApplicationTest {
 
@@ -21,18 +31,19 @@ public class InteractiveTests extends ApplicationTest {
 
     private String TEST_FILE = "test_recipes.json";
 
+    MockedStatic<RecipeHelper> recipeHelper;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        UserData.setInstance(mock(UserData.class));
+        when(UserData.getInstance().getUsername()).thenReturn("test_username");
+        when(UserData.getInstance().getUserId()).thenReturn("test_id");
+
+        recipeHelper = mockStatic(RecipeHelper.class);
+        recipeHelper.when(() -> RecipeHelper.getUserRecipes(anyString())).thenReturn(new ArrayList<Recipe>());
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
-
-        RecipeData mockRecipeData = new RecipeData();
-
-        mockRecipeData.setFileLocation(TEST_FILE);
-
-        RecipeData.setInstance(mockRecipeData);
-
-        loader.getController();
 
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(root));
@@ -44,8 +55,6 @@ public class InteractiveTests extends ApplicationTest {
 
     @Before
     public void setUp() throws Exception {
-        // clear the recipe list before each test
-        RecipeData.getInstance().clear();
 
         // clear the recipe file before each test
         Files.deleteIfExists(Paths.get(TEST_FILE));
@@ -53,11 +62,10 @@ public class InteractiveTests extends ApplicationTest {
 
     @After
     public void tearDown() throws Exception {
-        // clear the recipe list after each test
-        RecipeData.getInstance().getRecipes().clear();
-
         // clear the recipe file after each test
         Files.deleteIfExists(Paths.get(TEST_FILE));
+
+        recipeHelper.close();
     }
 
     @Test

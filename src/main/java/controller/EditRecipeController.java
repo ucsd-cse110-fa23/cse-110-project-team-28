@@ -12,7 +12,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import model.Recipe;
-import model.RecipeData;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
 

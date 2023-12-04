@@ -26,7 +26,11 @@ public class StaticTests {
     @Test
     public void testRecipeToJson() {
         // Setup
-        Recipe recipe = new Recipe("Test Recipe", "Dinner", "Ingredients", "Steps", null, "testuser");
+        Recipe recipe = new Recipe()
+                .setName("Test Recipe")
+                .setMealType("Dinner")
+                .setIngredients("Ingredients")
+                .setSteps("Steps");
 
         // Execute
         String json = new Gson().toJson(recipe);
@@ -51,5 +55,5 @@ public class StaticTests {
         assertEquals("The ingredients of the recipe should match", "Ingredients", recipe.getIngredients());
         assertEquals("The steps of the recipe should match", "Steps", recipe.getSteps());
     }
-        
+
 }

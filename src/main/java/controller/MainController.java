@@ -17,7 +17,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import java.util.prefs.Preferences;
 import model.Recipe;
-import model.RecipeData;
 import model.UserData;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
@@ -94,7 +93,7 @@ public class MainController implements Initializable {
      * @param recipeName the name of the recipe to add
      * @throws IOException
      */
-    private void addRecipe(Recipe recipe) {
+    public void addRecipe(Recipe recipe) {
         // load recipePane.fxml and get its RecipeController
         // todo: using testing recipePane and RecipePaneControllerV2
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePaneV2.fxml"));
