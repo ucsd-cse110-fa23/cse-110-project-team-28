@@ -38,11 +38,8 @@ public class RecipePaneController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            if (recipe.getImageURL() == null) {
-                throw new RuntimeException("Recipe image URL is null");
-            }
-
-            Logger.log("Setting recipe image: " + recipe.getImageURL().substring(0, 10));
+            if (recipe.getImageURL() == null)
+                Logger.warn("Recipe image is null");
 
             recipePane.setStyle(
                     "-fx-background-image: url('" + recipe.getImageURL() + "');");
