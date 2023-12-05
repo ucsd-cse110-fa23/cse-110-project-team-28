@@ -2,96 +2,93 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.control.Label?>
 
-<BorderPane id="editRecipe" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="defaultBackground" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditRecipeController">
-    <top>
-        <GridPane alignment="CENTER" prefHeight="64.0" styleClass="header" BorderPane.alignment="CENTER">
-            <columnConstraints>
-                <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="30.0" />
-                <ColumnConstraints halignment="CENTER" maxWidth="1.7976931348623157E308" percentWidth="40.0" />
-                <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" percentWidth="30.0" />
-            </columnConstraints>
-            <children>
-                <Button fx:id="backButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#backButtonHandler" text="Back">
-                    <GridPane.margin>
-                        <Insets left="12.0" />
-                    </GridPane.margin>
-                    <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                            <image>
-                                <Image url="@../images/back.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <font>
-                        <Font name="PP Neue Machina Regular" size="12.0" />
-                    </font>
-                </Button>
-                <Text id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Recipe" textAlignment="CENTER" GridPane.columnIndex="1">
-                    <font>
-                        <Font name="PP Eiko Medium" size="28.0" />
-                    </font>
-                    <GridPane.margin>
-                        <Insets />
-                    </GridPane.margin>
-                </Text>
-            </children>
-            <rowConstraints>
-                <RowConstraints />
-            </rowConstraints>
-        </GridPane>
-    </top>
+<BorderPane id="recipeDetails" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="defaultBackground" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditRecipeController">
     <center>
-        <VBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="100.0">
-            <children>
-                <TextArea fx:id="editRecipeTextArea" prefHeight="200.0" prefWidth="200.0" />
-            </children>
-        </VBox>
+        <ScrollPane fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="600.0" style="-fx-background-color: transparent; -fx-background-insets: 0;">
+            <content>
+                <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                    <children>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
+                            <children>
+                                <VBox spacing="6.0">
+                                    <children>
+                                        <Label text="Meal Type">
+                                            <font>
+                                                <Font name="PP Eiko Medium" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="mealTypeLabel">
+                                            <font>
+                                                <Font name="PP Eiko Regular" size="18.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
+                                    <children>
+                                        <Label text="Ingredients">
+                                            <font>
+                                                <Font name="PP Eiko Medium" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="ingredientsLabel" wrapText="true">
+                                            <font>
+                                                <Font name="PP Eiko Regular" size="18.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" spacing="6.0">
+                                    <children>
+                                        <Label text="Steps">
+                                            <font>
+                                                <Font name="PP Eiko Medium" size="12.0" />
+                                            </font>
+                                        </Label>
+                              <TextArea fx:id="stepsTextArea" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fefefe; -fx-border-color: #cecece; -fx-border-radius: 6px;">
+                                 <font>
+                                    <Font name="PP Eiko Regular" size="18.0" />
+                                 </font>
+                              </TextArea>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                    </padding>
+                </VBox>
+            </content>
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+        </ScrollPane>
     </center>
     <bottom>
-        <HBox alignment="CENTER" spacing="12.0" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER" spacing="12.0" style="-fx-border-color: #cecece; -fx-border-style: solid hidden hidden hidden;" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets />
             </BorderPane.margin>
             <children>
-                <Button fx:id="saveRecipeButton" mnemonicParsing="false" onAction="#saveRecipeButtonHandler" text="Save Recipe">
+                <Button fx:id="saveRecipeButton" mnemonicParsing="false" onAction="#saveRecipeButtonHandler" prefHeight="32.0" text="Save Recipe">
                     <font>
                         <Font name="PP Neue Machina Regular" size="12.0" />
                     </font>
                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                             <image>
                                 <Image url="@../images/download.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="shareRecipeButton" mnemonicParsing="false" text="Share Recipe" onAction="#shareRecipeButtonHandler">
-                    <font>
-                        <Font name="PP Neue Machina Regular" size="12.0" />
-                    </font>
-                </Button>
-                <Label fx:id="recipeURLLabel" text="Recipe URL will appear here"/>
-                <Button id="deleteRecipeButton" mnemonicParsing="false" onAction="#deleteRecipeButtonHandler" text="Delete Recipe">
-                    <font>
-                        <Font name="PP Neue Machina Regular" size="12.0" />
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                            <image>
-                                <Image url="@../images/delete.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -102,4 +99,53 @@
             </padding>
         </HBox>
     </bottom>
+    <top>
+        <VBox alignment="CENTER" style="-fx-border-color: #cecece; -fx-border-style: hidden hidden solid hidden;" BorderPane.alignment="CENTER">
+            <children>
+                <VBox maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                            <children>
+                                <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonHandler" prefHeight="32.0" text="Back">
+                                    <font>
+                                        <Font name="PP Neue Machina Regular" size="12.0" />
+                                    </font>
+                                    <graphic>
+                                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                            <image>
+                                                <Image url="@../images/back.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Label id="titleLabel" text="Edit Recipe" visible="false">
+                                    <font>
+                                        <Font name="PP Eiko Regular" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Label fx:id="recipeNameLabel" wrapText="true">
+                                    <font>
+                                        <Font name="PP Eiko Medium" size="28.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="12.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="12.0" left="24.0" right="24.0" top="24.0" />
+            </padding>
+        </VBox>
+    </top>
 </BorderPane>

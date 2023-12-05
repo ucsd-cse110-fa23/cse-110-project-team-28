@@ -2,11 +2,13 @@ import controller.AuthenticationController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utilites.InitializeHelper;
 import javafx.fxml.FXMLLoader;
 import java.util.prefs.Preferences;
 
+import config.Config;
 import utilites.SceneHelper;
 
 public class RecipeApp extends Application {
@@ -16,8 +18,13 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        InitializeHelper.init();
+        // do not initialize mongodb for client
+        Config.init();
         SceneHelper.setPrimaryStage(primaryStage);
+
+        Font.loadFont(getClass().getResourceAsStream("fonts/PPEiko-Regular.ttf"), 12);
+        Font.loadFont(getClass().getResourceAsStream("fonts/PPEiko-Medium.ttf"), 12);
+        Font.loadFont(getClass().getResourceAsStream("fonts/PPNeueMachina-Regular.ttf"), 12);
 
         primaryStage.setTitle("PantryPal 2");
         primaryStage.setWidth(WIDTH);

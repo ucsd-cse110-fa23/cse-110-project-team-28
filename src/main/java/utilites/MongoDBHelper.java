@@ -6,7 +6,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
@@ -16,7 +15,6 @@ import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import config.Config;
@@ -31,7 +29,7 @@ public class MongoDBHelper {
 
     public static void init() {
         mongoClient = MongoClients.create(Config.getMongoDBUri());
-        System.out.println("MongoDBHelper initialized");
+        Logger.log("MongoDBHelper initialized");
     }
 
     public static synchronized MongoClient getMongoClient() {
@@ -73,9 +71,11 @@ public class MongoDBHelper {
 
         String userId = result
                 .getInsertedId()
+                .asObjectId()
+                .getValue()
                 .toString();
 
-        System.out.println("Inserted user with id: " + userId);
+        Logger.log("Inserted user with id: " + userId);
 
         return userId;
     }
@@ -104,15 +104,15 @@ public class MongoDBHelper {
     }
 
     public static Recipe findRecipeById(String recipeId) {
-        System.out.println("Finding recipe with id: " + recipeId);
-
         Document recipeDocument = mongoClient
                 .getDatabase("pantrypal")
                 .getCollection("recipes")
                 .find(Filters.eq("_id", new ObjectId(recipeId)))
                 .first();
 
-        System.out.println("Recipe document query result: " + recipeDocument);
+        if (recipeDocument == null) {
+            return null;
+        }
 
         Recipe recipe = Recipe.fromDocument(recipeDocument);
 
@@ -120,32 +120,30 @@ public class MongoDBHelper {
     }
 
     public static List<Recipe> findRecipesByUserId(String userId) {
-        System.out.println("Finding recipes for user with id: " + userId);
-
         Document user = findUserById(userId);
 
-        System.out.println("Found user: " + user.toString());
-
         if (!user.containsKey("recipes")) {
-            System.out.println("User does not have any recipes");
+            Logger.log("User does not have any recipes");
             return new ArrayList<>();
         }
 
         List<String> recipeIdList = user.getList("recipes", String.class);
 
-        System.out.println("Found recipeIdList: " + recipeIdList.toString());
+        // Logger.log("Found recipeIdList: " + recipeIdList.toString());
 
         List<Recipe> recipes = new ArrayList<>();
 
         for (String recipeId : recipeIdList) {
-            System.out.println("Finding recipe with id: " + recipeId);
+            // Logger.log("Finding recipe with id: " + recipeId);
 
             Recipe recipe = findRecipeById(recipeId);
 
-            System.out.println("Found recipe");
+            // Logger.log("Found recipe");
 
-            if (recipe == null)
+            if (recipe == null) {
+                Logger.warn("Recipe (id: " + recipeId + ") not found, most likely reminant from previous database");
                 continue;
+            }
 
             recipes.add(recipe);
         }
@@ -161,7 +159,7 @@ public class MongoDBHelper {
                 .append("steps", requestJsonObject.getString("steps"))
                 .append("imageURL", requestJsonObject.getString("imageURL"));
 
-        System.out.println("Inserting recipe: " + recipeDocument.toString());
+        Logger.log("Inserting recipe: " + recipeDocument.toString());
 
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
@@ -170,7 +168,7 @@ public class MongoDBHelper {
     }
 
     public static Document insertUserRecipeId(String userId, String recipeId) {
-        System.out.println("Inserting recipeId: " + recipeId + " into user with id: " + userId);
+        Logger.log("Inserting recipeId: " + recipeId + " into user with id: " + userId);
 
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
@@ -180,7 +178,7 @@ public class MongoDBHelper {
     }
 
     public static UpdateResult updateRecipe(JSONObject requestJsonObject) {
-        System.out.println("Updating recipe: " + requestJsonObject.toString());
+        Logger.log("Updating recipe: " + requestJsonObject.toString());
 
         ObjectId recipeId = new ObjectId(requestJsonObject.getString("id"));
 
@@ -192,12 +190,22 @@ public class MongoDBHelper {
                 .updateOne(Filters.eq("_id", recipeId), updates);
     }
 
-    public static DeleteResult deleteRecipe(String recipeId) {
-        System.out.println("Deleting recipe with id: " + recipeId);
+    public static DeleteResult deleteRecipeFromCollection(String recipeId) {
+        Logger.log("Deleting recipe with id: " + recipeId);
 
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getRecipeCollectionName())
                 .deleteOne(Filters.eq("_id", new ObjectId(recipeId)));
+    }
+
+    public static UpdateResult deleteRecipeFromUser(String userId, String recipeId) {
+        Logger.log("Deleting recipe with id: " + recipeId + " from user with id: " + userId);
+
+        return mongoClient
+                .getDatabase(Config.getDatabaseName())
+                .getCollection(Config.getUserCollectionName())
+                .updateOne(Filters.eq("_id", new ObjectId(userId)),
+                        new Document("$pull", new Document("recipes", recipeId)));
     }
 }

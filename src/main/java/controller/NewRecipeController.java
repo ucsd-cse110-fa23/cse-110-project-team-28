@@ -1,21 +1,18 @@
 package controller;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.Recipe;
-import utilites.ChatGPT;
+import utilites.SceneHelper;
+import utilites.Logger;
 
 public class NewRecipeController implements Initializable {
 
@@ -23,31 +20,20 @@ public class NewRecipeController implements Initializable {
     private Button backButton;
 
     @FXML
-    private Button saveRecipeButton;
+    private Button generateRecipeButton;
 
     @FXML
     private VBox newRecipeCenter;
 
     public static final String ERROR_FLAG = "ERROR";
-    private final String promptTemplate = "" + //
-            "Generate a [mealType] recipe using the following ingredients only:[listOfIngredients]. " + //
-            "Please include list of ingredients, preparation instructions, and numbered cooking steps. " + //
-            "Place title of recipe on first line of your reponse. \n" + //
-            "\n" + //
-            "Meal Type: [mealType]\n" + //
-            "Ingredients: [listOfIngredients]\n" + //
-            "\n" + //
-            "Recipe:";
 
-    // meal type stuff added by dominic
-    private String recipeName;
-    private String mealType;
-    private String ingredients;
-    private String steps;
+    private Recipe recipe;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        saveRecipeButton.setDisable(true);
+        // generateRecipeButton.setDisable(true);
+
+        this.recipe = new Recipe();
 
         Label mealTypePrompt = new Label();
         mealTypePrompt.setText("Meal Type");
@@ -72,9 +58,9 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting meal type");
+                        Logger.log("An error occurred while getting meal type");
                     } else {
-                        mealType = transcript;
+                        recipe.setMealType(transcript);
                     }
                 }
             });
@@ -87,18 +73,9 @@ public class NewRecipeController implements Initializable {
                 @Override
                 public void onTranscriptionComplete(String transcript) {
                     if (transcript.equals(ERROR_FLAG)) {
-                        System.out.println("An error occurred while getting ingredients");
+                        Logger.log("An error occurred while getting ingredients");
                     } else {
-                        ingredients = transcript;
-                        String response = getRecipeSteps();
-                        if (response.equals(ERROR_FLAG)) {
-                            System.out.println("An error occurred while getting steps");
-                        } else {
-                            recipeName = getRecipeName(response);
-                            steps = response;
-
-                            saveRecipeButton.setDisable(false);
-                        }
+                        recipe.setIngredients(transcript);
                     }
                 }
             });
@@ -110,61 +87,15 @@ public class NewRecipeController implements Initializable {
         }
     }
 
-    public void backButtonHandler() throws IOException {
-        goHome();
+    @FXML
+    private void backButtonHandler() throws IOException {
+        SceneHelper.switchToMainScene();
     }
 
-    private void goHome() throws IOException {
-        Scene scene = backButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
-    }
-
-    private String getRecipeSteps() {
-        try {
-            return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
-                    mealType)
-                    .replace("[listOfIngredients]", ingredients));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An I/O error occurred: " + e.getMessage());
-            return ERROR_FLAG;
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.out.println("Invalid URI: Check file path.");
-            return ERROR_FLAG;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("InterruptedException");
-            return ERROR_FLAG;
-        }
-    }
-
-    private String getRecipeName(String steps) {
-        String[] lines = steps.split("\n");
-        return lines[0].trim();
-    }
-
-    public void saveRecipeButtonHandler() throws IOException {
-        saveRecipe();
-        goHome();
-    }
-
-    /*
-     * Saves recipe to main app list
-     */
-    private void saveRecipe() {
-        Recipe recipe = new Recipe();
-        recipe.setName(recipeName);
-        recipe.setMealType(mealType);
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
-
-        // todo: implement this
-        // RecipeData.getInstance().addRecipe(recipe);
+    @FXML
+    private void generateRecipeButtonHandler() throws IOException {
+        Logger.log("Creating a " + recipe.getMealType() + "recipe with the following ingredients: "
+                + recipe.getIngredients());
+        SceneHelper.switchToRecipePreviewScene(recipe);
     }
 }

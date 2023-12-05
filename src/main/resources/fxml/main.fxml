@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #fefefe;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <center>
@@ -30,54 +31,93 @@
       </ScrollPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0" styleClass="footer" BorderPane.alignment="CENTER">
+      <VBox BorderPane.alignment="CENTER">
          <children>
-            <!-- <Button mnemonicParsing="false" text="Save Recipes" onAction="#saveRecipesHandler"
-               textAlignment="CENTER">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true"
-            smooth="false">
-                     <image>
-                        <Image url="@../images/download.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-            </Button> -->
-            <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" text="Add Recipe" textAlignment="CENTER">
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/add.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-            </Button>
-            <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" text="(Debug) Add" textAlignment="CENTER">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/add.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-            </Button>
+            <HBox alignment="CENTER" prefHeight="64.0" prefWidth="200.0" spacing="12.0" styleClass="footer">
+               <children>
+                  <!-- <Button mnemonicParsing="false" text="Save Recipes" onAction="#saveRecipesHandler"
+                     textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true"
+                  smooth="false">
+                           <image>
+                              <Image url="@../images/download.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                  </Button> -->
+                  <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" prefHeight="32.0" text="Add Recipe" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" prefHeight="32.0" text="Add Recipe (Debug)" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/terminal.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="24.0" style="-fx-border-style: solid hidden hidden hidden; -fx-border-color: #cecece; -fx-background-color: #eeeeee;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You are logged in as:">
+                           <font>
+                              <Font name="PP Neue Machina Regular" size="12.0" />
+                           </font>
+                        </Text>
+                        <Label fx:id="usernameLabel">
+                           <font>
+                              <Font name="PP Neue Machina Regular" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="23.0" layoutY="17.0" spacing="12.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Recipe count:">
+                           <font>
+                              <Font name="PP Neue Machina Regular" size="12.0" />
+                           </font>
+                        </Text>
+                        <Label fx:id="recipeCountLabel">
+                           <font>
+                              <Font name="PP Neue Machina Regular" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
+               </padding>
+            </HBox>
          </children>
-      </HBox>
+      </VBox>
    </bottom>
    <top>
       <VBox id="header" style="-fx-border-color: #cecece; -fx-border-style: hidden hidden solid hidden;" BorderPane.alignment="CENTER">
@@ -90,17 +130,17 @@
                      </font>
                   </Label>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="logoutButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#handleLogout" text="Logout">
-                     <font>
-                        <Font name="PP Neue Machina Regular" size="12.0" />
-                     </font>
+                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutButtonHandler" prefHeight="32.0" text="Logout" textAlignment="CENTER">
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/logout.png" />
                            </image>
                         </ImageView>
                      </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
                   </Button>
                </children>
                <VBox.margin>
@@ -135,17 +175,17 @@
                      <children>
                         <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="240.0" style="-fx-border-color: #cecece; -fx-border-radius: 6px;" StackPane.alignment="CENTER">
                            <children>
-                              <ToggleButton fx:id="toggleBreakfast" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Breakfast" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="breakfastToggleButton" fx:id="toggleBreakfast" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Breakfast" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleLunch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Lunch" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="lunchToggleButton" fx:id="toggleLunch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" style="-fx-border-color: #cecece; -fx-border-style: hidden solid hidden hidden;" styleClass="toggleButton" text="Lunch" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
                               </ToggleButton>
-                              <ToggleButton fx:id="toggleDinner" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" styleClass="toggleButton" text="Dinner" HBox.hgrow="ALWAYS">
+                              <ToggleButton id="dinnerToggleButton" fx:id="toggleDinner" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#filterHandler" styleClass="toggleButton" text="Dinner" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="PP Neue Machina Regular" size="12.0" />
                                  </font>
