@@ -16,6 +16,7 @@ import model.Recipe;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
 import utilites.ChatGPT;
+import utilites.DallE;
 import utilites.Logger;
 
 public class PreviewRecipeController implements Initializable {
@@ -88,15 +89,28 @@ public class PreviewRecipeController implements Initializable {
         SceneHelper.switchToMainScene();
     }
 
+    private String getImageURL(){
+        String imageURL = "";
+        try {
+            imageURL = DallE.generateImageURL(recipeName);
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return imageURL;
+    }
+
     //@TODO figure out 
     public void saveRecipeButtonHandler() throws IOException {
+
+        String imageURL = getImageURL();
 
         Recipe recipe = new Recipe()
         .setName(recipeName)
         .setMealType(mealType)
         .setIngredients(ingredients)
         .setSteps(steps)
-        .setImageUrl("");
+        .setImageUrl(imageURL);
 
         Logger.log("Adding new recipe:");
         RecipeHelper.addRecipe(recipe);

@@ -31,7 +31,7 @@ public class DallE {
         requestBody.put("model", MODEL);
         requestBody.put("prompt", imagePromptTemplate.replace("[recipeName]", recipeName));
         requestBody.put("n", n);
-        requestBody.put("size", "1024x1024");
+        requestBody.put("size", "512x512");
 
         //create HTTP client
         HttpClient client = HttpClient.newHttpClient();
