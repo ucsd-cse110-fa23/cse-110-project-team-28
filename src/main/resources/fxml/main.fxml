@@ -52,9 +52,9 @@
                         <Font name="PP Neue Machina Regular" size="12.0" />
                      </font>
                   </Button> -->
-                  <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" text="Add Recipe" textAlignment="CENTER">
+                  <Button fx:id="addRecipeButton" mnemonicParsing="false" onAction="#addRecipeHandler" prefHeight="32.0" text="Add Recipe" textAlignment="CENTER">
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/add.png" />
                            </image>
@@ -64,12 +64,12 @@
                         <Font name="PP Neue Machina Regular" size="12.0" />
                      </font>
                   </Button>
-                  <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" text="Add Recipe (Debug)" textAlignment="CENTER">
+                  <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" prefHeight="32.0" text="Add Recipe (Debug)" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/terminal.png" />
                            </image>
@@ -130,17 +130,17 @@
                      </font>
                   </Label>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="logoutButton" alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#handleLogout" text="Logout">
-                     <font>
-                        <Font name="PP Neue Machina Regular" size="12.0" />
-                     </font>
+                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutButtonHandler" prefHeight="32.0" text="Logout" textAlignment="CENTER">
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/logout.png" />
                            </image>
                         </ImageView>
                      </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
                   </Button>
                </children>
                <VBox.margin>
