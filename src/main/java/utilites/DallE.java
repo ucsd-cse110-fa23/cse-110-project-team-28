@@ -10,6 +10,8 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
+
 import utilites.Logger;
 
 import org.json.JSONArray;
@@ -18,7 +20,7 @@ import org.json.JSONObject;
 public class DallE {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/images/generations";
     private static final String API_KEY = "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";
-    private static final String MODEL = "dall-e-3";
+    private static final String MODEL = "dall-e-2";
     private static final String imagePromptTemplate = "[recipeName], shallow-focus, 35mm, Canon EOS 5D Mark IV DSLR, f/5.6 aperture, 1/125 second shutter speed, ISO 100 --ar 2:3 --q 2 --v 4";
 
     public static String generateImageURL(String recipeName) throws IOException, InterruptedException, URISyntaxException {
@@ -32,6 +34,7 @@ public class DallE {
         requestBody.put("prompt", imagePromptTemplate.replace("[recipeName]", recipeName));
         requestBody.put("n", n);
         requestBody.put("size", "512x512");
+        requestBody.put("response_format", "b64_json");
 
         //create HTTP client
         HttpClient client = HttpClient.newHttpClient();
@@ -60,19 +63,9 @@ public class DallE {
 
         //Processing the response
         JSONArray data = responseJSON.getJSONArray("data");
-        String generatedImageURL = data.getJSONObject(0).getString("url");
+        String generatedImageB64 = data.getJSONObject(0).getString("b64_json");
 
-        Logger.log("DALL-E Response: ");
-        Logger.log(generatedImageURL);
-
-        return generatedImageURL;
-
-        
-        // try(
-        //     InputStream in = new URI(generatedImageURL).toURL().openStream()
-        //     ){
-        //     Files.copy(in, Paths.get("image.jpg"));
-        // }
+        return "data:image/png;base64," + generatedImageB64;
 
         
     }

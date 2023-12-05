@@ -38,7 +38,7 @@ public class RecipePaneControllerV2 implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
             recipePane.setStyle(
-                    "-fx-background-image: url(\"" + recipe.getImageURL() + "\");");
+                    "-fx-background-image: url('" + recipe.getImageURL() + "');");
 
             Rectangle clip = new Rectangle(recipePane.getWidth(), recipePane.getHeight());
             clip.setArcWidth(12);

@@ -64,7 +64,7 @@ public class PreviewRecipeController implements Initializable {
      * @TODO refactor
      */
     public void setRecipe(String ingredients, String mealType) {
-        Logger.log("Creating a "+ mealType+ "recipe with the following ingredients" + ingredients);
+        Logger.log("Creating a "+ mealType+ "recipe with the following ingredients: " + ingredients);
         this.ingredients = ingredients;
         this.mealType = mealType;
         String response = getRecipeSteps(false);
@@ -89,12 +89,15 @@ public class PreviewRecipeController implements Initializable {
         SceneHelper.switchToMainScene();
     }
 
+    /*
+     * Gets an image url in Base64 format from DallE
+     */
     private String getImageURL(){
         String imageURL = "";
         try {
             imageURL = DallE.generateImageURL(recipeName);
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            // TODO Auto-generated catch block
+            Logger.log("Error getting image url"); //@TODO refactor to handle each exception separately
             e.printStackTrace();
         }
         return imageURL;
@@ -112,11 +115,12 @@ public class PreviewRecipeController implements Initializable {
         .setSteps(steps)
         .setImageUrl(imageURL);
 
-        Logger.log("Adding new recipe:");
+        Logger.log("Adding new recipe");
         RecipeHelper.addRecipe(recipe);
 
         goHome();
     }
+    
 
     public void regenerateRecipeButtonHandler() throws IOException {
         String response = getRecipeSteps(true);

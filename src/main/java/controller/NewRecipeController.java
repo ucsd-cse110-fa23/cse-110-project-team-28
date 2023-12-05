@@ -36,7 +36,7 @@ public class NewRecipeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //saveRecipeButton.setDisable(true);
+        //generateRecipeButton.setDisable(true);
 
         Label mealTypePrompt = new Label();
         mealTypePrompt.setText("Meal Type");
@@ -115,10 +115,6 @@ public class NewRecipeController implements Initializable {
         Parent root = loader.load();
         PreviewRecipeController previewRecipeController = loader.getController();
 
-
-        Recipe newRecipe = new Recipe();
-        newRecipe.setIngredients(ingredients);
-        newRecipe.setMealType(mealType);
         previewRecipeController.setRecipe(ingredients, mealType);
 
         Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
