@@ -104,8 +104,6 @@ public class MongoDBHelper {
     }
 
     public static Recipe findRecipeById(String recipeId) {
-        Logger.log("Finding recipe with id: " + recipeId);
-
         Document recipeDocument = mongoClient
                 .getDatabase("pantrypal")
                 .getCollection("recipes")
@@ -113,11 +111,8 @@ public class MongoDBHelper {
                 .first();
 
         if (recipeDocument == null) {
-            Logger.log("Recipe not found");
             return null;
         }
-
-        Logger.log("Found recipe with id: " + recipeDocument.getObjectId("_id").toString());
 
         Recipe recipe = Recipe.fromDocument(recipeDocument);
 
@@ -125,11 +120,7 @@ public class MongoDBHelper {
     }
 
     public static List<Recipe> findRecipesByUserId(String userId) {
-        Logger.log("Finding recipes for user with id: " + userId);
-
         Document user = findUserById(userId);
-
-        Logger.log("Found user: " + user.toString());
 
         if (!user.containsKey("recipes")) {
             Logger.log("User does not have any recipes");
@@ -138,19 +129,21 @@ public class MongoDBHelper {
 
         List<String> recipeIdList = user.getList("recipes", String.class);
 
-        Logger.log("Found recipeIdList: " + recipeIdList.toString());
+        // Logger.log("Found recipeIdList: " + recipeIdList.toString());
 
         List<Recipe> recipes = new ArrayList<>();
 
         for (String recipeId : recipeIdList) {
-            Logger.log("Finding recipe with id: " + recipeId);
+            // Logger.log("Finding recipe with id: " + recipeId);
 
             Recipe recipe = findRecipeById(recipeId);
 
-            Logger.log("Found recipe");
+            // Logger.log("Found recipe");
 
-            if (recipe == null)
+            if (recipe == null) {
+                Logger.warn("Recipe (id: " + recipeId + ") not found, most likely reminant from previous database");
                 continue;
+            }
 
             recipes.add(recipe);
         }

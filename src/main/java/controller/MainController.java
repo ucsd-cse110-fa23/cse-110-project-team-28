@@ -105,12 +105,12 @@ public class MainController implements Initializable {
     public void addRecipe(Recipe recipe) {
         // load recipePane.fxml and get its RecipeController
         // todo: using testing recipePane and RecipePaneControllerV2
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePaneV2.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/recipePane.fxml"));
 
         try {
             Parent recipePane = loader.load();
 
-            RecipePaneControllerV2 recipePaneController = loader.getController();
+            RecipePaneController recipePaneController = loader.getController();
 
             // set recipeName
             recipePaneController.setRecipe(recipe);

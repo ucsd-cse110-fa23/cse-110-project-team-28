@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import controller.EditRecipeController;
+import controller.PreviewRecipeController;
 import controller.RecipeDetailsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -78,5 +79,18 @@ public class SceneHelper {
 
         RecipeDetailsController controller = loader.getController();
         controller.setRecipe(recipe);
+    }
+
+    public static void switchToRecipePreviewScene(Recipe recipe) throws IOException {
+        URL sceneUrl = SceneHelper.class.getResource("/fxml/previewRecipe.fxml");
+        FXMLLoader loader = new FXMLLoader(sceneUrl);
+        Parent root = loader.load();
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+
+        PreviewRecipeController previewRecipeController = loader.getController();
+        previewRecipeController.setRecipe(recipe);
     }
 }

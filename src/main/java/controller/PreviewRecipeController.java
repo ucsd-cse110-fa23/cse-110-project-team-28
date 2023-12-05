@@ -8,10 +8,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import model.Recipe;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
@@ -32,7 +29,8 @@ public class PreviewRecipeController implements Initializable {
             "\n" + //
             "Recipe:";
     private final String promptRegenerateTemplate = "" + //
-            "Generate a [mealType] recipe that is not [recipeName] using the following ingredients only:[listOfIngredients]. " + //
+            "Generate a [mealType] recipe that is not [recipeName] using the following ingredients only:[listOfIngredients]. "
+            + //
             "Please include list of ingredients, preparation instructions, and numbered cooking steps. " + //
             "Place title of recipe on first line of your response. \n" + //
             "\n" + //
@@ -50,10 +48,7 @@ public class PreviewRecipeController implements Initializable {
     @FXML
     private Button regenerateRecipeButton;
 
-    private String recipeName;
-    private String mealType;
-    private String ingredients;
-    private String steps;
+    Recipe recipe;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,20 +56,22 @@ public class PreviewRecipeController implements Initializable {
 
     /*
      * Sets the recipe and asks gpt for steps
+     * 
      * @TODO refactor
      */
-    public void setRecipe(String ingredients, String mealType) {
-        Logger.log("Creating a "+ mealType+ "recipe with the following ingredients: " + ingredients);
-        this.ingredients = ingredients;
-        this.mealType = mealType;
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+
         String response = getRecipeSteps(false);
-        if(response.equals(ERROR_FLAG)){
+
+        if (response.equals(ERROR_FLAG)) {
             Logger.log("An error occurred while getting steps");
-        } else{
-            recipeName = getRecipeName(response);
-            steps = response;
+        } else {
+            recipe.setName(getRecipeName(response));
+            recipe.setSteps(response);
         }
-        editRecipeTextArea.setText(steps);
+
+        editRecipeTextArea.setText(response);
     }
 
     public void backButtonHandler() throws IOException {
@@ -92,61 +89,56 @@ public class PreviewRecipeController implements Initializable {
     /*
      * Gets an image url in Base64 format from DallE
      */
-    private String getImageURL(){
+    private String getImageURL() {
         String imageURL = "";
         try {
-            imageURL = DallE.generateImageURL(recipeName);
+            imageURL = DallE.generateImageURL(recipe.getName());
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            Logger.log("Error getting image url"); //@TODO refactor to handle each exception separately
+            Logger.log("Error getting image url"); // @TODO refactor to handle each exception separately
             e.printStackTrace();
         }
         return imageURL;
     }
 
-    //@TODO figure out 
+    // @TODO figure out
     public void saveRecipeButtonHandler() throws IOException {
 
         String imageURL = getImageURL();
 
-        Recipe recipe = new Recipe()
-        .setName(recipeName)
-        .setMealType(mealType)
-        .setIngredients(ingredients)
-        .setSteps(steps)
-        .setImageUrl(imageURL);
+        recipe.setImageUrl(imageURL);
 
         Logger.log("Adding new recipe");
+
         RecipeHelper.addRecipe(recipe);
 
         goHome();
     }
-    
 
     public void regenerateRecipeButtonHandler() throws IOException {
         String response = getRecipeSteps(true);
-        if(response.equals(ERROR_FLAG)){
+        if (response.equals(ERROR_FLAG)) {
             Logger.log("An error occurred while regenerating steps");
-        } else{
-            recipeName = getRecipeName(response);
-            steps = response;
+        } else {
+            recipe.setName(getRecipeName(response));
+            recipe.setSteps(response);
         }
-        editRecipeTextArea.setText(steps);
+        editRecipeTextArea.setText(response);
     }
-    
+
     /*
      * Gets recipe steps from gpt
      */
     private String getRecipeSteps(Boolean regenerate) {
         try {
-            if(regenerate){
+            if (regenerate) {
                 return ChatGPT.getGPTResponse(500, promptRegenerateTemplate.replace("[mealType]",
-                        mealType)
-                        .replace("[listOfIngredients]", ingredients)
-                        .replace("[recipeName]", recipeName));
-            }else{
+                        recipe.getMealType())
+                        .replace("[listOfIngredients]", recipe.getIngredients())
+                        .replace("[recipeName]", recipe.getName()));
+            } else {
                 return ChatGPT.getGPTResponse(500, promptTemplate.replace("[mealType]",
-                        mealType)
-                        .replace("[listOfIngredients]", ingredients));
+                        recipe.getMealType())
+                        .replace("[listOfIngredients]", recipe.getIngredients()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,5 +160,4 @@ public class PreviewRecipeController implements Initializable {
         return lines[0].trim();
     }
 
-    
 }

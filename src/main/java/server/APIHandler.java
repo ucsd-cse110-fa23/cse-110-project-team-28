@@ -25,7 +25,7 @@ public class APIHandler implements HttpHandler {
         String httpContext = httpExchange.getHttpContext().getPath();
         String path = requestPath.substring(httpContext.length());
 
-        Logger.log("Processing request for URI: " + httpExchange.getRequestURI().toString());
+        Logger.log("Received request (uri: " + httpExchange.getRequestURI().toString() + ")");
 
         switch (path) {
             case "recipes":
@@ -37,71 +37,10 @@ public class APIHandler implements HttpHandler {
             default:
                 break;
         }
-
-        // todo: re-implement
-        // String response = "Request Received";
-        // String method = httpExchange.getRequestMethod();
-
-        // try {
-        // if (method.equals("GET")) {
-        // response = handleGet(httpExchange);
-        // } else if (method.equals("POST")) {
-        // response = handlePost(httpExchange);
-        // } else if (method.equals("PUT")) {
-        // response = handlePut(httpExchange);
-        // } else if (method.equals("DELETE")) {
-        // response = handleDelete(httpExchange);
-        // } else {
-        // throw new Exception("Not Valid Request Method");
-        // }
-        // } catch (Exception e) {
-        // Logger.log("An erroneous request");
-        // response = e.toString();
-        // e.printStackTrace();
-        // }
-
-        // // Sending back response to the client
-        // httpExchange.sendResponseHeaders(200, response.length());
-        // OutputStream outStream = httpExchange.getResponseBody();
-        // outStream.write(response.getBytes());
-        // outStream.close();
-    }
-
-    private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
-        exchange.sendResponseHeaders(statusCode, 0);
-        exchange.getResponseBody().write(responseBody.getBytes());
-        exchange.close();
-    }
-
-    private void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
-        exchange.sendResponseHeaders(statusCode, 0);
-        exchange.getResponseBody().write("".getBytes());
-        exchange.close();
-    }
-
-    private HashMap<String, String> extractQueryParameters(String query) {
-        if (query == null) {
-            System.err.println("No query parameters provided");
-            return null;
-        }
-
-        String[] queryParams = query.split("&");
-
-        Logger.log("Query parameters: " + Arrays.toString(queryParams));
-
-        HashMap<String, String> params = new HashMap<>();
-
-        for (String param : queryParams) {
-            params.put(param.split("=")[0], param.split("=")[1]);
-        }
-
-        return params;
     }
 
     private void recipesHandler(HttpExchange httpExchange) throws IOException {
         String requestMethod = httpExchange.getRequestMethod();
-
-        Logger.log("Request method: " + requestMethod);
 
         switch (requestMethod) {
             case "GET":
@@ -117,6 +56,7 @@ public class APIHandler implements HttpHandler {
                 recipeDeleteHandler(httpExchange);
                 break;
             default:
+                Logger.warn("Unsupported request method: " + requestMethod);
                 break;
         }
     }
@@ -124,15 +64,45 @@ public class APIHandler implements HttpHandler {
     private void recipeHandler(HttpExchange httpExchange) throws IOException {
         String requestMethod = httpExchange.getRequestMethod();
 
-        Logger.log("Request method: " + requestMethod);
-
         switch (requestMethod) {
             case "GET":
                 recipeGetHandler(httpExchange);
                 break;
             default:
+                Logger.warn("Unsupported request method: " + requestMethod);
                 break;
         }
+    }
+
+    private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
+        Logger.log("Sending response (status code: " + statusCode + ", length: " + responseBody.length() + ")");
+        exchange.sendResponseHeaders(statusCode, 0);
+        exchange.getResponseBody().write(responseBody.getBytes());
+        exchange.close();
+    }
+
+    private void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
+        Logger.log("Sending response (status code: " + statusCode + ", length: 0)");
+        exchange.sendResponseHeaders(statusCode, 0);
+        exchange.getResponseBody().write("".getBytes());
+        exchange.close();
+    }
+
+    private HashMap<String, String> extractQueryParameters(String query) {
+        if (query == null) {
+            System.err.println("No query parameters provided");
+            return null;
+        }
+
+        String[] queryParams = query.split("&");
+
+        HashMap<String, String> params = new HashMap<>();
+
+        for (String param : queryParams) {
+            params.put(param.split("=")[0], param.split("=")[1]);
+        }
+
+        return params;
     }
 
     private void recipeGetHandler(HttpExchange httpExchange) throws IOException {
@@ -155,13 +125,13 @@ public class APIHandler implements HttpHandler {
 
         String recipeId = params.get("recipeId");
 
-        if (recipeId == null) {
+        if (recipeId == null || recipeId.isEmpty()) {
             System.err.println("No recipeId parameter provided");
             sendResponse(httpExchange, 400, "No recipeId parameter provided");
             return;
         }
 
-        Logger.log("Fetching recipe: " + recipeId);
+        Logger.log("Fetching recipe (id: " + recipeId + ")");
 
         Recipe recipe = MongoDBHelper.findRecipeById(recipeId);
 
@@ -171,12 +141,10 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        Logger.log("Found recipe (" + recipe.getId() + ")");
+        Logger.log("Found recipe (id: " + recipe.getId() + ")");
 
         Gson gson = new Gson();
         String responseBody = gson.toJson(recipe);
-
-        Logger.log("Sending response (length: " + responseBody.length() + ")");
 
         // Sending back response to the client
         sendResponse(httpExchange, 200, responseBody);
@@ -202,34 +170,27 @@ public class APIHandler implements HttpHandler {
 
         String userId = params.get("userId");
 
-        if (userId == null) {
+        if (userId == null || userId.isEmpty()) {
             System.err.println("No userId parameter provided");
             sendResponse(httpExchange, 400, "No userId parameter provided");
             return;
         }
 
-        Logger.log("Fetching recipes for user: " + userId);
+        Logger.log("Finding recipes for user (id: " + userId + ")");
 
         List<Recipe> userRecipes = MongoDBHelper.findRecipesByUserId(userId);
 
-        Logger.log("Found " + userRecipes.size() + " recipes");
+        Logger.log("Found " + userRecipes.size()
+                + (userRecipes.size() == 1 ? " recipe for user (id: " : " recipes for user (id: ") + userId + ")");
 
         Gson gson = new Gson();
         String responseBody = gson.toJson(userRecipes);
-
-        Logger.log("Sending response (length: " + responseBody.length() + ")");
 
         // Sending back response to the client
         sendResponse(httpExchange, 200, responseBody);
     }
 
     private void recipesPostHandler(HttpExchange httpExchange) throws IOException {
-        // read request body
-        InputStream inputStream = httpExchange.getRequestBody();
-        String requestBody = new String(inputStream.readAllBytes());
-
-        Logger.log("Request body: " + requestBody);
-
         // get query parameters
         String query = httpExchange.getRequestURI().getQuery();
 
@@ -251,9 +212,11 @@ public class APIHandler implements HttpHandler {
         Logger.log("userId: " + userId);
 
         // parse request body
+        InputStream inputStream = httpExchange.getRequestBody();
+        String requestBody = new String(inputStream.readAllBytes());
         JSONObject requestJsonObject = new JSONObject(requestBody);
 
-        Logger.log("Request JSON object: " + requestJsonObject.toString());
+        Logger.log("Request body (length: " + requestBody.length() + ")");
 
         InsertOneResult result = MongoDBHelper.insertRecipe(requestJsonObject);
 
@@ -265,7 +228,7 @@ public class APIHandler implements HttpHandler {
 
         String recipeId = result.getInsertedId().asObjectId().getValue().toString();
 
-        Logger.log("Inserted recipe with id: " + recipeId);
+        Logger.log("Inserted recipe (id: " + recipeId + ")");
 
         Document user = MongoDBHelper.insertUserRecipeId(userId, recipeId);
 
@@ -275,7 +238,7 @@ public class APIHandler implements HttpHandler {
             return;
         }
 
-        Logger.log("Added recipe to user: " + user.toString());
+        Logger.log("Added recipe to user (id: " + user.getObjectId("_id").toString() + ")");
 
         // send recipeId back to client
         sendResponse(httpExchange, 200, recipeId);

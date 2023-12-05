@@ -19,6 +19,22 @@ public class Config {
     private static String SERVER_HOSTNAME;
     private static int SERVER_PORT;
 
+    private static String OPEN_AI_API_KEY;
+
+    // dall-e
+    private static String DALL_E_API_ENDPOINT;
+    private static String DALL_E_MODEL;
+    private static String DALL_E_PROMPT;
+
+    // chat gpt
+    private static String CHAT_GPT_API_ENDPOINT;
+    private static String CHAT_GPT_MODEL;
+    // private static String CHAT_GPT_PROMPT;
+
+    // whisper
+    private static String WHISPER_API_ENDPOINT;
+    private static String WHISPER_MODEL;
+
     /**
      * Loads the config file
      * 
@@ -41,6 +57,25 @@ public class Config {
         RECIPE_COLLECTION = config.getString("recipe_collection");
         SERVER_HOSTNAME = config.getString("server_hostname");
         SERVER_PORT = config.getInt("server_port");
+
+        // openai
+        OPEN_AI_API_KEY = config.getString("open_ai_api_key");
+
+        // dall-e
+        JSONObject dallEConfig = config.getJSONObject("dall_e");
+        DALL_E_API_ENDPOINT = dallEConfig.getString("api_endpoint");
+        DALL_E_MODEL = dallEConfig.getString("model");
+        DALL_E_PROMPT = dallEConfig.getString("prompt");
+
+        // chat gpt
+        JSONObject chatGPTConfig = config.getJSONObject("chat_gpt");
+        CHAT_GPT_API_ENDPOINT = chatGPTConfig.getString("api_endpoint");
+        CHAT_GPT_MODEL = chatGPTConfig.getString("model");
+
+        // whisper
+        JSONObject whisperConfig = config.getJSONObject("whisper");
+        WHISPER_API_ENDPOINT = whisperConfig.getString("api_endpoint");
+        WHISPER_MODEL = whisperConfig.getString("model");
 
         Logger.log("Config initialized");
     }
@@ -67,6 +102,38 @@ public class Config {
 
     public static int getServerPort() {
         return SERVER_PORT;
+    }
+
+    public static String getOpenAiApiKey() {
+        return OPEN_AI_API_KEY;
+    }
+
+    public static String getDallEApiEndpoint() {
+        return DALL_E_API_ENDPOINT;
+    }
+
+    public static String getDallEModel() {
+        return DALL_E_MODEL;
+    }
+
+    public static String getDallEPrompt() {
+        return DALL_E_PROMPT;
+    }
+
+    public static String getChatGPTApiEndpoint() {
+        return CHAT_GPT_API_ENDPOINT;
+    }
+
+    public static String getChatGPTModel() {
+        return CHAT_GPT_MODEL;
+    }
+
+    public static String getWhisperApiEndpoint() {
+        return WHISPER_API_ENDPOINT;
+    }
+
+    public static String getWhisperModel() {
+        return WHISPER_MODEL;
     }
 
 }

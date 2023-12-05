@@ -10,20 +10,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ChatGPT {
-    private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    // private static final String API_KEY =
-    // "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"; //Keyan
-    private static final String API_KEY = "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"; // Alan
-    private static final String MODEL = "text-davinci-003";
+import config.Config;
 
+public class ChatGPT {
     public static String getGPTResponse(int maxTokens, String prompt)
             throws IOException, InterruptedException, URISyntaxException {
 
         // Create a request body which you will pass into request object
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("model", MODEL);
+            requestBody.put("model", Config.getChatGPTModel());
             requestBody.put("prompt", prompt);
             requestBody.put("max_tokens", maxTokens);
             requestBody.put("temperature", 1.0);
@@ -34,9 +30,9 @@ public class ChatGPT {
             // Create the request object
             HttpRequest request = HttpRequest
                     .newBuilder()
-                    .uri(URI.create(API_ENDPOINT))
+                    .uri(URI.create(Config.getChatGPTApiEndpoint()))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", String.format("Bearer %s", API_KEY))
+                    .header("Authorization", String.format("Bearer %s", Config.getOpenAiApiKey()))
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
                     .build();
 

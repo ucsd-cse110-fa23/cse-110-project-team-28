@@ -8,6 +8,7 @@ import utilites.InitializeHelper;
 import javafx.fxml.FXMLLoader;
 import java.util.prefs.Preferences;
 
+import config.Config;
 import utilites.SceneHelper;
 
 public class RecipeApp extends Application {
@@ -17,7 +18,8 @@ public class RecipeApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        InitializeHelper.init();
+        // do not initialize mongodb for client
+        Config.init();
         SceneHelper.setPrimaryStage(primaryStage);
 
         Font.loadFont(getClass().getResourceAsStream("fonts/PPEiko-Regular.ttf"), 12);

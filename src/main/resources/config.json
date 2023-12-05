@@ -1,8 +1,22 @@
 {
   "mongodb_uri": "mongodb+srv://devadmin:devpassword@pantrypal.a63fftt.mongodb.net/?retryWrites=true&w=majority",
+  "open_ai_api_key": "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",
   "database": "pantrypal",
   "user_collection": "users",
   "recipe_collection": "recipes",
   "server_hostname": "localhost",
-  "server_port": 8000
+  "server_port": 8000,
+  "dall_e": {
+    "api_endpoint": "https://api.openai.com/v1/images/generations",
+    "model": "dall-e-2",
+    "prompt": "[recipeName], shallow-focus, 35mm, Canon EOS 5D Mark IV DSLR, f/5.6 aperture, 1/125 second shutter speed, ISO 100 --ar 2:3 --q 2 --v 4"
+  },
+  "chat_gpt": {
+    "api_endpoint": "https://api.openai.com/v1/completions",
+    "model": "text-davinci-003"
+  },
+  "whisper": {
+    "api_endpoint": "https://api.openai.com/v1/audio/transcriptions",
+    "model": "whisper-1"
+  }
 }

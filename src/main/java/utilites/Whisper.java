@@ -4,14 +4,9 @@ import java.io.*;
 import java.net.*;
 import org.json.*;
 
-public class Whisper {
-    private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
-    // private static final String TOKEN =
-    // "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"; //Keyan
-    private static final String TOKEN = "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"; // Alan
-    private static final String MODEL = "whisper-1";
-    // private static final String FILE_PATH = "";
+import config.Config;
 
+public class Whisper {
     // Helper method to write a parameter to the output stream in multipart form
     // data format
     private static void writeParameterToOutputStream(
@@ -96,7 +91,7 @@ public class Whisper {
         File file = new File(filePath);
 
         // Set up HTTP connection
-        URL url = new URI(API_ENDPOINT).toURL();
+        URL url = new URI(Config.getWhisperApiEndpoint()).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
@@ -106,13 +101,13 @@ public class Whisper {
         connection.setRequestProperty(
                 "Content-Type",
                 "multipart/form-data; boundary=" + boundary);
-        connection.setRequestProperty("Authorization", "Bearer " + TOKEN);
+        connection.setRequestProperty("Authorization", "Bearer " + Config.getOpenAiApiKey());
 
         // Set up output stream to write request body
         OutputStream outputStream = connection.getOutputStream();
 
         // Write model parameter to request body
-        writeParameterToOutputStream(outputStream, "model", MODEL, boundary);
+        writeParameterToOutputStream(outputStream, "model", Config.getWhisperModel(), boundary);
 
         // Write file parameter to request body
         writeFileToOutputStream(outputStream, file, boundary);

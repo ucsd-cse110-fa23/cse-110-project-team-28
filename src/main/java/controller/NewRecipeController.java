@@ -1,19 +1,15 @@
 package controller;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.Recipe;
 import utilites.SceneHelper;
 import utilites.Logger;
@@ -31,12 +27,13 @@ public class NewRecipeController implements Initializable {
 
     public static final String ERROR_FLAG = "ERROR";
 
-    private String mealType;
-    private String ingredients;
+    private Recipe recipe;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //generateRecipeButton.setDisable(true);
+        // generateRecipeButton.setDisable(true);
+
+        this.recipe = new Recipe();
 
         Label mealTypePrompt = new Label();
         mealTypePrompt.setText("Meal Type");
@@ -63,7 +60,7 @@ public class NewRecipeController implements Initializable {
                     if (transcript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting meal type");
                     } else {
-                        mealType = transcript;
+                        recipe.setMealType(transcript);
                     }
                 }
             });
@@ -78,7 +75,7 @@ public class NewRecipeController implements Initializable {
                     if (transcript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting ingredients");
                     } else {
-                        ingredients = transcript;
+                        recipe.setIngredients(transcript);
                     }
                 }
             });
@@ -90,36 +87,15 @@ public class NewRecipeController implements Initializable {
         }
     }
 
-
-    public void backButtonHandler() throws IOException {
+    @FXML
+    private void backButtonHandler() throws IOException {
         SceneHelper.switchToMainScene();
     }
 
-
-    
-    public void generateRecipeButtonHandler() throws IOException {
-        goToPreview();
-    }
-
-    
-
-    //TODO: maybe refactor and include in SceneHelper
-    /*
-     * switch to preview window
-     */
-    private void goToPreview() throws IOException{
-        Scene scene = generateRecipeButton.getScene();
-        Stage stage = (Stage) scene.getWindow();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/previewRecipe.fxml"));
-        Parent root = loader.load();
-        PreviewRecipeController previewRecipeController = loader.getController();
-
-        previewRecipeController.setRecipe(ingredients, mealType);
-
-        Scene newScene = new Scene(root, scene.getWidth(), scene.getHeight());
-
-        stage.setScene(newScene);
-        stage.show();
+    @FXML
+    private void generateRecipeButtonHandler() throws IOException {
+        Logger.log("Creating a " + recipe.getMealType() + "recipe with the following ingredients: "
+                + recipe.getIngredients());
+        SceneHelper.switchToRecipePreviewScene(recipe);
     }
 }
