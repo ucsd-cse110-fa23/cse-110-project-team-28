@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,10 +16,15 @@ import java.util.ArrayList;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.testfx.framework.junit.ApplicationTest;
+
+import controller.MainController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Recipe;
 import model.UserData;
@@ -30,6 +36,7 @@ public class InteractiveTests extends ApplicationTest {
     final int HEIGHT = 500;
 
     private String TEST_FILE = "test_recipes.json";
+    private MainController controller;
 
     MockedStatic<RecipeHelper> recipeHelper;
 
@@ -44,6 +51,7 @@ public class InteractiveTests extends ApplicationTest {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
+        controller = loader.getController();
 
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(root));
@@ -71,6 +79,36 @@ public class InteractiveTests extends ApplicationTest {
     @Test
     public void sanityTest() {
         Assert.assertEquals("PantryPal 2", lookup("#titleLabel").queryAs(Label.class).getText());
+    }
+
+    @Test
+    public void deleteRecipe() throws IOException {
+        Platform.runLater(() -> {
+            Assert.assertEquals(controller.getRecipes().isEmpty(), true);
+
+            Recipe recipe = new Recipe();
+            recipe.setName("name")
+            .setMealType("Breakfast")
+            .setIngredients("ingredients")
+            .setSteps("steps")
+            .setImageUrl("imageURL")
+            .setId("id");
+
+            controller.addRecipe(recipe);
+
+            sleep(100);
+
+            Assert.assertEquals(false, controller.getRecipes().isEmpty());
+
+            Button recipePanelDetailsButton = lookup(".recipePaneDetailsButton").query();
+            recipePanelDetailsButton.fire();
+
+            Button deleteRecipeButton = lookup("#deleteRecipeButton").query();
+            deleteRecipeButton.fire();
+
+            // assert that recipedata is empty
+            Assert.assertEquals(controller.getRecipes().isEmpty(), true);
+        });
     }
     /*
      * @Test

@@ -79,9 +79,13 @@ public class MainController implements Initializable {
      * 
      * @param recipes the recipes to add
      */
-    private void setRecipes(List<Recipe> recipes) {
+    public void setRecipes(List<Recipe> recipes) {
         recipeList.getChildren().clear();
         addRecipes(recipes);
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
     }
 
     /**
