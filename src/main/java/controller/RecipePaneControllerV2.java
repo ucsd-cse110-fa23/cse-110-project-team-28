@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import model.Recipe;
+import utilites.Logger;
 import utilites.SceneHelper;
 
 public class RecipePaneControllerV2 implements Initializable {
@@ -37,6 +38,12 @@ public class RecipePaneControllerV2 implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
+            if (recipe.getImageURL() == null) {
+                throw new RuntimeException("Recipe image URL is null");
+            }
+
+            Logger.log("Setting recipe image: " + recipe.getImageURL().substring(0, 10));
+
             recipePane.setStyle(
                     "-fx-background-image: url('" + recipe.getImageURL() + "');");
 
