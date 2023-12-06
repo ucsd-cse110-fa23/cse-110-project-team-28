@@ -19,7 +19,7 @@ public class RecorderController implements Initializable {
     public static final String ERROR_FLAG = "ERROR";
 
     public interface TranscriptionCallback {
-        void onTranscriptionComplete(String transcript);
+        String onTranscriptionComplete(String transcript);
     }
 
     @FXML
@@ -144,10 +144,15 @@ public class RecorderController implements Initializable {
 
         if (transcriptionCallback != null) {
             String transcript = getRecordingTranscript(fileName);
-            transcriptionCallback.onTranscriptionComplete(transcript);
+            transcript = transcriptionCallback.onTranscriptionComplete(transcript);
 
             recordingLabel.setVisible(true);
-            recordingLabel.setText("You said: " + transcript);
+
+            if (transcript == null) {
+                recordingLabel.setText("Not a valid option.");
+            } else {
+                recordingLabel.setText("You said: " + transcript);
+            }
         }
     }
 }

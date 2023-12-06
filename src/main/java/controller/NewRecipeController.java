@@ -56,12 +56,27 @@ public class NewRecipeController implements Initializable {
             mealTypeRecorderController.setFileName("mealtype.wav");
             mealTypeRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
                 @Override
-                public void onTranscriptionComplete(String transcript) {
-                    if (transcript.equals(ERROR_FLAG)) {
+                public String onTranscriptionComplete(String mealTypeTranscript) {
+
+                    mealTypeTranscript = mealTypeTranscript.toLowerCase().replaceAll("[^a-z]", "").trim();
+
+                    // validate meal type
+                    switch (mealTypeTranscript) {
+                        case "breakfast":
+                        case "lunch":
+                        case "dinner":
+                            break;
+                        default:
+                            return null; // not a valid meal type
+                    }
+
+                    if (mealTypeTranscript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting meal type");
                     } else {
-                        recipe.setMealType(transcript);
+                        recipe.setMealType(mealTypeTranscript);
                     }
+
+                    return mealTypeTranscript;
                 }
             });
 
@@ -71,12 +86,14 @@ public class NewRecipeController implements Initializable {
             ingredientsRecorderController.setFileName("ingredients.wav");
             ingredientsRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
                 @Override
-                public void onTranscriptionComplete(String transcript) {
-                    if (transcript.equals(ERROR_FLAG)) {
+                public String onTranscriptionComplete(String ingredientsTranscript) {
+                    if (ingredientsTranscript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting ingredients");
                     } else {
-                        recipe.setIngredients(transcript);
+                        recipe.setIngredients(ingredientsTranscript);
                     }
+
+                    return ingredientsTranscript;
                 }
             });
 
