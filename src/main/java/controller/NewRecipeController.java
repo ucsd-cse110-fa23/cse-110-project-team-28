@@ -15,6 +15,7 @@ import utilites.SceneHelper;
 import utilites.Logger;
 
 public class NewRecipeController implements Initializable {
+    public static final String ERROR_FLAG = "ERROR";
 
     @FXML
     private Button backButton;
@@ -25,13 +26,16 @@ public class NewRecipeController implements Initializable {
     @FXML
     private VBox newRecipeCenter;
 
-    public static final String ERROR_FLAG = "ERROR";
-
     private Recipe recipe;
+    private RecorderController mealTypeRecorderController;
+    private RecorderController ingredientsRecorderController;
+
+    private boolean isMealTypeValid = false;
+    private boolean isIngredientsValid = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // generateRecipeButton.setDisable(true);
+        generateRecipeButton.setDisable(true);
 
         this.recipe = new Recipe();
 
@@ -51,7 +55,7 @@ public class NewRecipeController implements Initializable {
 
         try {
             VBox mealTypeRecorderPane = mealTypeRecorderLoader.load();
-            RecorderController mealTypeRecorderController = mealTypeRecorderLoader.getController();
+            mealTypeRecorderController = mealTypeRecorderLoader.getController();
 
             mealTypeRecorderController.setFileName("mealtype.wav");
             mealTypeRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
@@ -67,21 +71,25 @@ public class NewRecipeController implements Initializable {
                         case "dinner":
                             break;
                         default:
+                            isMealTypeValid = false;
+
+                            updateGenerateRecipeButton();
+
                             return null; // not a valid meal type
                     }
 
-                    if (mealTypeTranscript.equals(ERROR_FLAG)) {
-                        Logger.log("An error occurred while getting meal type");
-                    } else {
-                        recipe.setMealType(mealTypeTranscript);
-                    }
+                    isMealTypeValid = true;
+
+                    recipe.setMealType(mealTypeTranscript);
+
+                    updateGenerateRecipeButton();
 
                     return mealTypeTranscript;
                 }
             });
 
             VBox ingredientsRecorderPane = ingredientsRecorderLoader.load();
-            RecorderController ingredientsRecorderController = ingredientsRecorderLoader.getController();
+            ingredientsRecorderController = ingredientsRecorderLoader.getController();
 
             ingredientsRecorderController.setFileName("ingredients.wav");
             ingredientsRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
@@ -89,9 +97,18 @@ public class NewRecipeController implements Initializable {
                 public String onTranscriptionComplete(String ingredientsTranscript) {
                     if (ingredientsTranscript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting ingredients");
-                    } else {
-                        recipe.setIngredients(ingredientsTranscript);
+                        isIngredientsValid = false;
+
+                        updateGenerateRecipeButton();
+
+                        return ingredientsTranscript;
                     }
+
+                    recipe.setIngredients(ingredientsTranscript);
+
+                    isIngredientsValid = true;
+
+                    updateGenerateRecipeButton();
 
                     return ingredientsTranscript;
                 }
@@ -101,6 +118,14 @@ public class NewRecipeController implements Initializable {
                     ingredientsRecorderPane);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateGenerateRecipeButton() {
+        if (isMealTypeValid && isIngredientsValid) {
+            generateRecipeButton.setDisable(false);
+        } else {
+            generateRecipeButton.setDisable(true);
         }
     }
 
