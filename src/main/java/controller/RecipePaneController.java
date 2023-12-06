@@ -63,8 +63,10 @@ public class RecipePaneController implements Initializable {
         this.recipe = recipe;
 
         recipeName.setText(recipe.getName());
-        // capitalize first letter of meal type
-        mealTypeLabel.setText(recipe.getMealType().substring(0, 1).toUpperCase() + recipe.getMealType().substring(1));
+        // capitalize first letter of meal type\
+        if (recipe.getMealType() != null)
+            mealTypeLabel
+                    .setText(recipe.getMealType().substring(0, 1).toUpperCase() + recipe.getMealType().substring(1));
     }
 
     public void detailsButtonHandler() throws IOException {
