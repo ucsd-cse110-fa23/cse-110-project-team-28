@@ -29,7 +29,7 @@ public class AuthenticationController implements Initializable {
     private PasswordField passwordField;
 
     @FXML
-    private CheckBox autoLoginCheckBox;
+    public CheckBox autoLoginCheckBox;
 
     @FXML
     private Label errorLabel;
