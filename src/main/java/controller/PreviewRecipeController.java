@@ -107,12 +107,14 @@ public class PreviewRecipeController implements Initializable {
      */
     private String getImageURL() {
         String imageURL = "";
+
         try {
-            imageURL = DallE.generateImageURL(recipe.getName());
+            imageURL = DallE.generateImageForRecipe(recipe);
         } catch (IOException | InterruptedException | URISyntaxException e) {
             Logger.log("Error getting image url"); // @TODO refactor to handle each exception separately
             e.printStackTrace();
         }
+
         return imageURL;
     }
 

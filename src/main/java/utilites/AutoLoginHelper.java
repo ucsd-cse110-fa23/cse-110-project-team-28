@@ -62,13 +62,17 @@ public class AutoLoginHelper {
         File loginFile = new File("login.json");
 
         try {
-            loginFile.createNewFile();
+            boolean fileDoesNotExist = loginFile.createNewFile();
+
+            if (!fileDoesNotExist) {
+                Logger.warn("login.json file already exists, overwriting");
+            }
 
             FileWriter writer = new FileWriter(loginFile);
             writer.write(loginJson.toString());
             writer.close();
         } catch (Exception e) {
-            Logger.log("Failed to create login file");
+            Logger.error("Failed to create login file");
         }
     }
 
