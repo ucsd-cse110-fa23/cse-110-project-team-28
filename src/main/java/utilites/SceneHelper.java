@@ -93,4 +93,17 @@ public class SceneHelper {
         PreviewRecipeController previewRecipeController = loader.getController();
         previewRecipeController.setRecipe(recipe);
     }
+
+    public static void switchToRecipePreviewV2Scene(Recipe recipe) throws IOException {
+        URL sceneUrl = SceneHelper.class.getResource("/fxml/previewRecipeV2.fxml");
+        FXMLLoader loader = new FXMLLoader(sceneUrl);
+        Parent root = loader.load();
+        Scene newScene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+
+        primaryStage.setScene(newScene);
+        primaryStage.show();
+
+        PreviewRecipeController previewRecipeController = loader.getController();
+        previewRecipeController.setRecipe(recipe);
+    }
 }

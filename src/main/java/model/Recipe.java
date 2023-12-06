@@ -3,8 +3,6 @@ package model;
 import org.bson.Document;
 import org.json.JSONObject;
 
-import java.util.Date;
-
 public class Recipe {
     private String name; // name of the recipe
     private String mealType;

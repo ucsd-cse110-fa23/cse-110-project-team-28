@@ -77,7 +77,8 @@
   -fx-border-style: solid none none none;
 }
 
-.recipePane {
+.recipePane,
+#recipeImage {
   -fx-background-color: #f0f0f0;
   -fx-background-size: 100%;
   -fx-background-position: center center;

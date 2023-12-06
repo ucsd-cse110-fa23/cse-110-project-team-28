@@ -103,11 +103,14 @@ public class MongoDBHelper {
                 .first();
     }
 
-    public static Recipe findRecipeById(String recipeId) {
+    public static Recipe findRecipeById(String recipeId) throws IllegalArgumentException {
+        // parse recipeId to ObjectId
+        ObjectId objectId = new ObjectId(recipeId);
+
         Document recipeDocument = mongoClient
                 .getDatabase("pantrypal")
                 .getCollection("recipes")
-                .find(Filters.eq("_id", new ObjectId(recipeId)))
+                .find(Filters.eq("_id", objectId))
                 .first();
 
         if (recipeDocument == null) {
@@ -159,8 +162,6 @@ public class MongoDBHelper {
                 .append("steps", requestJsonObject.getString("steps"))
                 .append("imageURL", requestJsonObject.getString("imageURL"));
 
-        Logger.log("Inserting recipe: " + recipeDocument.toString());
-
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getRecipeCollectionName())
@@ -168,8 +169,6 @@ public class MongoDBHelper {
     }
 
     public static Document insertUserRecipeId(String userId, String recipeId) {
-        Logger.log("Inserting recipeId: " + recipeId + " into user with id: " + userId);
-
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getUserCollectionName())
@@ -178,8 +177,6 @@ public class MongoDBHelper {
     }
 
     public static UpdateResult updateRecipe(JSONObject requestJsonObject) {
-        Logger.log("Updating recipe: " + requestJsonObject.toString());
-
         ObjectId recipeId = new ObjectId(requestJsonObject.getString("id"));
 
         Bson updates = Updates.set("steps", requestJsonObject.getString("steps"));
@@ -191,8 +188,6 @@ public class MongoDBHelper {
     }
 
     public static DeleteResult deleteRecipeFromCollection(String recipeId) {
-        Logger.log("Deleting recipe with id: " + recipeId);
-
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getRecipeCollectionName())
@@ -200,8 +195,6 @@ public class MongoDBHelper {
     }
 
     public static UpdateResult deleteRecipeFromUser(String userId, String recipeId) {
-        Logger.log("Deleting recipe with id: " + recipeId + " from user with id: " + userId);
-
         return mongoClient
                 .getDatabase(Config.getDatabaseName())
                 .getCollection(Config.getUserCollectionName())

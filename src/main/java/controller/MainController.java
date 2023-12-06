@@ -14,7 +14,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
-import java.util.prefs.Preferences;
 import model.Recipe;
 import model.UserData;
 import utilites.RecipeHelper;
@@ -23,6 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
+
+import utilites.AutoLoginHelper;
 import utilites.Logger;
 
 public class MainController implements Initializable {
@@ -56,22 +57,21 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            Logger.log("Loading user recipes");
-
             loadRecipes();
-
             usernameLabel.setText(UserData.getInstance().getUsername());
-            recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
-
-            Logger.log(recipes.size() + " recipes loaded");
-
             sortComboBox.setValue("Newest to Oldest");
         });
     }
 
     private void loadRecipes() {
+        Logger.log("Loading user recipes");
+
         recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
+        recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
+
         setRecipes(recipes);
+
+        Logger.log(recipes.size() + " recipes loaded");
     }
 
     /**
@@ -123,6 +123,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void refreshButtonHandler() {
+        loadRecipes();
+    }
+
+    @FXML
     private void addRecipeHandler() throws IOException {
         SceneHelper.switchToNewRecipeScene();
     }
@@ -134,14 +139,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void logoutButtonHandler() throws IOException {
-        clearStoredCredentials();
-        SceneHelper.switchToAuthenticationScene();
-    }
+        AutoLoginHelper.deleteUserData();
 
-    private void clearStoredCredentials() {
-        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
-        prefs.remove("username");
-        prefs.remove("password");
+        SceneHelper.switchToAuthenticationScene();
     }
 
     private void applySortAndFilter() {
@@ -159,10 +159,10 @@ public class MainController implements Initializable {
         if (!filterBreakfast && !filterLunch && !filterDinner) {
             filteredRecipes = recipes;
         } else {
-            for (Recipe recipe : recipes) {
-                if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
-                        (filterLunch && recipe.getMealType().equals("Lunch")) ||
-                        (filterDinner && recipe.getMealType().equals("Dinner"))) {
+            for (Recipe recipe : recipes) { // these must be lowercase
+                if ((filterBreakfast && recipe.getMealType().equals("breakfast")) ||
+                        (filterLunch && recipe.getMealType().equals("lunch")) ||
+                        (filterDinner && recipe.getMealType().equals("dinner"))) {
                     filteredRecipes.add(recipe);
                 }
             }

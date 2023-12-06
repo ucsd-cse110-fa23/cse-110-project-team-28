@@ -12,10 +12,10 @@ import javafx.scene.control.Label;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 import model.UserData;
 import server.AuthResponse;
 import utilites.AuthHelper;
+import utilites.AutoLoginHelper;
 import utilites.ErrorPopupHelper;
 import utilites.Logger;
 import utilites.SceneHelper;
@@ -55,7 +55,7 @@ public class AuthenticationController implements Initializable {
             if (authResponse.getSuccess()) {
 
                 if (autoLoginCheckBox.isSelected()) {
-                    saveLogInCredentials(username, password);
+                    AutoLoginHelper.saveUserData(authResponse.getUserData());
                 }
 
                 UserData.setInstance(authResponse.getUserData());
@@ -92,7 +92,7 @@ public class AuthenticationController implements Initializable {
                 Logger.log("Login successful");
 
                 if (autoLoginCheckBox.isSelected()) {
-                    saveLogInCredentials(username, password);
+                    AutoLoginHelper.saveUserData(authResponse.getUserData());
                 }
 
                 Logger.log("User data: " + authResponse.getUserData().toString());
@@ -111,12 +111,6 @@ public class AuthenticationController implements Initializable {
             e.printStackTrace();
             ErrorPopupHelper.showErrorPopup("An unexpected error occurred");
         }
-    }
-
-    private void saveLogInCredentials(String username, String password) {
-        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
-        prefs.put("username", username);
-        prefs.put("password", password);
     }
 
     public void initialize(URL location, ResourceBundle resources) {

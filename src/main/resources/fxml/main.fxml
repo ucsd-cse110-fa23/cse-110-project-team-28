@@ -64,6 +64,18 @@
                         <Font name="PP Neue Machina Regular" size="12.0" />
                      </font>
                   </Button>
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshButtonHandler" prefHeight="32.0" text="Refresh List" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                  </Button>
                   <Button fx:id="debugAddRecipeButton" mnemonicParsing="false" onAction="#debugAddRecipeHandler" prefHeight="32.0" text="Add Recipe (Debug)" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets />

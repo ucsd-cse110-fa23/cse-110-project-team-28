@@ -26,6 +26,7 @@ public class RecipeAppServer {
     // create contexts
     server.createContext("/api/", new APIHandler());
     server.createContext("/auth/", new AuthHandler());
+    server.createContext("/recipe/", new RecipeHandler());
 
     // set executor
     server.setExecutor(threadPoolExecutor);

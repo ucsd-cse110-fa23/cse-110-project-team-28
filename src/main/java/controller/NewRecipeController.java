@@ -15,6 +15,7 @@ import utilites.SceneHelper;
 import utilites.Logger;
 
 public class NewRecipeController implements Initializable {
+    public static final String ERROR_FLAG = "ERROR";
 
     @FXML
     private Button backButton;
@@ -25,13 +26,16 @@ public class NewRecipeController implements Initializable {
     @FXML
     private VBox newRecipeCenter;
 
-    public static final String ERROR_FLAG = "ERROR";
-
     private Recipe recipe;
+    private RecorderController mealTypeRecorderController;
+    private RecorderController ingredientsRecorderController;
+
+    private boolean isMealTypeValid = false;
+    private boolean isIngredientsValid = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // generateRecipeButton.setDisable(true);
+        generateRecipeButton.setDisable(true);
 
         this.recipe = new Recipe();
 
@@ -51,32 +55,62 @@ public class NewRecipeController implements Initializable {
 
         try {
             VBox mealTypeRecorderPane = mealTypeRecorderLoader.load();
-            RecorderController mealTypeRecorderController = mealTypeRecorderLoader.getController();
+            mealTypeRecorderController = mealTypeRecorderLoader.getController();
 
             mealTypeRecorderController.setFileName("mealtype.wav");
             mealTypeRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
                 @Override
-                public void onTranscriptionComplete(String transcript) {
-                    if (transcript.equals(ERROR_FLAG)) {
-                        Logger.log("An error occurred while getting meal type");
-                    } else {
-                        recipe.setMealType(transcript);
+                public String onTranscriptionComplete(String mealTypeTranscript) {
+
+                    mealTypeTranscript = mealTypeTranscript.toLowerCase().replaceAll("[^a-z]", "").trim();
+
+                    // validate meal type
+                    switch (mealTypeTranscript) {
+                        case "breakfast":
+                        case "lunch":
+                        case "dinner":
+                            break;
+                        default:
+                            isMealTypeValid = false;
+
+                            updateGenerateRecipeButton();
+
+                            return null; // not a valid meal type
                     }
+
+                    isMealTypeValid = true;
+
+                    recipe.setMealType(mealTypeTranscript);
+
+                    updateGenerateRecipeButton();
+
+                    return mealTypeTranscript;
                 }
             });
 
             VBox ingredientsRecorderPane = ingredientsRecorderLoader.load();
-            RecorderController ingredientsRecorderController = ingredientsRecorderLoader.getController();
+            ingredientsRecorderController = ingredientsRecorderLoader.getController();
 
             ingredientsRecorderController.setFileName("ingredients.wav");
             ingredientsRecorderController.setTranscriptionCallback(new RecorderController.TranscriptionCallback() {
                 @Override
-                public void onTranscriptionComplete(String transcript) {
-                    if (transcript.equals(ERROR_FLAG)) {
+                public String onTranscriptionComplete(String ingredientsTranscript) {
+                    if (ingredientsTranscript.equals(ERROR_FLAG)) {
                         Logger.log("An error occurred while getting ingredients");
-                    } else {
-                        recipe.setIngredients(transcript);
+                        isIngredientsValid = false;
+
+                        updateGenerateRecipeButton();
+
+                        return ingredientsTranscript;
                     }
+
+                    recipe.setIngredients(ingredientsTranscript);
+
+                    isIngredientsValid = true;
+
+                    updateGenerateRecipeButton();
+
+                    return ingredientsTranscript;
                 }
             });
 
@@ -84,6 +118,14 @@ public class NewRecipeController implements Initializable {
                     ingredientsRecorderPane);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateGenerateRecipeButton() {
+        if (isMealTypeValid && isIngredientsValid) {
+            generateRecipeButton.setDisable(false);
+        } else {
+            generateRecipeButton.setDisable(true);
         }
     }
 
@@ -96,6 +138,6 @@ public class NewRecipeController implements Initializable {
     private void generateRecipeButtonHandler() throws IOException {
         Logger.log("Creating a " + recipe.getMealType() + "recipe with the following ingredients: "
                 + recipe.getIngredients());
-        SceneHelper.switchToRecipePreviewScene(recipe);
+        SceneHelper.switchToRecipePreviewV2Scene(recipe);
     }
 }

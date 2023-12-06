@@ -1,5 +1,7 @@
 # CSE 110 Team 28 PantryPal Project
 
+Link to GitHub Repo: https://github.com/ucsd-cse110-fa23/cse-110-project-team-28
+
 [![Java CI with Gradle](https://github.com/ucsd-cse110-fa23/cse-110-project-team-28/actions/workflows/gradle.yml/badge.svg)](https://github.com/ucsd-cse110-fa23/cse-110-project-team-28/actions/workflows/gradle.yml)
 
 ## Running the App

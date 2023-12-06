@@ -1,14 +1,13 @@
-import controller.AuthenticationController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import utilites.InitializeHelper;
+import model.UserData;
 import javafx.fxml.FXMLLoader;
-import java.util.prefs.Preferences;
 
 import config.Config;
+import utilites.AutoLoginHelper;
 import utilites.SceneHelper;
 
 public class RecipeApp extends Application {
@@ -31,28 +30,21 @@ public class RecipeApp extends Application {
         primaryStage.setHeight(HEIGHT);
         primaryStage.setResizable(true);
 
-        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
-        String username = prefs.get("username", null);
-        String password = prefs.get("password", null);
+        UserData autoLoginUserData = AutoLoginHelper.getUserData();
 
-        if (username != null && password != null) {
-            Parent root = FXMLLoader.load(getClass().getResource("fxml/main.fxml"));
-            primaryStage.setTitle("PantryPal 2");
+        Parent root;
 
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
-
-            primaryStage.setScene(scene);
+        if (autoLoginUserData != null) {
+            UserData.setInstance(autoLoginUserData);
+            root = FXMLLoader.load(getClass().getResource("fxml/main.fxml"));
         } else {
-            Parent root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
-            primaryStage.setTitle("PantryPal 2");
-
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
-
-            primaryStage.setScene(scene);
+            root = FXMLLoader.load(getClass().getResource("fxml/authentication.fxml"));
         }
 
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
+
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
