@@ -12,6 +12,14 @@ To run the app, run the following command in the root directory of the project:
 ./gradlew run
 ```
 
+## Running the Server
+
+To run the server, run the following command in the root directory of the project:
+
+```bash
+./gradlew runServer
+```
+
 ## Running the Tests
 
 To run the tests, run the following command in the root directory of the project:
