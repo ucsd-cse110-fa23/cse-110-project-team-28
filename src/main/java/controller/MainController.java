@@ -1,8 +1,10 @@
 package controller;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletionException;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -23,7 +25,7 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
-import utilites.AutoLoginHelper;
+import utilites.ErrorPopupHelper;
 import utilites.Logger;
 
 public class MainController implements Initializable {
@@ -66,7 +68,26 @@ public class MainController implements Initializable {
     private void loadRecipes() {
         Logger.log("Loading user recipes");
 
-        recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
+        try {
+            recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
+        } catch (CompletionException e) {
+            if (e.getCause() instanceof ConnectException) {
+                Logger.error("Error connecting to the server");
+                ErrorPopupHelper.showErrorPopup("Error connecting to the server. Please try again later.");
+
+                try {
+                    SceneHelper.switchToAuthenticationScene();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+                return;
+            } else {
+                e.printStackTrace();
+                ErrorPopupHelper.showErrorPopup("An unexpected error occurred");
+            }
+        }
+
         recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
 
         applySortAndFilter();
