@@ -7,8 +7,7 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 import model.Recipe;
 import utilites.RecipeHelper;
 import utilites.SceneHelper;
@@ -40,13 +39,16 @@ public class PreviewRecipeController implements Initializable {
             "Recipe:";
 
     @FXML
-    private TextArea editRecipeTextArea;
+    private Label recipeNameLabel;
 
     @FXML
-    private Button saveRecipeButton;
+    private Label mealTypeLabel;
 
     @FXML
-    private Button regenerateRecipeButton;
+    private Label ingredientsLabel;
+
+    @FXML
+    private Label stepsLabel;
 
     Recipe recipe;
 
@@ -61,17 +63,31 @@ public class PreviewRecipeController implements Initializable {
      */
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+        generateAndDisplayRecipe(false);
+    }
 
-        String response = getRecipeSteps(false);
+    /**
+     * a messy and hacky way of cleaning up the code
+     * 
+     * @param regenerate whether or not to regenerate the recipe
+     */
+    private void generateAndDisplayRecipe(boolean regenerate) {
+        String response = getRecipeSteps(regenerate);
 
         if (response.equals(ERROR_FLAG)) {
             Logger.log("An error occurred while getting steps");
         } else {
-            recipe.setName(getRecipeName(response));
+            // clean up response
+            response = response.trim();
+
+            recipe.setName(extractRecipeName(response));
             recipe.setSteps(response);
         }
 
-        editRecipeTextArea.setText(response);
+        recipeNameLabel.setText(recipe.getName());
+        mealTypeLabel.setText(recipe.getMealType().substring(0, 1).toUpperCase() + recipe.getMealType().substring(1));
+        ingredientsLabel.setText(recipe.getIngredients());
+        stepsLabel.setText(recipe.getSteps());
     }
 
     public void backButtonHandler() throws IOException {
@@ -100,8 +116,8 @@ public class PreviewRecipeController implements Initializable {
         return imageURL;
     }
 
-    // @TODO figure out
-    public void saveRecipeButtonHandler() throws IOException {
+    @FXML
+    private void saveRecipeButtonHandler() throws IOException {
 
         String imageURL = getImageURL();
 
@@ -114,15 +130,9 @@ public class PreviewRecipeController implements Initializable {
         goHome();
     }
 
-    public void regenerateRecipeButtonHandler() throws IOException {
-        String response = getRecipeSteps(true);
-        if (response.equals(ERROR_FLAG)) {
-            Logger.log("An error occurred while regenerating steps");
-        } else {
-            recipe.setName(getRecipeName(response));
-            recipe.setSteps(response);
-        }
-        editRecipeTextArea.setText(response);
+    @FXML
+    private void refreshRecipeButtonHandler() throws IOException {
+        generateAndDisplayRecipe(true);
     }
 
     /*
@@ -155,7 +165,7 @@ public class PreviewRecipeController implements Initializable {
         }
     }
 
-    private String getRecipeName(String steps) {
+    private String extractRecipeName(String steps) {
         String[] lines = steps.split("\n");
         return lines[0].trim();
     }

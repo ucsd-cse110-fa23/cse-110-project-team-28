@@ -113,6 +113,6 @@ public class NewRecipeController implements Initializable {
     private void generateRecipeButtonHandler() throws IOException {
         Logger.log("Creating a " + recipe.getMealType() + "recipe with the following ingredients: "
                 + recipe.getIngredients());
-        SceneHelper.switchToRecipePreviewScene(recipe);
+        SceneHelper.switchToRecipePreviewV2Scene(recipe);
     }
 }
