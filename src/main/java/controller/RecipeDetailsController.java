@@ -73,7 +73,7 @@ public class RecipeDetailsController implements Initializable {
         this.recipe = recipe;
 
         recipeNameLabel.setText(recipe.getName());
-        mealTypeLabel.setText(recipe.getMealType());
+        mealTypeLabel.setText(recipe.getMealType().substring(0, 1).toUpperCase() + recipe.getMealType().substring(1));
         ingredientsLabel.setText(recipe.getIngredients());
         stepsLabel.setText(recipe.getSteps());
 

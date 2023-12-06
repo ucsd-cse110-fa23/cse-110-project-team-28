@@ -155,10 +155,10 @@ public class MainController implements Initializable {
         if (!filterBreakfast && !filterLunch && !filterDinner) {
             filteredRecipes = recipes;
         } else {
-            for (Recipe recipe : recipes) {
-                if ((filterBreakfast && recipe.getMealType().equals("Breakfast")) ||
-                        (filterLunch && recipe.getMealType().equals("Lunch")) ||
-                        (filterDinner && recipe.getMealType().equals("Dinner"))) {
+            for (Recipe recipe : recipes) { // these must be lowercase
+                if ((filterBreakfast && recipe.getMealType().equals("breakfast")) ||
+                        (filterLunch && recipe.getMealType().equals("lunch")) ||
+                        (filterDinner && recipe.getMealType().equals("dinner"))) {
                     filteredRecipes.add(recipe);
                 }
             }
