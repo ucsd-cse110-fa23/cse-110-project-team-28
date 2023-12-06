@@ -1,13 +1,8 @@
 package server;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.json.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -63,16 +58,10 @@ public class RecipeHandler implements HttpHandler {
         String html = stringBuilder.toString();
 
         html = html.replace("{{recipeName}}", recipe.getName())
-                    .replace("{{mealType}}", recipe.getMealType())
-                    .replace("{{recipeIngredients}}", recipe.getIngredients())
-                    .replace("{{recipeSteps}}", recipe.getSteps())
-                    .replace("{{recipeImage}}", recipe.getImageURL());
-        /**
-         * 
-         * todo: add other placeholders and replace them with the recipe's data
-         * 
-         */
-
+                .replace("{{mealType}}", recipe.getMealType())
+                .replace("{{recipeIngredients}}", recipe.getIngredients())
+                .replace("{{recipeSteps}}", recipe.getSteps())
+                .replace("{{recipeImage}}", recipe.getImageURL());
 
         sendResponse(httpExchange, 200, html, "text/html");
     }
@@ -100,20 +89,6 @@ public class RecipeHandler implements HttpHandler {
         exchange.getResponseHeaders().add("Content-Type", contentType);
         exchange.sendResponseHeaders(statusCode, 0);
         exchange.getResponseBody().write(responseBody.getBytes());
-        exchange.close();
-    }
-
-    private void sendResponse(HttpExchange exchange, int statusCode, String responseBody) throws IOException {
-        Logger.log("Sending response (status code: " + statusCode + ", length: " + responseBody.length() + ")");
-        exchange.sendResponseHeaders(statusCode, 0);
-        exchange.getResponseBody().write(responseBody.getBytes());
-        exchange.close();
-    }
-
-    private void sendResponse(HttpExchange exchange, int statusCode) throws IOException {
-        Logger.log("Sending response (status code: " + statusCode + ", length: 0)");
-        exchange.sendResponseHeaders(statusCode, 0);
-        exchange.getResponseBody().write("".getBytes());
         exchange.close();
     }
 
