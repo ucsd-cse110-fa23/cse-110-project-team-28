@@ -69,7 +69,7 @@ public class MainController implements Initializable {
         recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
         recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
 
-        setRecipes(recipes);
+        applySortAndFilter();
 
         Logger.log(recipes.size() + " recipes loaded");
     }
@@ -139,7 +139,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void logoutButtonHandler() throws IOException {
-        AutoLoginHelper.deleteUserData();
+        // AutoLoginHelper.deleteUserData();
 
         SceneHelper.switchToAuthenticationScene();
     }
@@ -157,7 +157,9 @@ public class MainController implements Initializable {
 
         // Check if none are selected
         if (!filterBreakfast && !filterLunch && !filterDinner) {
-            filteredRecipes = recipes;
+            for (Recipe recipe : recipes) {
+                filteredRecipes.add(recipe);
+            }
         } else {
             for (Recipe recipe : recipes) { // these must be lowercase
                 if ((filterBreakfast && recipe.getMealType().equals("breakfast")) ||
@@ -180,10 +182,10 @@ public class MainController implements Initializable {
                 filteredRecipes.sort(Comparator.comparing(Recipe::getName).reversed());
                 break;
             case "Oldest to Newest":
-                Collections.reverse(filteredRecipes);
+                // do nothing
                 break;
             case "Newest to Oldest":
-                // do nothing
+                Collections.reverse(filteredRecipes);
                 break;
         }
 

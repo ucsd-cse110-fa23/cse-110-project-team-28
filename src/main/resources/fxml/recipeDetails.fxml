@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,7 +21,11 @@
                <children>
                   <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
                      <children>
-                        <StackPane fx:id="recipeImage" prefHeight="300.0" />
+                        <StackPane fx:id="recipeImage" prefHeight="300.0">
+                           <VBox.margin>
+                              <Insets bottom="6.0" />
+                           </VBox.margin>
+                        </StackPane>
                         <VBox spacing="6.0">
                            <children>
                               <Label text="Meal Type">
@@ -77,53 +82,68 @@
       </ScrollPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER" spacing="12.0" style="-fx-border-color: #cecece; -fx-border-style: solid hidden hidden hidden;" BorderPane.alignment="CENTER">
+      <VBox BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <children>
-            <Button fx:id="editRecipeButton" mnemonicParsing="false" onAction="#editRecipeButtonHandler" prefHeight="32.0" text="Edit Recipe">
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                     <image>
-                        <Image url="@../images/edit.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="shareRecipeButton" mnemonicParsing="false" onAction="#shareRecipeButtonHandler" prefHeight="32.0" text="Share Recipe">
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/share.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label fx:id="recipeURLLabel" />
-            <Button id="deleteRecipeButton" mnemonicParsing="false" onAction="#deleteRecipeButtonHandler" prefHeight="32.0" text="Delete Recipe">
-               <font>
-                  <Font name="PP Neue Machina Regular" size="12.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                     <image>
-                        <Image url="@../images/delete.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <HBox alignment="CENTER" spacing="12.0" style="-fx-border-color: #cecece; -fx-border-style: solid hidden hidden hidden;">
+               <children>
+                  <Button fx:id="editRecipeButton" mnemonicParsing="false" onAction="#editRecipeButtonHandler" prefHeight="32.0" text="Edit Recipe">
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                           <image>
+                              <Image url="@../images/edit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="shareRecipeButton" mnemonicParsing="false" onAction="#shareRecipeButtonHandler" prefHeight="32.0" text="Share Recipe">
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/share.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button id="deleteRecipeButton" mnemonicParsing="false" onAction="#deleteRecipeButtonHandler" prefHeight="32.0" text="Delete Recipe">
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="18.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                           <image>
+                              <Image url="@../images/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="30.0" style="-fx-background-color: #eeeeee; -fx-border-color: #cecece; -fx-border-style: solid hidden hidden hidden;">
+               <children>
+                  <TextField fx:id="recipeURLLabel" alignment="CENTER" editable="false" promptText="Recipe URL" style="-fx-background-color: transparent; -fx-padding: 0;" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="PP Neue Machina Regular" size="12.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <padding>
+                  <Insets left="12.0" right="12.0" />
+               </padding>
+            </HBox>
          </children>
-         <padding>
-            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-         </padding>
-      </HBox>
+      </VBox>
    </bottom>
    <top>
       <VBox alignment="CENTER" style="-fx-border-color: #cecece; -fx-border-style: hidden hidden solid hidden;" BorderPane.alignment="CENTER">

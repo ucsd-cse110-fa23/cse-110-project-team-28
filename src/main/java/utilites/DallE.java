@@ -10,9 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import config.Config;
+import model.Recipe;
 
 public class DallE {
-        public static String generateImageURL(String recipeName)
+        public static String generateImageForRecipe(Recipe recipe)
                         throws IOException, InterruptedException, URISyntaxException {
 
                 // Set request parameters
@@ -21,7 +22,9 @@ public class DallE {
                 // Create a request body which you will pass into request object
                 JSONObject requestBody = new JSONObject();
                 requestBody.put("model", Config.getDallEModel());
-                requestBody.put("prompt", Config.getDallEPrompt().replace("[recipeName]", recipeName));
+                requestBody.put("prompt", Config.getDallEPrompt()
+                                .replace("[recipeName]", recipe.getName())
+                                .replace("[ingredients]", recipe.getIngredients()));
                 requestBody.put("n", n);
                 requestBody.put("size", "512x512");
                 requestBody.put("response_format", "b64_json");
