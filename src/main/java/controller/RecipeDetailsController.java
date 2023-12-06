@@ -5,12 +5,15 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import config.Config;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import model.Recipe;
 import utilites.Logger;
 import utilites.RecipeHelper;
@@ -18,6 +21,9 @@ import utilites.SceneHelper;
 import utilites.URIBuilder;
 
 public class RecipeDetailsController implements Initializable {
+
+    @FXML
+    private StackPane recipeImage;
 
     @FXML
     private Label recipeNameLabel;
@@ -41,6 +47,26 @@ public class RecipeDetailsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Platform.runLater(() -> {
+            if (recipe.getImageURL() == null)
+                Logger.warn("Recipe image is null");
+
+            recipeImage.setStyle(
+                    "-fx-background-image: url('" + recipe.getImageURL() + "');");
+
+            Rectangle clip = new Rectangle(recipeImage.getWidth(), recipeImage.getHeight());
+            clip.setArcWidth(12);
+            clip.setArcHeight(12);
+            recipeImage.setClip(clip);
+
+            recipeImage.widthProperty().addListener((observable, oldValue, newValue) -> {
+                clip.setWidth(newValue.doubleValue());
+            });
+
+            recipeImage.heightProperty().addListener((observable, oldValue, newValue) -> {
+                clip.setHeight(newValue.doubleValue());
+            });
+        });
     }
 
     public void setRecipe(Recipe recipe) {

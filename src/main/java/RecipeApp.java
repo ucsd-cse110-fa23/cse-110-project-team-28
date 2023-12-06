@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
@@ -7,11 +6,8 @@ import javafx.stage.Stage;
 import model.UserData;
 import javafx.fxml.FXMLLoader;
 
-import java.io.IOException;
-
 import config.Config;
 import utilites.AutoLoginHelper;
-import utilites.Logger;
 import utilites.SceneHelper;
 
 public class RecipeApp extends Application {

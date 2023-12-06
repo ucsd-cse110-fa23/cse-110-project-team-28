@@ -8,6 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -19,6 +20,7 @@
                <children>
                   <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="600.0" spacing="12.0">
                      <children>
+                        <StackPane fx:id="recipeImage" prefHeight="300.0" />
                         <VBox spacing="6.0">
                            <children>
                               <Label text="Meal Type">
