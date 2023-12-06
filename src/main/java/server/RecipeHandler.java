@@ -62,12 +62,17 @@ public class RecipeHandler implements HttpHandler {
 
         String html = stringBuilder.toString();
 
-        html = html.replace("{{recipeName}}", recipe.getName());
+        html = html.replace("{{recipeName}}", recipe.getName())
+                    .replace("{{mealType}}", recipe.getMealType())
+                    .replace("{{recipeIngredients}}", recipe.getIngredients())
+                    .replace("{{recipeSteps}}", recipe.getSteps())
+                    .replace("{{recipeImage}}", recipe.getImageURL());
         /**
          * 
          * todo: add other placeholders and replace them with the recipe's data
          * 
          */
+
 
         sendResponse(httpExchange, 200, html, "text/html");
     }
