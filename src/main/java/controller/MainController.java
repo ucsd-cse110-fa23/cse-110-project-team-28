@@ -57,22 +57,21 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            Logger.log("Loading user recipes");
-
             loadRecipes();
-
             usernameLabel.setText(UserData.getInstance().getUsername());
-            recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
-
-            Logger.log(recipes.size() + " recipes loaded");
-
             sortComboBox.setValue("Newest to Oldest");
         });
     }
 
     private void loadRecipes() {
+        Logger.log("Loading user recipes");
+
         recipes = RecipeHelper.getUserRecipes(UserData.getInstance().getUserId());
+        recipeCountLabel.setText(recipes.size() + " recipes (" + recipes.size() + " shown)");
+
         setRecipes(recipes);
+
+        Logger.log(recipes.size() + " recipes loaded");
     }
 
     /**
@@ -121,6 +120,11 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void refreshButtonHandler() {
+        loadRecipes();
     }
 
     @FXML
