@@ -14,7 +14,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
-import java.util.prefs.Preferences;
 import model.Recipe;
 import model.UserData;
 import utilites.RecipeHelper;
@@ -23,6 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
+
+import utilites.AutoLoginHelper;
 import utilites.Logger;
 
 public class MainController implements Initializable {
@@ -134,14 +135,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void logoutButtonHandler() throws IOException {
-        clearStoredCredentials();
-        SceneHelper.switchToAuthenticationScene();
-    }
+        AutoLoginHelper.deleteUserData();
 
-    private void clearStoredCredentials() {
-        Preferences prefs = Preferences.userNodeForPackage(AuthenticationController.class);
-        prefs.remove("username");
-        prefs.remove("password");
+        SceneHelper.switchToAuthenticationScene();
     }
 
     private void applySortAndFilter() {
